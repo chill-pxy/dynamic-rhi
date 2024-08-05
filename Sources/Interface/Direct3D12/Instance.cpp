@@ -6,15 +6,13 @@
 
 #include "../../Include/Instance.h"
 
-namespace FOCUS
+namespace DRHI
 {
-	namespace Platform
+	void Instance::createInstance()
 	{
-		void Instance::createInstance()
-		{
-			std::cout<<"DX12 Instance" << std::endl;
-		}
+		std::cout<<"DX12 Instance" << std::endl;
 	}
 }
+
 
 #endif

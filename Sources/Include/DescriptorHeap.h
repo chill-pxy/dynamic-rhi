@@ -1,12 +1,9 @@
 #pragma once
 
-namespace FOCUS
+namespace DRHI
 {
-	namespace Platform
+	class DescriptorHeap
 	{
-		class DescriptorHeap
-		{
 
-		};
-	}
+	};
 }

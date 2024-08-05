@@ -1,9 +1,6 @@
 #pragma once
 
-namespace FOCUS
-{
-	namespace Platform
-	{
 
-	}
+namespace DRHI
+
 }

@@ -4,18 +4,15 @@
 
 #include"volk.h"
 
-namespace FOCUS
+namespace DRHI
 {
-	namespace Platform
+	class Device
 	{
-		class Device
-		{
-		private:
-			std::variant<VkDevice*> _runtimeDevice;
+	private:
+		std::variant<VkDevice*> _runtimeDevice;
 
-		public:
-			void CreateCommandAllocators();
-			void CreateCommandList();
-		};
-	}
+	public:
+		void CreateCommandAllocators();
+		void CreateCommandList();
+	};
 }

@@ -11,50 +11,41 @@
 #include "DescriptorHeap.h"
 #include "InterfaceType.h"
 
-#ifdef PLATFORM_EXPORTS
-#define PLATFORM_API __declspec(dllexport)
-#else
-#define PLATFORM_API __declspec(dllimport)
-#endif
-
-namespace FOCUS
+namespace DRHI
 {
-	namespace Platform
+	class Context
 	{
-		class Context
+	public:
+		Context()
 		{
-		public:
-			Context()
-			{
-				//默认使用Vulkan
-				_runtimeInterface = API::VULKAN;
+			//默认使用Vulkan
+			_runtimeInterface = API::VULKAN;
 
-				_instance = std::make_unique<Instance>(_runtimeInterface);
+			_instance = std::make_unique<Instance>(_runtimeInterface);
 
-				_instance->test();
-			}
+			_instance->test();
+		}
 
-			Context(API api)
-			{
-				_runtimeInterface = api;
+		Context(API api)
+		{
+			_runtimeInterface = api;
 
-				_instance = std::make_unique<Instance>(_runtimeInterface);
-			}
+			_instance = std::make_unique<Instance>(_runtimeInterface);
+		}
 
-			void initialize()
-			{
-				 //_instance->createInstance();
-				 //_physicalDevice->pickPhysicalDevice(0, _instance.get());
-			}
+		void initialize()
+		{
+				//_instance->createInstance();
+				//_physicalDevice->pickPhysicalDevice(0, _instance.get());
+		}
 
-		private:
-			API _runtimeInterface;
+	private:
+		API _runtimeInterface;
 
-			std::unique_ptr<Instance> _instance;
-			std::unique_ptr<Device> _device;
-			std::unique_ptr<PhysicalDevice> _physicalDevice;
-			std::unique_ptr<SwapChain> _swapChain;
-			std::unique_ptr<CommandQueue> _commandQueue;
-		};
-	}
+		std::unique_ptr<Instance> _instance;
+		std::unique_ptr<Device> _device;
+		std::unique_ptr<PhysicalDevice> _physicalDevice;
+		std::unique_ptr<SwapChain> _swapChain;
+		std::unique_ptr<CommandQueue> _commandQueue;
+	};
 }
