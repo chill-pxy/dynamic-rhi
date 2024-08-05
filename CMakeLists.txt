@@ -11,5 +11,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/drhi)
 
 add_subdirectory(ThirdParty)
 add_subdirectory(Sources)
+add_subdirectory(Example)
 
 file(COPY ${PROJECT_INCLUDE_DIR} DESTINATION ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})

@@ -19,13 +19,18 @@ namespace DRHI
 
 	public:
 		void createInstance();
-		void test();
 		//void createSwapChain();
 		//void getNumPhysicalDevices();
 		//void getAllPhysicalDevices();
 		//void getPhysicalDevice();
 		
 	public:
+
+		Instance()
+		{
+			_runtimeInstance = new VkInstance();
+		}
+
 		Instance(API api)
 		{
 			switch (api)
@@ -39,6 +44,18 @@ namespace DRHI
 		std::variant<VkInstance*, int> getInstance()
 		{
 			return _runtimeInstance;
+		}
+
+		VkInstance* getVkInstance()
+		{
+			if (std::holds_alternative<VkInstance*>(_runtimeInstance)) 
+			{
+				return std::get<VkInstance*>(_runtimeInstance);
+			}
+			else
+			{
+				std::cout<<"none vk instance";
+			}
 		}
 	};
 
