@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.2 FATAL_ERROR)
+cmake_minimum_required(VERSION 3.26.4 FATAL_ERROR)
 
 set(TARGET_NAME dynamic_rhi)
 
@@ -46,3 +46,17 @@ endif()
 
 file(WRITE ${PROJECT_SOURCE_DIR}/Include/InterfaceConfig.h "${codeDefine}" )
 add_definitions(-DINCLUDE_GENERATED_HEADER)
+
+#---------------------------------#
+#------复制dll及lib到库目录-------#
+#---------------------------------#
+add_custom_command(
+    TARGET ${TARGET_NAME} POST_BUILD # 对于库则使用对应的库名
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/drhi.dll 
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../drhi/
+
+    COMMAND ${CMAKE_COMMAND} -E copy_if_different
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/drhi.lib 
+    ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../drhi/
+)
