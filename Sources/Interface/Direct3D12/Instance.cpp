@@ -12,12 +12,6 @@ namespace DRHI
 	{
 		std::cout<<"DX12 Instance" << std::endl;
 	}
-
-	void Instance::test()
-	{
-		std::cout << "dx12 test";
-	}
-	
 }
 
 

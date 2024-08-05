@@ -6,10 +6,6 @@
 #include <vector>
 #include <iostream>
 
-#include <volk.h>
-#define GLFW_INCLUDE_VULKAN
-#include <GLFW/glfw3.h>
-
 #include "../../Include/Instance.h"
 
 #ifdef NDEBUG
@@ -54,20 +50,20 @@ bool checkValidationLayerSupport()
     return true;
 }
 
-std::vector<const char*> getRequiredExtensions() 
-{
-    uint32_t glfwExtensionCount = 0;
-    const char** glfwExtensions;
-    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-    std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-
-    if (enableValidationLayers) {
-        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-    }
-
-    return extensions;
-}
+//std::vector<const char*> getRequiredExtensions() 
+//{
+//    uint32_t glfwExtensionCount = 0;
+//    const char** glfwExtensions;
+//    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+//
+//    std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
+//
+//    if (enableValidationLayers) {
+//        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+//    }
+//
+//    return extensions;
+//}
 
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, 
@@ -75,7 +71,7 @@ static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     const VkDebugUtilsMessengerCallbackDataEXT* pCallbackData, 
     void* pUserData) 
 {
-    //std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
+    std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 
     return VK_FALSE;
 };
@@ -124,9 +120,9 @@ namespace DRHI
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createInfo.pApplicationInfo = &appInfo;
 
-        auto extensions = getRequiredExtensions();
-        createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-        createInfo.ppEnabledExtensionNames = extensions.data();
+        //auto extensions = getRequiredExtensions();
+        //createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+        //createInfo.ppEnabledExtensionNames = extensions.data();
 
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
         if (enableValidationLayers) {
@@ -144,10 +140,11 @@ namespace DRHI
 
         if (vkCreateInstance(&createInfo, nullptr, vinstance) != VK_SUCCESS) {
             throw std::runtime_error("failed to create instance!");
-        }
-	}
+        }  
 
-    void Instance::test() { std::cout << "vk_test"; }
+        //载入volk instance 才可后续加载vulkan函数符号
+        volkLoadInstance(*vinstance);
+	}
 }
 
 #endif
