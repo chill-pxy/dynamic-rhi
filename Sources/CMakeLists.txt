@@ -16,7 +16,7 @@ source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${HEADER_FILES} ${SOURCE_F
 set(CMAKE_WINDOWS_EXPORT_ALL_SYMBOLS ON)
 add_library(${TARGET_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES} ${INTERFACE_FILES})
 
-set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME "dynamic_rhi")
+set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME "drhi")
 
 target_link_libraries(${TARGET_NAME} PUBLIC
     glfw
@@ -46,5 +46,5 @@ if(content STREQUAL "undefine")
     message(FATAL_ERROR "没有定义图形API")
 endif()
 
-file(WRITE ${PROJECT_SOURCE_DIR}/Interface/InterfaceConfig.h "${codeDefine}" )
+file(WRITE ${PROJECT_SOURCE_DIR}/Include/InterfaceConfig.h "${codeDefine}" )
 add_definitions(-DINCLUDE_GENERATED_HEADER)
