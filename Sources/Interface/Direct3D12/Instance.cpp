@@ -1,10 +1,10 @@
-#include "../InterfaceConfig.h"
+#include "../../Include/InterfaceConfig.h"
 
 #ifdef DIRECT3D12_IMPLEMENTATION
 
 #include <iostream>
 
-#include "../Instance.h"
+#include "../../Include/Instance.h"
 
 namespace FOCUS
 {

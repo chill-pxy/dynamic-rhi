@@ -1,11 +1,11 @@
-#include "../InterfaceConfig.h"
+#include "../../Include/InterfaceConfig.h"
 
 #ifdef VULKAN_IMPLEMENTATION
 
 #include <stdexcept>
 #include <vector>
 
-#include "../PhysicalDevice.h"
+#include "../../Include/PhysicalDevice.h"
 
 namespace FOCUS
 {

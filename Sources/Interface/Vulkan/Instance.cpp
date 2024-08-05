@@ -1,4 +1,4 @@
-#include "../InterfaceConfig.h"
+#include "../../Include/InterfaceConfig.h"
 
 #ifdef VULKAN_IMPLEMENTATION
 
@@ -10,7 +10,7 @@
 #define GLFW_INCLUDE_VULKAN
 #include <GLFW/glfw3.h>
 
-#include "../Instance.h"
+#include "../../Include/Instance.h"
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
