@@ -97,7 +97,7 @@ namespace DRHI
         std::cout << "VK Instance" << std::endl;
 
         VkInstance* vinstance = new VkInstance();
-        this->_runtimeInstance = vinstance;
+        _runtimeInstance = vinstance;
 
         //初始化volk
 		volkInitialize();
@@ -138,12 +138,12 @@ namespace DRHI
             createInfo.pNext = nullptr;
         }
 
-        if (vkCreateInstance(&createInfo, nullptr, vinstance) != VK_SUCCESS) {
+        if (vkCreateInstance(&createInfo, nullptr, getVkInstance()) != VK_SUCCESS) {
             throw std::runtime_error("failed to create instance!");
         }  
 
         //载入volk instance 才可后续加载vulkan函数符号
-        volkLoadInstance(*vinstance);
+        volkLoadInstance(*getVkInstance());
 	}
 }
 

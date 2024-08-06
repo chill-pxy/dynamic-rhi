@@ -37,6 +37,7 @@ namespace DRHI
 		{
 			_instance->createInstance();
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
+			_physicalDevice->pickGraphicQueueFamily();
 		}
 
 	private:

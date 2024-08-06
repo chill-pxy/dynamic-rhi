@@ -55,6 +55,7 @@ namespace DRHI
 			else
 			{
 				std::cout<<"none vk instance";
+				return nullptr;
 			}
 		}
 	};
