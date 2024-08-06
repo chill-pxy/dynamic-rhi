@@ -59,5 +59,10 @@ namespace DRHI
 				return nullptr;
 			}
 		}
+
+		uint32_t getQueueFamily()
+		{
+			return _queueFamily;
+		}
 	};
 }

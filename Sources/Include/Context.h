@@ -21,8 +21,10 @@ namespace DRHI
 			//ƒ¨»œ π”√Vulkan
 			_runtimeInterface = API::VULKAN;
 
-			_instance = std::make_unique<Instance>(_runtimeInterface);
-			_physicalDevice = std::make_unique<PhysicalDevice>(_runtimeInterface);
+			_instance = std::make_unique<Instance>();
+			_physicalDevice = std::make_unique<PhysicalDevice>();
+			_device = std::make_unique<Device>();
+			_commandQueue = std::make_unique<CommandQueue>();
 		}
 
 		Context(API api)
@@ -31,6 +33,8 @@ namespace DRHI
 
 			_instance = std::make_unique<Instance>(_runtimeInterface);
 			_physicalDevice = std::make_unique<PhysicalDevice>(_runtimeInterface);
+			_device = std::make_unique<Device>(_runtimeInterface);
+			_commandQueue = std::make_unique<CommandQueue>(_runtimeInterface);
 		}
 
 		void initialize()
@@ -38,6 +42,7 @@ namespace DRHI
 			_instance->createInstance();
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
 			_physicalDevice->pickGraphicQueueFamily();
+			_device->createLogicalDevice(_physicalDevice.get(), _commandQueue.get());
 		}
 
 	private:
