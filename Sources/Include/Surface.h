@@ -4,8 +4,10 @@
 #include<iostream>
 
 #include<volk.h>
+#include<GLFW/glfw3.h>
 
 #include"InterfaceType.h"
+#include"Instance.h"
 
 namespace DRHI
 {
@@ -13,6 +15,9 @@ namespace DRHI
 	{
 	private:
 		std::variant<VkSurfaceKHR*> _runtimeSurface;
+
+	public:
+		void createSurface(Instance* instance, GLFWwindow* windows);
 
 	public:
 		
