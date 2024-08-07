@@ -12,13 +12,13 @@ namespace DRHI
 	class CommandQueue
 	{
 	private:
-		std::variant<VkQueue*> _graphicQueue;
+		std::variant<VkQueue*> _runtimeQueue;
 
 	public:
 
 		CommandQueue()
 		{
-			_graphicQueue = new VkQueue();
+			_runtimeQueue = new VkQueue();
 		}
 
 		CommandQueue(API api)
@@ -26,21 +26,21 @@ namespace DRHI
 			switch (api)
 			{
 			case API::VULKAN:
-				_graphicQueue = new VkQueue();
+				_runtimeQueue = new VkQueue();
 				break;
 			}
 
 		}
 
-		VkQueue* getVkGraphicQueue()
+		VkQueue* getVkQueue()
 		{
-			if (std::holds_alternative<VkQueue*>(_graphicQueue))
+			if (std::holds_alternative<VkQueue*>(_runtimeQueue))
 			{
-				return std::get<VkQueue*>(_graphicQueue);
+				return std::get<VkQueue*>(_runtimeQueue);
 			}
 			else
 			{
-				std::cout << "none vk graphic queue";
+				std::cout << "none vk queue";
 				return nullptr;
 			}
 		}

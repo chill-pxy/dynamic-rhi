@@ -6,13 +6,17 @@
 
 namespace DRHI
 {
-	void Device::createLogicalDevice(PhysicalDevice* phyDevice, CommandQueue* queue)
+	void Device::createLogicalDevice(PhysicalDevice* phyDevice, CommandQueue* graphicQueue)
 	{
         int device_extension_count = 1;
         const char* device_extensions[] = { "VK_KHR_swapchain" };
         const float queue_priority[] = { 1.0f };
         VkDevice* device = new VkDevice();
         
+        const char* ext_name[] =
+        {
+            VK_KHR_SWAPCHAIN_EXTENSION_NAME
+        };
 
         VkDeviceQueueCreateInfo queue_info[1] = {};
         queue_info[0].sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
@@ -32,7 +36,7 @@ namespace DRHI
         {
             throw std::runtime_error("failed to create device!");
         }
-        vkGetDeviceQueue(*device, phyDevice->getQueueFamily(), 0, queue->getVkGraphicQueue());
+        vkGetDeviceQueue(*device, phyDevice->getQueueFamily(), 0, graphicQueue->getVkQueue());
         _runtimeDevice = device;
 	}
 }

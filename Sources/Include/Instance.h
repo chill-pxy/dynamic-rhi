@@ -9,8 +9,6 @@
 
 namespace DRHI
 {
-	class Context;
-
 	class Instance
 	{
 	private:

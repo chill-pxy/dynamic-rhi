@@ -8,7 +8,7 @@
 #include "SwapChain.h"
 #include "CommandQueue.h"
 #include "Texture.h"
-#include "DescriptorHeap.h"
+#include "DescriptorPool.h"
 #include "InterfaceType.h"
 
 namespace DRHI
@@ -24,7 +24,7 @@ namespace DRHI
 			_instance = std::make_unique<Instance>();
 			_physicalDevice = std::make_unique<PhysicalDevice>();
 			_device = std::make_unique<Device>();
-			_commandQueue = std::make_unique<CommandQueue>();
+			_graphicQueue = std::make_unique<CommandQueue>();
 		}
 
 		Context(API api)
@@ -34,7 +34,7 @@ namespace DRHI
 			_instance = std::make_unique<Instance>(_runtimeInterface);
 			_physicalDevice = std::make_unique<PhysicalDevice>(_runtimeInterface);
 			_device = std::make_unique<Device>(_runtimeInterface);
-			_commandQueue = std::make_unique<CommandQueue>(_runtimeInterface);
+			_graphicQueue = std::make_unique<CommandQueue>(_runtimeInterface);
 		}
 
 		void initialize()
@@ -42,7 +42,7 @@ namespace DRHI
 			_instance->createInstance();
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
 			_physicalDevice->pickGraphicQueueFamily();
-			_device->createLogicalDevice(_physicalDevice.get(), _commandQueue.get());
+			_device->createLogicalDevice(_physicalDevice.get(), _graphicQueue.get());
 		}
 
 	private:
@@ -52,6 +52,6 @@ namespace DRHI
 		std::unique_ptr<Device> _device;
 		std::unique_ptr<PhysicalDevice> _physicalDevice;
 		std::unique_ptr<SwapChain> _swapChain;
-		std::unique_ptr<CommandQueue> _commandQueue;
+		std::unique_ptr<CommandQueue> _graphicQueue;
 	};
 }
