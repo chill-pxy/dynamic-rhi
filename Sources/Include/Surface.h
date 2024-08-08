@@ -4,6 +4,8 @@
 #include<iostream>
 
 #include<volk.h>
+
+#define GLFW_INCLUDE_VULKAN
 #include<GLFW/glfw3.h>
 
 #include"InterfaceType.h"
@@ -17,7 +19,7 @@ namespace DRHI
 		std::variant<VkSurfaceKHR*> _runtimeSurface;
 
 	public:
-		void createSurface(Instance* instance, GLFWwindow* windows);
+		void createSurface(Instance* instance, GLFWwindow* window);
 
 	public:
 		

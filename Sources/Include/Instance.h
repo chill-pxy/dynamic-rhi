@@ -1,6 +1,7 @@
 #pragma once
 #include<variant>
 #include<iostream>
+#include<vector>
 
 #include<volk.h>
 
@@ -16,7 +17,7 @@ namespace DRHI
 		std::variant<VkInstance*, int> _runtimeInstance;
 
 	public:
-		void createInstance();
+		void createInstance(std::vector<const char*> extensions);
 		//void createSwapChain();
 		//void getNumPhysicalDevices();
 		//void getAllPhysicalDevices();

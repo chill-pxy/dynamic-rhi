@@ -6,13 +6,9 @@
 #include <vector>
 #include <iostream>
 
-#include "../../Include/Instance.h"
+#include<GLFW/glfw3.h>
 
-#ifdef NDEBUG
-const bool enableValidationLayers = false;
-#else
-const bool enableValidationLayers = true;
-#endif
+#include "../../Include/Instance.h"
 
 const std::vector<const char*> validationLayers = {
     "VK_LAYER_KHRONOS_validation"
@@ -50,21 +46,6 @@ bool checkValidationLayerSupport()
     return true;
 }
 
-//std::vector<const char*> getRequiredExtensions() 
-//{
-//    uint32_t glfwExtensionCount = 0;
-//    const char** glfwExtensions;
-//    glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-//
-//    std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-//
-//    if (enableValidationLayers) {
-//        extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-//    }
-//
-//    return extensions;
-//}
-
 static VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
     VkDebugUtilsMessageSeverityFlagBitsEXT messageSeverity, 
     VkDebugUtilsMessageTypeFlagsEXT messageType, 
@@ -92,7 +73,7 @@ void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& create
 //--------------------------------//
 namespace DRHI
 {
-	void Instance::createInstance()
+	void Instance::createInstance(std::vector<const char*> extensions)
 	{
         std::cout << "VK Instance" << std::endl;
 
@@ -120,9 +101,8 @@ namespace DRHI
         createInfo.sType = VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO;
         createInfo.pApplicationInfo = &appInfo;
 
-        //auto extensions = getRequiredExtensions();
-        //createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
-        //createInfo.ppEnabledExtensionNames = extensions.data();
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+        createInfo.ppEnabledExtensionNames = extensions.data();
 
         VkDebugUtilsMessengerCreateInfoEXT debugCreateInfo{};
         if (enableValidationLayers) {

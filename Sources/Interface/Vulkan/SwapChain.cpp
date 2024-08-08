@@ -5,7 +5,7 @@
 #include<algorithm>
 
 #include "../../Include/SwapChain.h"
-#include "VulkanQueueFamily.h"
+//#include "VulkanQueueFamily.h"
 
 namespace DRHI
 {
@@ -142,9 +142,9 @@ namespace DRHI
         createInfo.imageArrayLayers = 1;
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 
-        QueueFamilyIndices indices = findQueueFamilies(*physicalDevice, *surface);
-        uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
-
+        //QueueFamilyIndices indices = findQueueFamilies(*physicalDevice, *surface);
+        //uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
+/*
         if (indices.graphicsFamily != indices.presentFamily)
         {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
@@ -153,8 +153,8 @@ namespace DRHI
         }
         else
         {
-            createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
-        }
+          */  createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
+        //}
 
         createInfo.preTransform = swapChainSupport.capabilities.currentTransform;
         createInfo.compositeAlpha = VK_COMPOSITE_ALPHA_OPAQUE_BIT_KHR;

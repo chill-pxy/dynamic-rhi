@@ -7,6 +7,7 @@
 
 #include"PhysicalDevice.h"
 #include"CommandQueue.h"
+#include"Surface.h"
 
 namespace DRHI
 {
@@ -16,7 +17,7 @@ namespace DRHI
 		std::variant<VkDevice*> _runtimeDevice;
 
 	public:
-		void createLogicalDevice(PhysicalDevice* phyDevice, CommandQueue* queue);
+		void createLogicalDevice(PhysicalDevice* phyDevice, CommandQueue* pgraphicQueue, CommandQueue* ppresentQueue, Surface* surface);
 
 	public:
 

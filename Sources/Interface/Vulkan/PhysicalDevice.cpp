@@ -31,6 +31,9 @@ namespace DRHI
         if (vdevice == VK_NULL_HANDLE) {
             throw std::runtime_error("failed to find a suitable GPU!");
         }
+
+        
+        
 	}
 
     void PhysicalDevice::pickGraphicQueueFamily()
