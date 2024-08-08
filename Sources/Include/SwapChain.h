@@ -3,9 +3,6 @@
 #include<iostream>
 #include<vector>
 
-#include<volk.h>
-#include<GLFW/glfw3.h>
-
 #include"InterfaceType.h"
 #include"PhysicalDevice.h"
 #include"Device.h"

@@ -3,8 +3,6 @@
 #include<variant>
 #include<iostream>
 
-#include<volk.h>
-
 #include"InterfaceType.h"
 
 namespace DRHI

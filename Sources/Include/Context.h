@@ -44,10 +44,21 @@ namespace DRHI
 			_surface = std::make_unique<Surface>(_runtimeInterface);
 		}
 
+		void createSurface(Instance* pinstance, GLFWwindow* window, Surface* psurface);
+
 		void initialize(GLFWwindow* window, std::vector<const char*> extensions)
 		{
 			_instance->createInstance(extensions);
-			_surface->createSurface(_instance.get(), window);
+
+			//VkSurfaceKHR surface = VkSurfaceKHR();
+
+			//auto instance = _instance->getVkInstance();
+
+			//if (glfwCreateWindowSurface(*instance, window, nullptr, &surface) != VK_SUCCESS) {
+			//	throw std::runtime_error("failed to create window surface!");
+			//}
+
+			createSurface(_instance.get(), window, _surface.get());
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
 			_physicalDevice->pickGraphicQueueFamily();
 			_device->createLogicalDevice(_physicalDevice.get(), _graphicQueue.get(), _presentQueue.get(), _surface.get());

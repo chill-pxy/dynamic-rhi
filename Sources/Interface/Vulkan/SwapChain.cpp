@@ -81,11 +81,11 @@ namespace DRHI
         GLFWwindow* window
     )
     {
-        if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
-        {
-            return capabilities.currentExtent;
-        }
-        else
+        //if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max())
+        //{
+        //    return capabilities.currentExtent;
+        //}
+        //else
         {
             int width, height;
             glfwGetFramebufferSize(window, &width, &height);

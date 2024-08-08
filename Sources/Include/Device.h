@@ -3,8 +3,6 @@
 #include<variant>
 #include<iostream>
 
-#include<volk.h>
-
 #include"PhysicalDevice.h"
 #include"CommandQueue.h"
 #include"Surface.h"

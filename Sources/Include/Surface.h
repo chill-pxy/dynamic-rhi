@@ -3,11 +3,6 @@
 #include<variant>
 #include<iostream>
 
-#include<volk.h>
-
-#define GLFW_INCLUDE_VULKAN
-#include<GLFW/glfw3.h>
-
 #include"InterfaceType.h"
 #include"Instance.h"
 
