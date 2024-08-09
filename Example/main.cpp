@@ -5,7 +5,7 @@ using namespace DRHI;
 
 int main()
 {
-	glfwInit();
+	/*glfwInit();
 	uint32_t glfwExtensionCount = 0;
 	const char** glfwExtensions;
 	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
@@ -23,7 +23,7 @@ int main()
 		printf("GLFW: Vulkan Not Supported\n");
 	} 
 
-	GLFWwindow* window = glfwCreateWindow(1920, 1080, "FOCUS", nullptr, nullptr);
+	GLFWwindow* window = glfwCreateWindow(1920, 1080, "FOCUS", nullptr, nullptr);*/
 
 	//VkSurfaceKHR surface = VkSurfaceKHR();
 
@@ -36,7 +36,7 @@ int main()
 	//}
 
 	Context* context = new Context();
-	context->initialize(window, extensions);
+	context->initialize();
 
 	return 0;
 }

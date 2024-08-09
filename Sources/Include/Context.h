@@ -11,6 +11,7 @@
 #include "DescriptorPool.h"
 #include "InterfaceType.h"
 #include "Surface.h"
+#include "NativeWindow.h"
 
 namespace DRHI
 {
@@ -29,6 +30,7 @@ namespace DRHI
 			_presentQueue = std::make_unique<CommandQueue>();
 			_swapChain = std::make_unique<SwapChain>();
 			_surface = std::make_unique<Surface>();
+			_nativeWindow = std::make_unique<NativeWindow>();
 		}
 
 		Context(API api)
@@ -42,13 +44,13 @@ namespace DRHI
 			_presentQueue = std::make_unique<CommandQueue>(_runtimeInterface);
 			_swapChain = std::make_unique<SwapChain>(_runtimeInterface);
 			_surface = std::make_unique<Surface>(_runtimeInterface);
+			_nativeWindow = std::make_unique<NativeWindow>();
 		}
 
-		void createSurface(Instance* pinstance, GLFWwindow* window, Surface* psurface);
-
-		void initialize(GLFWwindow* window, std::vector<const char*> extensions)
+		void initialize()
 		{
-			_instance->createInstance(extensions);
+			_nativeWindow->initialize("FOCUS", 1920, 1080);
+			_instance->createInstance(_nativeWindow->getNativeWindowExtensions());
 
 			//VkSurfaceKHR surface = VkSurfaceKHR();
 
@@ -58,7 +60,7 @@ namespace DRHI
 			//	throw std::runtime_error("failed to create window surface!");
 			//}
 
-			createSurface(_instance.get(), window, _surface.get());
+			_surface->createSurface(_instance.get(), _nativeWindow->getNativeWindow());
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
 			_physicalDevice->pickGraphicQueueFamily();
 			_device->createLogicalDevice(_physicalDevice.get(), _graphicQueue.get(), _presentQueue.get(), _surface.get());
@@ -76,5 +78,6 @@ namespace DRHI
 		std::unique_ptr<CommandQueue> _graphicQueue;
 		std::unique_ptr<CommandQueue> _presentQueue;
 		std::unique_ptr<Surface> _surface;
+		std::unique_ptr<NativeWindow> _nativeWindow;
 	};
 }
