@@ -15,6 +15,14 @@
 
 namespace DRHI
 {
+	struct ContextCreatInfo
+	{
+		API api;
+		const char* windowTitle;
+		int windowWidth;
+		int windowHeight;
+	};
+
 	class Context
 	{
 	public:
@@ -33,9 +41,12 @@ namespace DRHI
 			_nativeWindow = std::make_unique<NativeWindow>();
 		}
 
-		Context(API api)
+		Context(ContextCreatInfo info)
 		{
-			_runtimeInterface = api;
+			_runtimeInterface = info.api;
+			_windowTitle = info.windowTitle;
+			_windowWidth = info.windowWidth;
+			_windowHeight = info.windowHeight;
 
 			_instance = std::make_unique<Instance>(_runtimeInterface);
 			_physicalDevice = std::make_unique<PhysicalDevice>(_runtimeInterface);
@@ -49,17 +60,8 @@ namespace DRHI
 
 		void initialize()
 		{
-			_nativeWindow->initialize("FOCUS", 1920, 1080);
+			_nativeWindow->initialize(_windowTitle,_windowWidth,_windowHeight);
 			_instance->createInstance(_nativeWindow->getNativeWindowExtensions());
-
-			//VkSurfaceKHR surface = VkSurfaceKHR();
-
-			//auto instance = _instance->getVkInstance();
-
-			//if (glfwCreateWindowSurface(*instance, window, nullptr, &surface) != VK_SUCCESS) {
-			//	throw std::runtime_error("failed to create window surface!");
-			//}
-
 			_surface->createSurface(_instance.get(), _nativeWindow->getNativeWindow());
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
 			_physicalDevice->pickGraphicQueueFamily();
@@ -70,6 +72,9 @@ namespace DRHI
 
 	private:
 		API _runtimeInterface;
+		const char* _windowTitle;
+		int _windowWidth;
+		int _windowHeight;
 
 		std::unique_ptr<Instance> _instance;
 		std::unique_ptr<Device> _device;

@@ -5,37 +5,14 @@ using namespace DRHI;
 
 int main()
 {
-	/*glfwInit();
-	uint32_t glfwExtensionCount = 0;
-	const char** glfwExtensions;
-	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+	ContextCreatInfo info = {
+		API::VULKAN,
+		"DRHI Test Application",
+		1920,
+		1080
+	};
 
-	std::vector<const char*> extensions(glfwExtensions, glfwExtensions + glfwExtensionCount);
-
-	if (enableValidationLayers)
-	{
-		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-	}
-
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	if (!glfwVulkanSupported())
-	{
-		printf("GLFW: Vulkan Not Supported\n");
-	} 
-
-	GLFWwindow* window = glfwCreateWindow(1920, 1080, "FOCUS", nullptr, nullptr);*/
-
-	//VkSurfaceKHR surface = VkSurfaceKHR();
-
-	//Instance* i = new Instance();
-	//i->createInstance(extensions);
-	//auto instance = i->getVkInstance();
-
-	//if (glfwCreateWindowSurface(*instance, window, nullptr, &surface) != VK_SUCCESS) {
-	//	throw std::runtime_error("failed to create window surface!");
-	//}
-
-	Context* context = new Context();
+	Context* context = new Context(info);
 	context->initialize();
 
 	return 0;

@@ -8,15 +8,15 @@ namespace DRHI
 {
     void Surface::createSurface(Instance* pinstance, GLFWwindow* window)
     {
-        VkSurfaceKHR surface = VkSurfaceKHR();
+        VkSurfaceKHR* surface = new VkSurfaceKHR();
         
         auto instance = pinstance->getVkInstance();
         
-        if (glfwCreateWindowSurface(*instance, window, nullptr, &surface) != VK_SUCCESS) {
+        if (glfwCreateWindowSurface(*instance, window, nullptr, surface) != VK_SUCCESS) {
             throw std::runtime_error("failed to create window surface!");
         }
 
-        //_runtimeSurface = surface;
+        _runtimeSurface = surface;
     }
 }
 
