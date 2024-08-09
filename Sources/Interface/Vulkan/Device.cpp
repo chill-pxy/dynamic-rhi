@@ -73,7 +73,7 @@ namespace DRHI
 
         _runtimeDevice = device;
 
-        //volkLoadDevice(*getVkDevice());
+        volkLoadDevice(*getVkDevice());
 
         //VolkDeviceTable* deviceTable = new VolkDeviceTable();
         //volkLoadDeviceTable(deviceTable, *getVkDevice());

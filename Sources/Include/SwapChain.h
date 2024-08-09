@@ -7,16 +7,10 @@
 #include"PhysicalDevice.h"
 #include"Device.h"
 #include"Surface.h"
+#include"ImageView.h"
 
 namespace DRHI
 {
-	struct SwapChainSupportDetails
-	{
-		VkSurfaceCapabilitiesKHR        capabilities;
-		std::vector<VkSurfaceFormatKHR> formats;
-		std::vector<VkPresentModeKHR>   presentModes;
-	};
-
 	class SwapChain
 	{
 	private:
@@ -30,6 +24,7 @@ namespace DRHI
 
 	public:
 		void createSwapChain(PhysicalDevice* phyDevice, Device* device, Surface* surface, GLFWwindow* window);
+		void createImageViews(Device* device);
 
 	public:
 

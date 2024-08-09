@@ -78,12 +78,18 @@ namespace DRHI
 		void initialize()
 		{
 			_nativeWindow->initialize(_windowTitle, _windowWidth, _windowHeight);
+			
 			_instance->createInstance(_nativeWindow->getNativeWindowExtensions());
+			
 			_surface->createSurface(_instance.get(), _nativeWindow->getNativeWindow());
+			
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
 			_physicalDevice->pickGraphicQueueFamily();
+			
 			_device->createLogicalDevice(_physicalDevice.get(), _graphicQueue.get(), _presentQueue.get(), _surface.get());
+			
 			_swapChain->createSwapChain(_physicalDevice.get(), _device.get(), _surface.get(), _nativeWindow->getNativeWindow());
+			_swapChain->createImageViews(_device.get());
 		}
 
 	};
