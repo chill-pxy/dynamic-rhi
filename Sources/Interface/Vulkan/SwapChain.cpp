@@ -3,6 +3,7 @@
 #ifdef VULKAN_IMPLEMENTATION
 
 #include<algorithm>
+#include<limits>
 
 #include "../../Include/SwapChain.h"
 #include "VulkanQueueFamily.h"

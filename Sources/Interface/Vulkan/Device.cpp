@@ -75,8 +75,8 @@ namespace DRHI
 
         volkLoadDevice(*getVkDevice());
 
-        //VolkDeviceTable* deviceTable = new VolkDeviceTable();
-        //volkLoadDeviceTable(deviceTable, *getVkDevice());
+        VolkDeviceTable* deviceTable = new VolkDeviceTable();
+        volkLoadDeviceTable(deviceTable, *getVkDevice());
 	}
 }
 

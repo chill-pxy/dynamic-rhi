@@ -13,42 +13,44 @@
 #include "InterfaceType.h"
 #include "Surface.h"
 #include "NativeWindow.h"
+#include "RenderPass.h"
 
 namespace DRHI
 {
 	struct ContextCreatInfo
 	{
-		API api;
+		API         api;
 		const char* windowTitle;
-		int windowWidth;
-		int windowHeight;
+		int         windowWidth;
+		int         windowHeight;
 	};
 
 	class Context
 	{
 	private:
-		API _runtimeInterface;
+		API         _runtimeInterface;
 		const char* _windowTitle;
-		int _windowWidth;
-		int _windowHeight;
+		int         _windowWidth;
+		int         _windowHeight;
 
-		std::unique_ptr<Instance> _instance;
-		std::unique_ptr<Device> _device;
+		std::unique_ptr<Instance>       _instance;
+		std::unique_ptr<Device>         _device;
 		std::unique_ptr<PhysicalDevice> _physicalDevice;
-		std::unique_ptr<SwapChain> _swapChain;
-		std::unique_ptr<CommandQueue> _graphicQueue;
-		std::unique_ptr<CommandQueue> _presentQueue;
-		std::unique_ptr<Surface> _surface;
-		std::unique_ptr<NativeWindow> _nativeWindow;
+		std::unique_ptr<SwapChain>      _swapChain;
+		std::unique_ptr<CommandQueue>   _graphicQueue;
+		std::unique_ptr<CommandQueue>   _presentQueue;
+		std::unique_ptr<Surface>        _surface;
+		std::unique_ptr<NativeWindow>   _nativeWindow;
+		std::unique_ptr<RenderPass>     _renderPass;
 
 	public:
 		Context()
 		{
 			//ƒ¨»œ π”√Vulkan
 			_runtimeInterface = API::VULKAN;
-			_windowTitle = "DefaultWindow";
-			_windowWidth = 1920;
-			_windowHeight = 1080;
+			_windowTitle      = "DefaultWindow";
+			_windowWidth      = 1920;
+			_windowHeight     = 1080;
 
 			createMember();
 		}
@@ -56,23 +58,24 @@ namespace DRHI
 		Context(ContextCreatInfo info)
 		{
 			_runtimeInterface = info.api;
-			_windowTitle = info.windowTitle;
-			_windowWidth = info.windowWidth;
-			_windowHeight = info.windowHeight;
+			_windowTitle      = info.windowTitle;
+			_windowWidth      = info.windowWidth;
+			_windowHeight     = info.windowHeight;
 
 			createMember();
 		}
 
 		void createMember()
 		{
-			_instance = std::make_unique<Instance>(_runtimeInterface);
+			_instance       = std::make_unique<Instance>(_runtimeInterface);
 			_physicalDevice = std::make_unique<PhysicalDevice>(_runtimeInterface);
-			_device = std::make_unique<Device>(_runtimeInterface);
-			_graphicQueue = std::make_unique<CommandQueue>(_runtimeInterface);
-			_presentQueue = std::make_unique<CommandQueue>(_runtimeInterface);
-			_swapChain = std::make_unique<SwapChain>(_runtimeInterface);
-			_surface = std::make_unique<Surface>(_runtimeInterface);
-			_nativeWindow = std::make_unique<NativeWindow>();
+			_device         = std::make_unique<Device>(_runtimeInterface);
+			_graphicQueue   = std::make_unique<CommandQueue>(_runtimeInterface);
+			_presentQueue   = std::make_unique<CommandQueue>(_runtimeInterface);
+			_swapChain      = std::make_unique<SwapChain>(_runtimeInterface);
+			_surface        = std::make_unique<Surface>(_runtimeInterface);
+			_nativeWindow   = std::make_unique<NativeWindow>();
+			_renderPass     = std::make_unique<RenderPass>(_runtimeInterface);
 		}
 
 		void initialize()
@@ -90,6 +93,8 @@ namespace DRHI
 			
 			_swapChain->createSwapChain(_physicalDevice.get(), _device.get(), _surface.get(), _nativeWindow->getNativeWindow());
 			_swapChain->createImageViews(_device.get());
+
+			_renderPass->createRenderPass(_swapChain.get(), _device.get(), _physicalDevice.get());
 		}
 
 	};
