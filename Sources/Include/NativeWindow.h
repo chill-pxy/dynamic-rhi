@@ -15,6 +15,12 @@ namespace DRHI
 	public:
 		void initialize(const char* title, int width, int height);
 
+	public:
+		NativeWindow()
+		{
+			_runtimeWindow = nullptr;
+		}
+
 		GLFWwindow* getNativeWindow()
 		{
 			return _runtimeWindow;
