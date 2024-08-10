@@ -4,6 +4,7 @@
 #include<iostream>
 
 #include"InterfaceType.h"
+#include"Device.h"
 
 namespace DRHI
 {
@@ -11,15 +12,18 @@ namespace DRHI
 	{
 	private:
 		std::variant<VkDescriptorPool*> _runtimeDescriptorPool;
+		std::variant<VkDescriptorSetLayout*> _runtimeDscriptorSetLayout;
 
 	public:
-		
+		void createDescriptorPool();
+		void createDescriptorSetLayout(Device* pdevice);
 
 	public:
 
 		DescriptorPool()
 		{
 			_runtimeDescriptorPool = new VkDescriptorPool();
+			_runtimeDscriptorSetLayout = new VkDescriptorSetLayout();
 		}
 
 		DescriptorPool(API api)
@@ -28,16 +32,30 @@ namespace DRHI
 			{
 			case API::VULKAN:
 				_runtimeDescriptorPool = new VkDescriptorPool();
+				_runtimeDscriptorSetLayout = new VkDescriptorSetLayout();
 				break;
 			}
 
 		}
 
-		VkDescriptorPool* getVkDevice()
+		VkDescriptorPool* getVkDescriptorPool()
 		{
 			if (std::holds_alternative<VkDescriptorPool*>(_runtimeDescriptorPool))
 			{
 				return std::get<VkDescriptorPool*>(_runtimeDescriptorPool);
+			}
+			else
+			{
+				std::cout << "none vk DescriptorPool";
+				return nullptr;
+			}
+		}
+
+		VkDescriptorSetLayout* getVkDescriptorSetLayout()
+		{
+			if (std::holds_alternative<VkDescriptorSetLayout*>(_runtimeDscriptorSetLayout))
+			{
+				return std::get<VkDescriptorSetLayout*>(_runtimeDscriptorSetLayout);
 			}
 			else
 			{

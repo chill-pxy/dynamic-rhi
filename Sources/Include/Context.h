@@ -42,6 +42,7 @@ namespace DRHI
 		std::unique_ptr<Surface>        _surface;
 		std::unique_ptr<NativeWindow>   _nativeWindow;
 		std::unique_ptr<RenderPass>     _renderPass;
+		std::unique_ptr<DescriptorPool> _descriptorPool;
 
 	public:
 		Context()
@@ -76,6 +77,7 @@ namespace DRHI
 			_surface        = std::make_unique<Surface>(_runtimeInterface);
 			_nativeWindow   = std::make_unique<NativeWindow>();
 			_renderPass     = std::make_unique<RenderPass>(_runtimeInterface);
+			_descriptorPool = std::make_unique<DescriptorPool>(_runtimeInterface);
 		}
 
 		void initialize()
@@ -95,6 +97,9 @@ namespace DRHI
 			_swapChain->createImageViews(_device.get());
 
 			_renderPass->createRenderPass(_swapChain.get(), _device.get(), _physicalDevice.get());
+			
+			_descriptorPool->createDescriptorSetLayout(_device.get());
+			//_descriptorPool->createDescriptorPool();
 		}
 
 	};
