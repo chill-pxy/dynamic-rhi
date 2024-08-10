@@ -99,7 +99,7 @@ namespace DRHI
 			_renderPass->createRenderPass(_swapChain.get(), _device.get(), _physicalDevice.get());
 			
 			_descriptorPool->createDescriptorSetLayout(_device.get());
-			//_descriptorPool->createDescriptorPool();
+			_descriptorPool->createDescriptorPool(_device.get());
 		}
 
 	};

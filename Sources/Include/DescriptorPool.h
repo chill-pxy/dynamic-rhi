@@ -15,7 +15,7 @@ namespace DRHI
 		std::variant<VkDescriptorSetLayout*> _runtimeDscriptorSetLayout;
 
 	public:
-		void createDescriptorPool();
+		void createDescriptorPool(Device* pdevice);
 		void createDescriptorSetLayout(Device* pdevice);
 
 	public:
