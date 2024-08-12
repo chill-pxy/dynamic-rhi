@@ -12,7 +12,10 @@ namespace DRHI
         
         auto instance = pinstance->getVkInstance();
         
-        if (glfwCreateWindowSurface(*instance, window, nullptr, surface) != VK_SUCCESS) {
+        glfwVulkanSupported();
+        auto r = glfwCreateWindowSurface(*instance, window, nullptr, surface);
+
+        if ( r!= VK_SUCCESS) {
             throw std::runtime_error("failed to create window surface!");
         }
 

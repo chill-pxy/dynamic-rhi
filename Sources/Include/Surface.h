@@ -33,6 +33,11 @@ namespace DRHI
 			}
 		}
 
+		void setSurface(VkSurfaceKHR* surface)
+		{
+			_runtimeSurface = surface;
+		}
+
 		VkSurfaceKHR* getVkSurface()
 		{
 			if (std::holds_alternative<VkSurfaceKHR*>(_runtimeSurface))

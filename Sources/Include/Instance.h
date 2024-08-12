@@ -16,10 +16,6 @@ namespace DRHI
 
 	public:
 		void createInstance(std::vector<const char*> extensions);
-		//void createSwapChain();
-		//void getNumPhysicalDevices();
-		//void getAllPhysicalDevices();
-		//void getPhysicalDevice();
 		
 	public:
 

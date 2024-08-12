@@ -9,7 +9,7 @@ namespace DRHI
 	class NativeWindow
 	{
 	private:
-		GLFWwindow* _runtimeWindow;
+		GLFWwindow* _runtimeWindow{nullptr};
 		std::vector<const char*> _extensions;
 
 	public:
@@ -18,7 +18,23 @@ namespace DRHI
 	public:
 		NativeWindow()
 		{
-			_runtimeWindow = nullptr;
+			
+		}
+
+		void update()
+		{
+			glfwPollEvents();
+		}
+
+		bool checkForClose()
+		{
+			return glfwWindowShouldClose(_runtimeWindow);
+		}
+
+		void cleanup()
+		{
+			glfwDestroyWindow(_runtimeWindow);
+			glfwTerminate();
 		}
 
 		GLFWwindow* getNativeWindow()
