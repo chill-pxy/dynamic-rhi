@@ -3,55 +3,96 @@
 
 using namespace DRHI;
 
+class WindowsSurface
+{
+public:
+    void init()
+    {
+        //glfwInit();
+
+        //glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        //glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+
+        //_window = glfwCreateWindow(1920, 1080, "FOCUS", nullptr, nullptr);
+
+        glfwInit();
+        uint32_t glfwExtensionCount = 0;
+        const char** glfwExtensions;
+        glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
+
+        _extensions = std::vector<const char*>(glfwExtensions, glfwExtensions + glfwExtensionCount);
+
+        //if (enableValidationLayers)
+        //{
+        _extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+        //}
+
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+        if (!glfwVulkanSupported())
+        {
+            printf("GLFW: Vulkan Not Supported\n");
+        }
+
+        _window = glfwCreateWindow(100, 100, "focus", nullptr, nullptr);
+    }
+
+    void cleanup()
+    {
+        glfwDestroyWindow(_window);
+
+        glfwTerminate();
+    }
+
+    void update()
+    {
+        glfwPollEvents();
+    }
+
+    GLFWwindow* getWindowInstance()
+    {
+        return _window;
+    }
+
+    std::vector<const char*> getExtensions()
+    {
+        return _extensions;
+    }
+
+
+    bool checkForClose()
+    {
+        return glfwWindowShouldClose(_window);
+    }
+
+private:
+    GLFWwindow* _window;
+    std::vector<const char*> _extensions;
+};
+
 int main()
 {
-	//ContextCreatInfo info = {
-	//	API::VULKAN,
-	//	"DRHI Test Application",
-	//	1920,
-	//	1080
-	//};
+	std::unique_ptr<Context> _platformContext;
+	std::unique_ptr<WindowsSurface> _windowContext;
 
-	/*Context* context = new Context(info);
-	context->initialize();
-
-	auto window = context->getNativeWindow();
-
-	while (!window->checkForClose())
-	{
-		window->update();
-	}
-
-	window->cleanup();*/
-
-	glfwInit();
-	uint32_t glfwExtensionCount = 0;
-	const char** glfwExtensions;
-	glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-	auto extensions = std::vector<const char*>(glfwExtensions, glfwExtensions + glfwExtensionCount);
-
-	if (enableValidationLayers)
-	{
-		extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-	}
-
-	glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-	if (!glfwVulkanSupported())
-	{
-		printf("GLFW: Vulkan Not Supported\n");
-	}
-
-	auto window = glfwCreateWindow(100, 100, "focus", nullptr, nullptr);
+	_windowContext = std::make_unique<WindowsSurface>();
+	_windowContext->init();
 
 	DRHI::ContextCreatInfo info = {
 		API::VULKAN,
-		window,
-		extensions
+		_windowContext->getWindowInstance(),
+		_windowContext->getExtensions()
 	};
 
-	auto _platformContext = std::make_unique<DRHI::Context>(info);
-	_platformContext->initialize();
+	_platformContext = std::make_unique<DRHI::Context>(info);
+
+    while (!_windowContext->checkForClose())
+    {
+        _windowContext->update();
+    }
+
+    _platformContext->initialize();
+
+    _windowContext->cleanup();
 
 	return 0;
 }
