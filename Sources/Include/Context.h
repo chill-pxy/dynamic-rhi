@@ -2,6 +2,7 @@
 
 #include <memory>
 #include <iostream>
+#include <functional>
 
 #include "Instance.h"
 #include "Device.h"
@@ -22,20 +23,15 @@ namespace DRHI
 		API         api;
 		GLFWwindow* window;
 		std::vector<const char*> windowExtensions;
-		//const char* windowTitle;
-		//int         windowWidth;
-		//int         windowHeight;
 	};
 
 	class Context
 	{
 	private:
-		API         _runtimeInterface;
-		GLFWwindow* _window;
+		API                      _runtimeInterface;
+		GLFWwindow*              _window;
 		std::vector<const char*> _windowExtensions;
-		const char* _windowTitle;
-		int         _windowWidth;
-		int         _windowHeight;
+		void*                    _surfaceCreateFunction;
 
 		std::unique_ptr<Instance>       _instance;
 		std::unique_ptr<Device>         _device;
@@ -59,6 +55,11 @@ namespace DRHI
 			}
 
 			psurface->setSurface(surface);
+		}
+
+		void createDxSurface()
+		{
+			std::cout << "dx surface";
 		}
 
 	public:
@@ -90,8 +91,19 @@ namespace DRHI
 		{
 			_instance->createInstance(_windowExtensions);
 			 
-			createVkSurface(_instance.get(), _surface.get(), _window);
-			
+			switch (_runtimeInterface)
+			{
+			case VULKAN:
+				createVkSurface(_instance.get(), _surface.get(), _window);
+				break;
+			case DIRECT3D12:
+				createDxSurface();
+				break;
+			default:
+				createVkSurface(_instance.get(), _surface.get(), _window);
+				break;
+			}
+
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
 			_physicalDevice->pickGraphicQueueFamily();
 			

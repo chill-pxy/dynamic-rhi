@@ -85,8 +85,6 @@ namespace DRHI
             throw std::runtime_error("validation layers requested, but not available!");
         }
 
-        std::cout << "VK Instance3" << std::endl;
-
         VkApplicationInfo appInfo{};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
         appInfo.pApplicationName = "FOCUS APP";
