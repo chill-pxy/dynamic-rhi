@@ -54,10 +54,7 @@ namespace DRHI
 
 			auto instance = pinstance->getVkInstance();
 
-			glfwVulkanSupported();
-			auto r = glfwCreateWindowSurface(*instance, window, nullptr, surface);
-
-			if (r != VK_SUCCESS) {
+			if (glfwCreateWindowSurface(*instance, window, nullptr, surface) != VK_SUCCESS) {
 				throw std::runtime_error("failed to create window surface!");
 			}
 
@@ -65,23 +62,11 @@ namespace DRHI
 		}
 
 	public:
-		Context()
-		{
-			//ƒ¨»œ π”√Vulkan
-			_runtimeInterface = API::VULKAN;
-			_windowTitle      = "DefaultWindow";
-			_windowWidth      = 1920;
-			_windowHeight     = 1080;
-
-			createMember();
-		}
+		Context() = delete;
 
 		Context(ContextCreatInfo info)
 		{
 			_runtimeInterface = info.api;
-			/*_windowTitle      = info.windowTitle;
-			_windowWidth      = info.windowWidth;
-			_windowHeight     = info.windowHeight;*/
 			_window           = info.window;
 			_windowExtensions = info.windowExtensions;
 
@@ -97,27 +82,21 @@ namespace DRHI
 			_presentQueue   = std::make_unique<CommandQueue>(_runtimeInterface);
 			_swapChain      = std::make_unique<SwapChain>(_runtimeInterface);
 			_surface        = std::make_unique<Surface>(_runtimeInterface);
-			//_nativeWindow   = std::make_unique<NativeWindow>();
 			_renderPass     = std::make_unique<RenderPass>(_runtimeInterface);
 			_descriptorPool = std::make_unique<DescriptorPool>(_runtimeInterface);
 		}
 
 		void initialize()
 		{
-			//_nativeWindow->initialize(_windowTitle, _windowWidth, _windowHeight);
-			
-			//_instance->createInstance(_nativeWindow->getNativeWindowExtensions());
 			_instance->createInstance(_windowExtensions);
-			 createVkSurface(_instance.get(), _surface.get(), _window);
-			//_surface->createSurface(_instance.get(), _nativeWindow->getNativeWindow());
-			//_surface->createSurface(_instance.get(), _window);
+			 
+			createVkSurface(_instance.get(), _surface.get(), _window);
 			
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
 			_physicalDevice->pickGraphicQueueFamily();
 			
 			_device->createLogicalDevice(_physicalDevice.get(), _graphicQueue.get(), _presentQueue.get(), _surface.get());
 			
-			//_swapChain->createSwapChain(_physicalDevice.get(), _device.get(), _surface.get(), _nativeWindow->getNativeWindow());
 			_swapChain->createSwapChain(_physicalDevice.get(), _device.get(), _surface.get(), _window);
 			_swapChain->createImageViews(_device.get());
 

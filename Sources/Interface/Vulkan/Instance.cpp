@@ -73,8 +73,6 @@ namespace DRHI
 {
 	void Instance::createInstance(std::vector<const char*> extensions)
 	{
-        std::cout << "VK Instance" << std::endl;
-
         VkInstance* vinstance = new VkInstance();
         _runtimeInstance = vinstance;
 
@@ -86,6 +84,8 @@ namespace DRHI
         {
             throw std::runtime_error("validation layers requested, but not available!");
         }
+
+        std::cout << "VK Instance3" << std::endl;
 
         VkApplicationInfo appInfo{};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
