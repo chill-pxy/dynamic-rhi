@@ -44,24 +44,6 @@ namespace DRHI
 		std::unique_ptr<RenderPass>     _renderPass;
 		std::unique_ptr<DescriptorPool> _descriptorPool;
 
-		void createVkSurface(Instance* pinstance, Surface* psurface, GLFWwindow* window)
-		{
-			VkSurfaceKHR* surface = new VkSurfaceKHR();
-
-			auto instance = pinstance->getVkInstance();
-
-			if (glfwCreateWindowSurface(*instance, window, nullptr, surface) != VK_SUCCESS) {
-				throw std::runtime_error("failed to create window surface!");
-			}
-
-			psurface->setSurface(surface);
-		}
-
-		void createDxSurface()
-		{
-			std::cout << "dx surface";
-		}
-
 	public:
 		Context() = delete;
 
@@ -91,18 +73,7 @@ namespace DRHI
 		{
 			_instance->createInstance(_windowExtensions);
 			 
-			switch (_runtimeInterface)
-			{
-			case VULKAN:
-				createVkSurface(_instance.get(), _surface.get(), _window);
-				break;
-			case DIRECT3D12:
-				createDxSurface();
-				break;
-			default:
-				createVkSurface(_instance.get(), _surface.get(), _window);
-				break;
-			}
+			_surface->createSurface(_runtimeInterface, _instance.get(), _window);
 
 			_physicalDevice->pickPhysicalDevice(0, _instance.get());
 			_physicalDevice->pickGraphicQueueFamily();

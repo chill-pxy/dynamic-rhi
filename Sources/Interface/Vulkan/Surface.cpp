@@ -6,7 +6,7 @@
 
 namespace DRHI
 {
-    void Surface::createSurface(Instance* pinstance, GLFWwindow* window)
+   /* void Surface::createSurface(Instance* pinstance, GLFWwindow* window)
     {
         VkSurfaceKHR* surface = new VkSurfaceKHR();
         
@@ -20,7 +20,7 @@ namespace DRHI
         }
 
         _runtimeSurface = surface;
-    }
+    }*/
 }
 
 #endif
