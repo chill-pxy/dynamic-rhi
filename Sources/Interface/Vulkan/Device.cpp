@@ -5,7 +5,6 @@
 #include<set>
 
 #include "../../Include/Device.h"
-#include "VulkanQueueFamily.h"
 
 namespace DRHI
 {
@@ -72,6 +71,7 @@ namespace DRHI
         vkGetDeviceQueue(*device, indices.presentFamily.value(), 0, presentQueue);
 
         _runtimeDevice = device;
+        _queueFamilyIndices = indices;
 
         volkLoadDevice(*getVkDevice());
 

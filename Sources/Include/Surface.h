@@ -48,6 +48,7 @@ namespace DRHI
 			}
 		}
 
+		//specify api type to create surface
 		void createSurface(API api, Instance* pinstance, GLFWwindow* window)
 		{
 			switch (api)
@@ -65,6 +66,8 @@ namespace DRHI
 		}
 
 	private:
+		//due to glfw can not be recongized as initilized state cross DLL source file, 
+		// all glfw related functions should be called within header file 
 		void createVkSurface(Instance* pinstance, GLFWwindow* window)
 		{
 			VkSurfaceKHR* surface = new VkSurfaceKHR();

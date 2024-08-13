@@ -75,12 +75,14 @@ int main()
 
 	_platformContext = std::make_unique<DRHI::Context>(info);
 
+    _platformContext->initialize();
+
     while (!_windowContext->checkForClose())
     {
         _windowContext->update();
     }
 
-    _platformContext->initialize();
+
 
     _windowContext->cleanup();
 

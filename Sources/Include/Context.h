@@ -15,6 +15,7 @@
 #include "Surface.h"
 #include "NativeWindow.h"
 #include "RenderPass.h"
+#include "CommandPool.h"
 
 namespace DRHI
 {
@@ -43,6 +44,7 @@ namespace DRHI
 		std::unique_ptr<NativeWindow>   _nativeWindow;
 		std::unique_ptr<RenderPass>     _renderPass;
 		std::unique_ptr<DescriptorPool> _descriptorPool;
+		std::unique_ptr<CommandPool>    _commandPool;
 
 	public:
 		Context() = delete;
@@ -67,6 +69,7 @@ namespace DRHI
 			_surface        = std::make_unique<Surface>(_runtimeInterface);
 			_renderPass     = std::make_unique<RenderPass>(_runtimeInterface);
 			_descriptorPool = std::make_unique<DescriptorPool>(_runtimeInterface);
+			_commandPool    = std::make_unique<CommandPool>(_runtimeInterface);
 		}
 
 		void initialize()
@@ -83,8 +86,10 @@ namespace DRHI
 			_swapChain->createSwapChain(_physicalDevice.get(), _device.get(), _surface.get(), _window);
 			_swapChain->createImageViews(_device.get());
 
-			_renderPass->createRenderPass(_swapChain.get(), _device.get(), _physicalDevice.get());
+			//_renderPass->createRenderPass(_swapChain.get(), _device.get(), _physicalDevice.get());
 			
+			_commandPool->createCommandPool(_device.get());
+
 			_descriptorPool->createDescriptorSetLayout(_device.get());
 			_descriptorPool->createDescriptorPool(_device.get());
 		}

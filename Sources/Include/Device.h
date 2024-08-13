@@ -7,12 +7,15 @@
 #include"CommandQueue.h"
 #include"Surface.h"
 
+#include "../Interface/Vulkan/VulkanQueueFamily.h"
+
 namespace DRHI
 {
 	class Device
 	{
 	private:
 		std::variant<VkDevice*> _runtimeDevice;
+		QueueFamilyIndices _queueFamilyIndices;
 
 	public:
 		void createLogicalDevice(PhysicalDevice* phyDevice, CommandQueue* pgraphicQueue, CommandQueue* ppresentQueue, Surface* surface);
@@ -46,6 +49,11 @@ namespace DRHI
 				std::cout << "none vk device";
 				return nullptr;
 			}
+		}
+
+		QueueFamilyIndices getQueueFamilyIndices()
+		{
+			return _queueFamilyIndices;
 		}
 	};
 }
