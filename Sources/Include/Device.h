@@ -6,8 +6,7 @@
 #include"PhysicalDevice.h"
 #include"CommandQueue.h"
 #include"Surface.h"
-
-#include "../Interface/Vulkan/VulkanQueueFamily.h"
+#include "VulkanQueueFamily.h"
 
 namespace DRHI
 {

@@ -3,7 +3,7 @@
 #include <vector>
 #include <optional>
 
-#include "../../Include/InterfaceType.h"
+#include "InterfaceType.h"
 
 namespace DRHI
 {
