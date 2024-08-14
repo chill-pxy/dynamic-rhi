@@ -58,20 +58,6 @@ namespace DRHI
 			createMember();
 		}
 
-		void createMember()
-		{
-			_instance       = std::make_unique<Instance>(_runtimeInterface);
-			_physicalDevice = std::make_unique<PhysicalDevice>(_runtimeInterface);
-			_device         = std::make_unique<Device>(_runtimeInterface);
-			_graphicQueue   = std::make_unique<CommandQueue>(_runtimeInterface);
-			_presentQueue   = std::make_unique<CommandQueue>(_runtimeInterface);
-			_swapChain      = std::make_unique<SwapChain>(_runtimeInterface);
-			_surface        = std::make_unique<Surface>(_runtimeInterface);
-			_renderPass     = std::make_unique<RenderPass>(_runtimeInterface);
-			_descriptorPool = std::make_unique<DescriptorPool>(_runtimeInterface);
-			_commandPool    = std::make_unique<CommandPool>(_runtimeInterface);
-		}
-
 		void initialize()
 		{
 			_instance->createInstance(_windowExtensions);
@@ -94,7 +80,20 @@ namespace DRHI
 			_descriptorPool->createDescriptorPool(_device.get());
 		}
 
-		
+	private:
+		void createMember()
+		{
+			_instance = std::make_unique<Instance>(_runtimeInterface);
+			_physicalDevice = std::make_unique<PhysicalDevice>(_runtimeInterface);
+			_device = std::make_unique<Device>(_runtimeInterface);
+			_graphicQueue = std::make_unique<CommandQueue>(_runtimeInterface);
+			_presentQueue = std::make_unique<CommandQueue>(_runtimeInterface);
+			_swapChain = std::make_unique<SwapChain>(_runtimeInterface);
+			_surface = std::make_unique<Surface>(_runtimeInterface);
+			_renderPass = std::make_unique<RenderPass>(_runtimeInterface);
+			_descriptorPool = std::make_unique<DescriptorPool>(_runtimeInterface);
+			_commandPool = std::make_unique<CommandPool>(_runtimeInterface);
+		}
 
 	};
 }
