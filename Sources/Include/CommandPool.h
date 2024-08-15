@@ -34,6 +34,17 @@ namespace DRHI
 			}
 		}
 
+		VkCommandPool* getVkCommandPool()
+		{
+			if (std::holds_alternative<VkCommandPool*>(_runtimeCommandPool))
+			{
+				return std::get<VkCommandPool*>(_runtimeCommandPool);
+			}
+			else
+			{
+				std::cout << "none vk command pool";
+			}
+		}
 
 	};
 }
