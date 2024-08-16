@@ -4,18 +4,22 @@
 #include<iostream>
 
 #include"InterfaceType.h"
-#include"VulkanGraphicsPipeline.h"
+#include"ShaderModule.h"
 
 namespace DRHI
 {
+	struct PipelineCreateInfo
+	{
+		ShaderModule shaders[2];
+	};
+
 	class GraphicsPipeline
 	{
 	private:
 		std::variant<VkPipeline*> _runtimeGraphicsPipeline;
-		PipelineKey _pipeLineRequirements;
 
 	public:
-		void createGraphicsPipeline();
+		void createGraphicsPipeline(PipelineCreateInfo createInfo);
 
 	public:
 		GraphicsPipeline()
