@@ -5,6 +5,7 @@
 
 #include"InterfaceType.h"
 #include"ShaderModule.h"
+#include"Device.h"
 
 namespace DRHI
 {
@@ -19,7 +20,7 @@ namespace DRHI
 		std::variant<VkPipeline*> _runtimeGraphicsPipeline;
 
 	public:
-		void createGraphicsPipeline(PipelineCreateInfo createInfo);
+		void createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice);
 
 	public:
 		GraphicsPipeline()
