@@ -6,6 +6,7 @@
 #include"InterfaceType.h"
 #include"ShaderModule.h"
 #include"Device.h"
+#include"DescriptorPool.h"
 
 namespace DRHI
 {
@@ -18,14 +19,16 @@ namespace DRHI
 	{
 	private:
 		std::variant<VkPipeline*> _runtimeGraphicsPipeline;
+		std::variant<VkPipelineLayout*> _runtimePipelineLayout;
 
 	public:
-		void createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice);
+		void createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool);
 
 	public:
 		GraphicsPipeline()
 		{
 			_runtimeGraphicsPipeline = new VkPipeline();
+			_runtimePipelineLayout = new VkPipelineLayout();
 		}
 
 		GraphicsPipeline(API api)
@@ -34,6 +37,7 @@ namespace DRHI
 			{
 			case VULKAN:
 				_runtimeGraphicsPipeline = new VkPipeline();
+				_runtimePipelineLayout = new VkPipelineLayout();
 				break;
 			case DIRECT3D12:
 				break;
@@ -51,6 +55,18 @@ namespace DRHI
 			else
 			{
 				std::cout << "none vk graphics pipeline";
+			}
+		}
+
+		VkPipelineLayout* getPipelineLayout()
+		{
+			if (std::holds_alternative<VkPipelineLayout*>(_runtimePipelineLayout))
+			{
+				return std::get<VkPipelineLayout*>(_runtimePipelineLayout));
+			}
+			else
+			{
+				std::cout << "none vk pipeline layout";
 			}
 		}
 	};

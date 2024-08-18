@@ -9,7 +9,7 @@
 
 namespace DRHI
 {
-	void GraphicsPipeline::createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice)
+	void GraphicsPipeline::createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool)
 	{
 		auto shaderModules = createInfo.shaders;
 		auto vertexShader = shaderModules[0].getVkShaderModule();
@@ -17,7 +17,10 @@ namespace DRHI
 
         auto device = pdevice->getVkDevice();
 
+        auto descriptorSetlayout = pdescriptorPool->getVkDescriptorSetLayout();
+
         VkPipeline* graphicsPipeline = new VkPipeline();
+        VkPipelineLayout* pipelineLayout = new VkPipelineLayout();
 
 		VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
 		vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -106,9 +109,9 @@ namespace DRHI
         VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
         pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
         pipelineLayoutInfo.setLayoutCount = 1;
-        pipelineLayoutInfo.pSetLayouts = &descriptorSetLayout;
+        pipelineLayoutInfo.pSetLayouts = descriptorSetlayout;
 
-        if (vkCreatePipelineLayout(*device, &pipelineLayoutInfo, nullptr, &pipelineLayout) != VK_SUCCESS) {
+        if (vkCreatePipelineLayout(*device, &pipelineLayoutInfo, nullptr, pipelineLayout) != VK_SUCCESS) {
             throw std::runtime_error("failed to create pipeline layout!");
         }
 
@@ -124,7 +127,7 @@ namespace DRHI
         pipelineInfo.pDepthStencilState = &depthStencil;
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
-        pipelineInfo.layout = pipelineLayout;
+        pipelineInfo.layout = *pipelineLayout;
         //pipelineInfo.renderPass = renderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
@@ -134,6 +137,7 @@ namespace DRHI
         }
 
         _runtimeGraphicsPipeline = graphicsPipeline;
+        _runtimePipelineLayout = pipelineLayout;
 
        // vkDestroyShaderModule(device, fragShaderModule, nullptr);
        // vkDestroyShaderModule(device, vertShaderModule, nullptr);
