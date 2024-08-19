@@ -11,10 +11,28 @@
 
 namespace DRHI
 {
+	struct PipelineVertexInputStateCreateInfo
+	{
+		uint32_t sType;
+		uint32_t vertexBindingDescriptionCount;
+		uint32_t vertexAttributeDescriptionCount;
+		void* pVertexBindingDescriptions;
+		void* pVertexAttributeDescriptions;
+	};
+
+	struct PipelineInputAssemblyStateCreateInfo
+	{
+		uint32_t sType;
+		uint32_t topology;
+		uint32_t primitiveRestartEnable;
+	};
+
 	struct PipelineCreateInfo
 	{
 		ShaderModule vertexShader;
 		ShaderModule fragmentShader;
+		PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo;
+		PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo;
 	};
 
 	class GraphicsPipeline

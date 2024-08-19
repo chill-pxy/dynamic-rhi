@@ -1,6 +1,5 @@
 #include "../../Include/InterfaceConfig.h"
 
-
 #ifdef VULKAN_IMPLEMENTATION
 
 #include<vector>

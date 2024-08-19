@@ -1,4 +1,3 @@
-#include "../../Include/InterfaceConfig.h"
 #include "../../Include/CommandPool.h"
 
 #ifdef VULKAN_IMPLEMENTATION
