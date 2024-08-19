@@ -7,12 +7,14 @@
 #include"ShaderModule.h"
 #include"Device.h"
 #include"DescriptorPool.h"
+#include"RenderPass.h"
 
 namespace DRHI
 {
 	struct PipelineCreateInfo
 	{
-		ShaderModule shaders[2];
+		ShaderModule vertexShader;
+		ShaderModule fragmentShader;
 	};
 
 	class GraphicsPipeline
@@ -22,7 +24,7 @@ namespace DRHI
 		std::variant<VkPipelineLayout*> _runtimePipelineLayout;
 
 	public:
-		void createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool);
+		void createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool, RenderPass* prenderPass);
 
 	public:
 		GraphicsPipeline()

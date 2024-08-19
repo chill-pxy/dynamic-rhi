@@ -9,15 +9,16 @@
 
 namespace DRHI
 {
-	void GraphicsPipeline::createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool)
+	void GraphicsPipeline::createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool, RenderPass* prenderPass)
 	{
-		auto shaderModules = createInfo.shaders;
-		auto vertexShader = shaderModules[0].getVkShaderModule();
-		auto fragmentShader = shaderModules[1].getVkShaderModule();
+		auto vertexShader = createInfo.vertexShader.getVkShaderModule();
+		auto fragmentShader = createInfo.fragmentShader.getVkShaderModule();
 
         auto device = pdevice->getVkDevice();
-
+          
         auto descriptorSetlayout = pdescriptorPool->getVkDescriptorSetLayout();
+
+        auto renderPass = prenderPass->getVkRenderPass();
 
         VkPipeline* graphicsPipeline = new VkPipeline();
         VkPipelineLayout* pipelineLayout = new VkPipelineLayout();
@@ -38,12 +39,10 @@ namespace DRHI
 
 		VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
 		vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-		//...
-		//...
 
 		//auto bindingDescription = Vertex::getBindingDescription();
 		//auto attributeDescriptions = Vertex::getAttributeDescriptions();
-
+        
 		//vertexInputInfo.vertexBindingDescriptionCount = 1;
 		//vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
 		//vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
@@ -128,7 +127,7 @@ namespace DRHI
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
         pipelineInfo.layout = *pipelineLayout;
-        //pipelineInfo.renderPass = renderPass;
+        pipelineInfo.renderPass = *renderPass;
         pipelineInfo.subpass = 0;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
@@ -139,8 +138,8 @@ namespace DRHI
         _runtimeGraphicsPipeline = graphicsPipeline;
         _runtimePipelineLayout = pipelineLayout;
 
-       // vkDestroyShaderModule(device, fragShaderModule, nullptr);
-       // vkDestroyShaderModule(device, vertShaderModule, nullptr);
+        vkDestroyShaderModule(*device, *fragmentShader, nullptr);
+        vkDestroyShaderModule(*device, *vertexShader, nullptr);
 	}
 
 }

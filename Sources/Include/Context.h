@@ -76,7 +76,7 @@ namespace DRHI
 
 			//_renderPass->createRenderPass(_swapChain.get(), _device.get(), _physicalDevice.get());
 			
-			_graphicsPipeline->createGraphicsPipeline();
+			//_graphicsPipeline->createGraphicsPipeline();
 
 			_commandPool->createCommandPool(_device.get());
 
