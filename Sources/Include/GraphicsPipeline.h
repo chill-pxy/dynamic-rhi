@@ -11,13 +11,28 @@
 
 namespace DRHI
 {
+	struct VertexInputBindingDescription
+	{
+		uint32_t             binding;
+		uint32_t             stride;
+		VertexInputRate    inputRate;
+	};
+
+	struct VertexInputAttributeDescription
+	{
+		uint32_t    location;
+		uint32_t    binding;
+		Format    format;
+		uint32_t    offset;
+	};
+
 	struct PipelineVertexInputStateCreateInfo
 	{
 		uint32_t sType;
 		uint32_t vertexBindingDescriptionCount;
 		uint32_t vertexAttributeDescriptionCount;
-		void* pVertexBindingDescriptions;
-		void* pVertexAttributeDescriptions;
+		const VertexInputBindingDescription* pVertexBindingDescriptions;
+		const VertexInputAttributeDescription* pVertexAttributeDescriptions;
 	};
 
 	struct PipelineInputAssemblyStateCreateInfo
