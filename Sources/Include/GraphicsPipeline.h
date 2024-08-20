@@ -97,7 +97,7 @@ namespace DRHI
 		{
 			if (std::holds_alternative<VkPipelineLayout*>(_runtimePipelineLayout))
 			{
-				return std::get<VkPipelineLayout*>(_runtimePipelineLayout));
+				return std::get<VkPipelineLayout*>(_runtimePipelineLayout);
 			}
 			else
 			{
