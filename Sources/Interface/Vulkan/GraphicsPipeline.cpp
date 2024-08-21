@@ -8,14 +8,14 @@
 
 namespace DRHI
 {
-	void GraphicsPipeline::createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool, RenderPass* prenderPass)
+	void GraphicsPipeline::createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool, DescriptorSetLayout* pdescriptorSetLayout,RenderPass* prenderPass)
 	{
 		auto vertexShader = createInfo.vertexShader.getVkShaderModule();
 		auto fragmentShader = createInfo.fragmentShader.getVkShaderModule();
 
         auto device = pdevice->getVkDevice();
           
-        auto descriptorSetlayout = pdescriptorPool->getVkDescriptorSetLayout();
+        auto descriptorSetlayout = pdescriptorSetLayout->getVkDescriptorSetLayout();
 
         auto renderPass = prenderPass->getVkRenderPass();
 

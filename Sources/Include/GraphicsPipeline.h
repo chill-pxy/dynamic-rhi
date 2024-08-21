@@ -8,6 +8,7 @@
 #include"Device.h"
 #include"DescriptorPool.h"
 #include"RenderPass.h"
+#include"DescriptorSetLayout.h"
 
 namespace DRHI
 {
@@ -57,7 +58,7 @@ namespace DRHI
 		std::variant<VkPipelineLayout*> _runtimePipelineLayout;
 
 	public:
-		void createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool, RenderPass* prenderPass);
+		void createGraphicsPipeline(PipelineCreateInfo createInfo, Device* pdevice, DescriptorPool* pdescriptorPool, DescriptorSetLayout* pdescriptorSetLayout, RenderPass* prenderPass);
 
 	public:
 		GraphicsPipeline()
