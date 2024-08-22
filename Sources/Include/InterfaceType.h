@@ -13,20 +13,15 @@ const bool enableValidationLayers = false;
 const bool enableValidationLayers = true;
 #endif
 
-enum API
+namespace DRHI
 {
-	VULKAN,
-	DIRECT3D12
-};
+	enum API
+	{
+		VULKAN,
+		DIRECT3D12
+	};
 
-enum VertexInputRate
-{
-	VERTEX_INPUT_RATE_VERTEX = 0,
-	VERTEX_INPUT_RATE_INSTANCE = 1,
-	VERTEX_INPUT_RATE_MAX_ENUM = 0x7FFFFFFF
-};
+	enum VertexInputRate;
 
-enum Format
-{
-
-};
+	enum Format;
+}
