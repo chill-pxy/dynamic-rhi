@@ -51,5 +51,11 @@ namespace DRHI
 				return nullptr;
 			}
 		}
+		
+		template<typename T>
+		void setRuntimeRenderPass(T renderPass)
+		{
+			_runtimeRenderPass = renderPass;
+		}
 	};
 }

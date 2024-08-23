@@ -86,6 +86,10 @@ namespace DRHI
 			_descriptorPool->createDescriptorPool(_device.get());
 		}
 
+	public:
+		void createRenderPass(RenderPass& prenderPass);
+		void createGraphicsPipeline();
+
 	private:
 		void createMember()
 		{
