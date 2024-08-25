@@ -10,6 +10,34 @@
 
 namespace DRHI
 {
+	struct SubpassDependency
+	{
+
+	};
+
+	struct SubpassDescription
+	{
+
+	};
+
+	struct AttachmentReference
+	{
+
+	};
+
+	struct AttachmentDescription
+	{
+
+	};
+	 
+	struct RenderPassCreateInfo
+	{
+		AttachmentDescription attachmentDescription;
+		AttachmentReference attachmentReference;
+		SubpassDescription subpassDescription;
+		SubpassDependency subpassDependency;
+	};
+
 	class RenderPass
 	{
 	private:

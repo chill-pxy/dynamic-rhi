@@ -87,7 +87,7 @@ namespace DRHI
 		}
 
 	public:
-		void createRenderPass(RenderPass& prenderPass);
+		void createRenderPass(RenderPass* prenderPass);
 		void createGraphicsPipeline();
 
 	private:
