@@ -10,33 +10,57 @@
 
 namespace DRHI
 {
-	struct SubpassDependency
+	typedef struct SubpassDependency
 	{
+		uint32_t                srcSubpass;
+		uint32_t                dstSubpass;
+		PipelineStageFlags    srcStageMask;
+		PipelineStageFlags    dstStageMask;
+		AccessFlags           srcAccessMask;
+		AccessFlags           dstAccessMask;
+		DependencyFlags       dependencyFlags;
+	} SubpassDependency;
 
-	};
-
-	struct SubpassDescription
+	typedef struct SubpassDescription
 	{
+		SubpassDescriptionFlags       flags;
+		PipelineBindPoint             pipelineBindPoint;
+		uint32_t                        inputAttachmentCount;
+		const AttachmentReference* pInputAttachments;
+		uint32_t                        colorAttachmentCount;
+		const AttachmentReference* pColorAttachments;
+		const AttachmentReference* pResolveAttachments;
+		const AttachmentReference* pDepthStencilAttachment;
+		uint32_t                        preserveAttachmentCount;
+		const uint32_t* pPreserveAttachments;
+	}SubpassDescription;
 
-	};
-
-	struct AttachmentReference
+	typedef struct AttachmentReference
 	{
+		uint32_t         attachment;
+		ImageLayout    layout;
+	} AttachmentReference;
 
-	};
-
-	struct AttachmentDescription
+	typedef struct AttachmentDescription
 	{
-
-	};
+		AttachmentDescriptionFlags    flags;
+		Format                        format;
+		SampleCountFlagBits           samples;
+		AttachmentLoadOp              loadOp;
+		AttachmentStoreOp             storeOp;
+		AttachmentLoadOp              stencilLoadOp;
+		AttachmentStoreOp             stencilStoreOp;
+		ImageLayout                   initialLayout;
+		ImageLayout                   finalLayout;
+	} AttachmentDescription;
 	 
-	struct RenderPassCreateInfo
+	typedef struct RenderPassCreateInfo
 	{
 		AttachmentDescription attachmentDescription;
 		AttachmentReference attachmentReference;
 		SubpassDescription subpassDescription;
 		SubpassDependency subpassDependency;
-	};
+	}RenderPassCreateInfo;
 
 	class RenderPass
 	{
