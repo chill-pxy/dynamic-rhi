@@ -10,7 +10,7 @@
 
 namespace DRHI
 {
-	typedef struct SubpassDependency
+	/*typedef struct SubpassDependency
 	{
 		uint32_t                srcSubpass;
 		uint32_t                dstSubpass;
@@ -60,7 +60,7 @@ namespace DRHI
 		AttachmentReference attachmentReference;
 		SubpassDescription subpassDescription;
 		SubpassDependency subpassDependency;
-	}RenderPassCreateInfo;
+	}RenderPassCreateInfo;*/
 
 	class RenderPass
 	{

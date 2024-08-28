@@ -1,5 +1,5 @@
-#include "../Sources/Include/Context.h"
-#include "../Sources/Include/Instance.h"
+#include "../Sources/Include/drhi.h"
+#include "../Sources/Interface/Vulkan/VulkanDRHI.h"
 
 using namespace DRHI;
 
@@ -61,19 +61,20 @@ private:
 
 int main()
 {
-	std::unique_ptr<Context> _platformContext;
+	DynamicRHI* _platformContext;
 	std::unique_ptr<WindowsSurface> _windowContext;
 
 	_windowContext = std::make_unique<WindowsSurface>();
 	_windowContext->init();
 
-	DRHI::ContextCreatInfo info = {
-		API::VULKAN,
+	DRHI::RHICreatInfo info = {
 		_windowContext->getWindowInstance(),
 		_windowContext->getExtensions()
 	};
 
-	_platformContext = std::make_unique<DRHI::Context>(info);
+	//_platformContext = std::make_unique<DRHI::DynamicRHI>(info);
+
+    _platformContext = new VulkanDRHI(info);
 
     _platformContext->initialize();
 
