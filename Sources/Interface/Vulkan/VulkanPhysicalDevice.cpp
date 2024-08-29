@@ -16,19 +16,17 @@ namespace DRHI
 
         std::vector<VkPhysicalDevice> devices(deviceCount);
         vkEnumeratePhysicalDevices(*instance, &deviceCount, devices.data());
+       
+        *physicalDevice = devices[id];
 
-        VkPhysicalDevice* vdevice = new VkPhysicalDevice();
-        *vdevice = devices[id];
-        physicalDevice = vdevice;
-
-        if (vdevice == VK_NULL_HANDLE) {
+        if (*physicalDevice == VK_NULL_HANDLE) {
             throw std::runtime_error("failed to find a suitable GPU!");
         }
     }
 
     void pickGraphicQueueFamily(VkPhysicalDevice* physicalDevice, uint32_t queueFamily)
     {
-        uint32_t count;
+        uint32_t count = 0;
 
         vkGetPhysicalDeviceQueueFamilyProperties(*physicalDevice, &count, NULL);
         VkQueueFamilyProperties* queues = (VkQueueFamilyProperties*)malloc(sizeof(VkQueueFamilyProperties) * count);

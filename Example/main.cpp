@@ -76,16 +76,15 @@ int main()
         windowInfo
 	};
 
-    //e* ee = new e();
-    //ee->c();
-
     _platformContext = new VulkanDRHI(info);
     _platformContext->initialize();
 
+    //auto window = _platformContext->getVulkanGlfwWindow();
+
     //while (!_windowContext->checkForClose())
-    //{
-    //    _windowContext->update();
-    //}
+    {
+       // _windowContext->update();
+    }
 
 
 

@@ -50,17 +50,7 @@ namespace DRHI
 		VulkanDRHI() = delete;
 		VulkanDRHI(RHICreatInfo createInfo);
 
-		void initialize()
-		{
-			_glfwWindow.initialize(_glfwWindowCreateInfo);
-			createInstance(&_instance, _glfwWindow.getVulkanGlfwWindowExtensions());
-			createSurface(&_surface, &_instance, _glfwWindow.getVulkanGlfwWindow());
-			pickPhysicalDevice(&_physicalDevice, &_instance, 0);
-			pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
-			createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices);
-			createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _glfwWindow.getVulkanGlfwWindow(), _swapChainImages, &_swapChainImageFormat, _swapChainExtent);
-			createImageViews(&_device, _swapChainImageViews, _swapChainImages, &_swapChainImageFormat);
-			createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
-		}
+		virtual void initialize();
+		inline VulkanGlfwWindow getVulkanGlfwWindow() { return _glfwWindow; }
 	};
 }
