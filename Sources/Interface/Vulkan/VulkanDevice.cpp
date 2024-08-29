@@ -1,7 +1,7 @@
 #include<set>
 #include<stdexcept>
 
-#include"VulkanDevice.h"
+#include"../../Include/Vulkan/VulkanDevice.h"
 
 const std::vector<const char*> deviceExtensions =
 {
