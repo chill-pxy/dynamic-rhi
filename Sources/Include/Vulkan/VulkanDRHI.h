@@ -11,6 +11,7 @@
 #include "VulkanSwapChain.h"
 #include "VulkanCommanPool.h"
 #include "VulkanGlfwWindow.h"
+#include "VulkanDescriptor.h"
 
 namespace DRHI
 {
@@ -24,12 +25,11 @@ namespace DRHI
 	public:
 		GLFWwindow* _glfwWindow;
 		std::vector<const char*> _extensions;
-		VkInstance* _instance;
-
+		
 	private:
 		VulkanGlfwWindowCreateInfo _glfwWindowCreateInfo;
 
-		
+		VkInstance _instance;
 
 		VkSurfaceKHR _surface;
 
@@ -49,6 +49,9 @@ namespace DRHI
 		std::vector<VkFramebuffer> _swapChainFramebuffers;
 
 		VkCommandPool _commandPool;
+
+		VkDescriptorSetLayout _descriptorSetLayout;
+		VkDescriptorPool _descriptorPool;
 
 	public:
 		VulkanDRHI() = delete;
