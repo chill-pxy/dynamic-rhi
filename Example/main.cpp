@@ -19,9 +19,7 @@ int main()
     _platformContext = new VulkanDRHI(info);
     _platformContext->initialize();
 
-    auto glfwWindow = dynamic_cast<VulkanDRHI*>(_platformContext)->getVulkanGlfwWindow();
-
-    auto window = glfwWindow.getVulkanGlfwWindow();
+    auto window = dynamic_cast<VulkanDRHI*>(_platformContext)->_glfwWindow;
 
     while (!glfwWindowShouldClose(window))
     {

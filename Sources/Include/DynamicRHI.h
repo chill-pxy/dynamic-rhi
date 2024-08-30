@@ -1,4 +1,5 @@
 #pragma once
+#include"InterfaceType.h"
 
 namespace DRHI
 {

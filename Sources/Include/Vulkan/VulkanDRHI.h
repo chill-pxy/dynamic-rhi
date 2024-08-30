@@ -21,11 +21,15 @@ namespace DRHI
 
 	class VulkanDRHI : public DynamicRHI
 	{
+	public:
+		GLFWwindow* _glfwWindow;
+		std::vector<const char*> _extensions;
+		VkInstance* _instance;
+
 	private:
-		VulkanGlfwWindow _glfwWindow;
 		VulkanGlfwWindowCreateInfo _glfwWindowCreateInfo;
 
-		VkInstance _instance;
+		
 
 		VkSurfaceKHR _surface;
 
@@ -51,6 +55,5 @@ namespace DRHI
 		VulkanDRHI(RHICreatInfo createInfo);
 
 		virtual void initialize();
-		inline VulkanGlfwWindow getVulkanGlfwWindow() { return _glfwWindow; }
 	};
 }

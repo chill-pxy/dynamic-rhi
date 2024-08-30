@@ -13,43 +13,23 @@ namespace DRHI
 		unsigned int height;
 	};
 
-	class VulkanGlfwWindow
+	GLFWwindow* createGlfwWindow(std::vector<const char*>* extensions, VulkanGlfwWindowCreateInfo glfwWindowCreateInfo)
 	{
-	private:
-		std::vector<const char*> _extensions;
-		GLFWwindow* _window;
+		glfwInit();
+		uint32_t glfwExtensionCount = 0;
+		const char** glfwExtensions;
+		glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
 
-	public:
-		VulkanGlfwWindow() = default;
+		*extensions = std::vector<const char*>(glfwExtensions, glfwExtensions + glfwExtensionCount);
 
-		void initialize(VulkanGlfwWindowCreateInfo glfwWindowCreateInfo)
+		extensions->push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
+
+		glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		if (!glfwVulkanSupported())
 		{
-			glfwInit();
-			uint32_t glfwExtensionCount = 0;
-			const char** glfwExtensions;
-			glfwExtensions = glfwGetRequiredInstanceExtensions(&glfwExtensionCount);
-
-			_extensions = std::vector<const char*>(glfwExtensions, glfwExtensions + glfwExtensionCount);
-
-			_extensions.push_back(VK_EXT_DEBUG_UTILS_EXTENSION_NAME);
-
-			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-			if (!glfwVulkanSupported())
-			{
-				printf("GLFW: Vulkan Not Supported\n");
-			}
-
-			_window = glfwCreateWindow(glfwWindowCreateInfo.width, glfwWindowCreateInfo.height, glfwWindowCreateInfo.titleName,nullptr, nullptr);
+			printf("GLFW: Vulkan Not Supported\n");
 		}
 
-		GLFWwindow* getVulkanGlfwWindow()
-		{
-			return _window;
-		}
-
-		std::vector<const char*> getVulkanGlfwWindowExtensions()
-		{
-			return _extensions;
-		}
-	};
+		return glfwCreateWindow(glfwWindowCreateInfo.width, glfwWindowCreateInfo.height, glfwWindowCreateInfo.titleName,nullptr, nullptr);
+	}
 }
