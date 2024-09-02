@@ -5,11 +5,13 @@
 
 const std::vector<const char*> deviceExtensions =
 {
-    VK_KHR_SWAPCHAIN_EXTENSION_NAME
+    "VK_KHR_swapchain",
+    "VK_KHR_dynamic_rendering"
 };
 
-const std::vector<const char*> validationLayers = {
-"VK_LAYER_KHRONOS_validation"
+const std::vector<const char*> validationLayers = 
+{
+    "VK_LAYER_KHRONOS_validation"
 };
 
 namespace DRHI
@@ -22,7 +24,8 @@ namespace DRHI
         std::set<uint32_t> uniqueQueueFamilies = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
         float queuePriority = 1.0f;
-        for (uint32_t queueFamily : uniqueQueueFamilies) {
+        for (uint32_t queueFamily : uniqueQueueFamilies) 
+        {
             VkDeviceQueueCreateInfo queueCreateInfo{};
             queueCreateInfo.sType = VK_STRUCTURE_TYPE_DEVICE_QUEUE_CREATE_INFO;
             queueCreateInfo.queueFamilyIndex = queueFamily;
@@ -34,9 +37,15 @@ namespace DRHI
         VkPhysicalDeviceFeatures deviceFeatures{};
         deviceFeatures.samplerAnisotropy = VK_TRUE;
 
+        constexpr VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeature
+        {
+            .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR,
+            .dynamicRendering = VK_TRUE,
+        };
+
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
-
+        createInfo.pNext = &dynamicRenderingFeature;
         createInfo.queueCreateInfoCount = static_cast<uint32_t>(queueCreateInfos.size());
         createInfo.pQueueCreateInfos = queueCreateInfos.data();
 
