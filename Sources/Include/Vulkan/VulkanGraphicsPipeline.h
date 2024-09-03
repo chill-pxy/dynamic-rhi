@@ -10,5 +10,5 @@ namespace DRHI
 		VkShaderModule fragmentShader;
 	};
 
-	void createGraphicsPipeline();
+	void createGraphicsPipeline(VkPipeline* graphicsPipeline, VkPipelineLayout* pipelineLayout, VulkanPipelineCreateInfo createInfo, VkDevice* device, VkDescriptorSetLayout* descriptorSetlayout, VkFormat* swapChainImageFormat);
 }

@@ -74,4 +74,9 @@ namespace DRHI
 		createDescriptorSetLayout(&_descriptorSetLayout, &_device);
 		createDescriptorPool(&_descriptorPool, &_device);
 	}
+
+    void VulkanDRHI::createPipeline(VulkanPipelineCreateInfo info)
+    {
+        createGraphicsPipeline(&_graphicsPipeline, &_pipelineLayout, info, &_device,& _descriptorSetLayout, &_swapChainImageFormat);
+    }
 }

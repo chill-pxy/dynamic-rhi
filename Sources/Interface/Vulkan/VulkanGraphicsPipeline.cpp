@@ -5,11 +5,8 @@
 
 namespace DRHI
 {
-	void createGraphicsPipeline(VulkanPipelineCreateInfo createInfo, VkDevice* device, VkDescriptorSetLayout* descriptorSetlayout, VkFormat* swapChainImageFormat)
+	void createGraphicsPipeline(VkPipeline* graphicsPipeline, VkPipelineLayout* pipelineLayout, VulkanPipelineCreateInfo createInfo, VkDevice* device, VkDescriptorSetLayout* descriptorSetlayout, VkFormat* swapChainImageFormat)
 	{
-        VkPipeline* graphicsPipeline = new VkPipeline();
-        VkPipelineLayout* pipelineLayout = new VkPipelineLayout();
-
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
         vertShaderStageInfo.stage = VK_SHADER_STAGE_VERTEX_BIT;
