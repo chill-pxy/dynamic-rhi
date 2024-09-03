@@ -5,8 +5,8 @@
 
 const std::vector<const char*> deviceExtensions =
 {
-    "VK_KHR_swapchain",
-    "VK_KHR_dynamic_rendering"
+    VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME,
 };
 
 const std::vector<const char*> validationLayers = 
