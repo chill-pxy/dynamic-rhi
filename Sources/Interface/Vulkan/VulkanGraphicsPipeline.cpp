@@ -119,7 +119,7 @@ namespace DRHI
         pipelineInfo.pColorBlendState = &colorBlending;
         pipelineInfo.pDynamicState = &dynamicState;
         pipelineInfo.layout = *pipelineLayout;
-        pipelineInfo.renderPass = nullptr;
+        pipelineInfo.renderPass = VK_NULL_HANDLE;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
 
         if (vkCreateGraphicsPipelines(*device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, graphicsPipeline) != VK_SUCCESS) {

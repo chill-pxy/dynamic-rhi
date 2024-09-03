@@ -32,4 +32,11 @@ namespace DRHI
 
 		return glfwCreateWindow(glfwWindowCreateInfo.width, glfwWindowCreateInfo.height, glfwWindowCreateInfo.titleName,nullptr, nullptr);
 	}
+
+	void cleanVulkanGlfwWindow(GLFWwindow* window)
+	{
+		glfwDestroyWindow(window);
+
+		glfwTerminate();
+	}
 }

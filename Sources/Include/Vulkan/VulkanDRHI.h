@@ -56,7 +56,8 @@ namespace DRHI
 	public:
 		VulkanDRHI() = delete;
 		VulkanDRHI(RHICreatInfo createInfo);
-
+		
 		virtual void initialize();
+		virtual void clean();
 	};
 }
