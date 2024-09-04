@@ -2,8 +2,6 @@
 
 #include"../../Include/Vulkan/VulkanDRHI.h"
 
-const int MAX_FRAMES_IN_FLIGHT = 2;
-
 namespace DRHI
 {
 	VulkanDRHI::VulkanDRHI(RHICreatInfo createInfo)
@@ -73,6 +71,7 @@ namespace DRHI
 		createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
 		createDescriptorSetLayout(&_descriptorSetLayout, &_device);
 		createDescriptorPool(&_descriptorPool, &_device);
+        createCommandBuffers(&_commandBuffers, &_commandPool, &_device);
 	}
 
     void VulkanDRHI::createPipeline(VulkanPipelineCreateInfo info)
