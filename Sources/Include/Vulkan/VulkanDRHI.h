@@ -24,7 +24,7 @@ namespace DRHI
 	class VulkanDRHI : public DynamicRHI
 	{
 	public:
-		GLFWwindow*              _glfwWindow;
+		GLFWwindow*              _glfwWindow{ VK_NULL_HANDLE };
 		std::vector<const char*> _extensions;
 		
 	private:
@@ -37,8 +37,8 @@ namespace DRHI
 		VkQueue                      _graphicQueue{ VK_NULL_HANDLE };
 		VkQueue                      _presentQueue{ VK_NULL_HANDLE };
 		VkSwapchainKHR               _swapChain{ VK_NULL_HANDLE };
-		VkFormat                     _swapChainImageFormat;
-		VkExtent2D                   _swapChainExtent;
+		VkFormat                     _swapChainImageFormat{ VK_FORMAT_UNDEFINED };
+		VkExtent2D                   _swapChainExtent{ 0 };
 		std::vector<VkImage>         _swapChainImages;
 		std::vector<VkImageView>     _swapChainImageViews;
 		std::vector<VkFramebuffer>   _swapChainFramebuffers;

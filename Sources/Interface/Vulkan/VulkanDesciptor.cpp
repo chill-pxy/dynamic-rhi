@@ -51,4 +51,15 @@ namespace DRHI
             throw std::runtime_error("failed to create descriptor pool!");
         }
     }
+
+    void createDescriptorSet(VkDescriptorSet* descriptorSet, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* descriptorSetLayout, uint32_t descriptorSetCount, VkDevice* device)
+    {
+        VkDescriptorSetAllocateInfo desciptorSetAllocateInfo{};
+        desciptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+        desciptorSetAllocateInfo.descriptorPool = *descriptorPool;
+        desciptorSetAllocateInfo.pSetLayouts = descriptorSetLayout;
+        desciptorSetAllocateInfo.descriptorSetCount = descriptorSetCount;
+
+        vkAllocateDescriptorSets(*device, &desciptorSetAllocateInfo, descriptorSet);
+    }
 }
