@@ -46,6 +46,7 @@ namespace DRHI
 		VkCommandPool                _commandPool{ VK_NULL_HANDLE };
 		VkDescriptorSetLayout        _descriptorSetLayout{ VK_NULL_HANDLE };
 		VkDescriptorPool             _descriptorPool{ VK_NULL_HANDLE };
+		VkDescriptorSet              _descriptorSet{ VK_NULL_HANDLE };
 		VkPipeline                   _graphicsPipeline{ VK_NULL_HANDLE };
 		VkPipelineLayout             _pipelineLayout{ VK_NULL_HANDLE };
 
@@ -55,7 +56,20 @@ namespace DRHI
 		
 		virtual void initialize();
 		virtual void clean();
+		virtual void beginCommandBuffer();
 
 		void createPipeline(VulkanPipelineCreateInfo info);
+
+	private:
+		void insertImageMemoryBarrier(
+			VkCommandBuffer cmdbuffer,
+			VkImage image,
+			VkAccessFlags srcAccessMask,
+			VkAccessFlags dstAccessMask,
+			VkImageLayout oldImageLayout,
+			VkImageLayout newImageLayout,
+			VkPipelineStageFlags srcStageMask,
+			VkPipelineStageFlags dstStageMask,
+			VkImageSubresourceRange subresourceRange);
 	};
 }
