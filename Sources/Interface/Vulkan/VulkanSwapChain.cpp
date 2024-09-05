@@ -6,7 +6,7 @@
 namespace DRHI
 {
     void createSwapChain(VkSwapchainKHR* swapChain, VkPhysicalDevice* physicalDevice, VkDevice* device, VkSurfaceKHR* surface, GLFWwindow* window,
-        std::vector<VkImage> swapChainImages, VkFormat* swapChainImageFormat, VkExtent2D swapChainExtent)
+        std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat, VkExtent2D* swapChainExtent)
     {
         SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
 
@@ -56,28 +56,29 @@ namespace DRHI
         }
 
         vkGetSwapchainImagesKHR(*device, *swapChain, &imageCount, nullptr);
-        swapChainImages.resize(imageCount);
-        vkGetSwapchainImagesKHR(*device, *swapChain, &imageCount, swapChainImages.data());
+        swapChainImages->resize(imageCount);
+        vkGetSwapchainImagesKHR(*device, *swapChain, &imageCount, swapChainImages->data());
 
         *swapChainImageFormat = surfaceFormat.format;
-        swapChainExtent = extent;
+        *swapChainExtent = extent;
     }
 
-    void createImageViews(VkDevice* device, std::vector<VkImageView> swapChainImageViews, std::vector<VkImage> swapChainImages, VkFormat* swapChainImageFormat)
+    void createImageViews(VkDevice* device, std::vector<VkImageView>* swapChainImageViews, std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat)
     {
-        swapChainImageViews.resize(swapChainImages.size());
+        swapChainImageViews->resize(swapChainImages->size());
 
-        for (uint32_t i = 0; i < swapChainImages.size(); i++)
+        for (uint32_t i = 0; i < swapChainImages->size(); i++)
         {
-            swapChainImageViews[i] = createImageView(device, swapChainImages[i], *swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+            VkImage scImages = (*swapChainImages)[i];
+            (*swapChainImageViews)[i] = createImageView(device, &scImages, *swapChainImageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
         }
     }
 
-    VkImageView createImageView(VkDevice* device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags)
+    VkImageView createImageView(VkDevice* device, VkImage* image, VkFormat format, VkImageAspectFlags aspectFlags)
     {
         VkImageViewCreateInfo viewInfo{};
         viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-        viewInfo.image = image;
+        viewInfo.image = *image;
         viewInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
         viewInfo.format = format;
         viewInfo.subresourceRange.aspectMask = aspectFlags;

@@ -16,11 +16,11 @@ namespace DRHI
     };
 
     void createSwapChain(VkSwapchainKHR* swapChain, VkPhysicalDevice* physicalDevice, VkDevice* device, VkSurfaceKHR* surface, GLFWwindow* window,
-        std::vector<VkImage> swapChainImages, VkFormat* swapChainImageFormat, VkExtent2D swapChainExtent);
+        std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat, VkExtent2D* swapChainExtent);
 
-    void createImageViews(VkDevice* device, std::vector<VkImageView> swapChainImageViews, std::vector<VkImage> swapChainImages, VkFormat* swapChainImageFormat);
+    void createImageViews(VkDevice* device, std::vector<VkImageView>* swapChainImageViews, std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat);
 
-    VkImageView createImageView(VkDevice* device, VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+    VkImageView createImageView(VkDevice* device, VkImage* image, VkFormat format, VkImageAspectFlags aspectFlags);
 
     SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice* device, VkSurfaceKHR* surface);
 
