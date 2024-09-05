@@ -1,3 +1,5 @@
+#include<stdexcept>
+
 #include"../../Include/Vulkan/VulkanShader.h"
 
 namespace DRHI

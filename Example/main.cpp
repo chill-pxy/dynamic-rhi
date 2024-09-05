@@ -1,4 +1,5 @@
-#include "../Sources/Include/Vulkan/VulkanDRHI.h"
+#include"../Sources/Include/Vulkan/VulkanDRHI.h"
+#include"NativeWindow.h"
 
 using namespace DRHI;
 
@@ -6,20 +7,23 @@ int main()
 {
     DynamicRHI* _platformContext;
 
-    DRHI::VulkanGlfwWindowCreateInfo windowInfo = {
+    FOCUS::NativeWindowCreateInfo windowInfo = {
         "Dynamic RHI",
         1920,
         1080
     };
 
-	DRHI::RHICreatInfo info = {
-        windowInfo
-	};
+    auto nwindow = new FOCUS::NativeWindow(windowInfo);
+    nwindow->initialize();
 
-    _platformContext = new VulkanDRHI(info);
+    DRHI::PlatformInfo pCi{};
+    pCi.window = nwindow->_hwnd;
+
+    DRHI::RHICreateInfo rhiCi{};
+    rhiCi.platformInfo = pCi;
+
+    _platformContext = new VulkanDRHI(rhiCi);
     _platformContext->initialize();
-
-    auto window = dynamic_cast<VulkanDRHI*>(_platformContext)->_glfwWindow;
 
     PipelineCreateInfo pci = {};
     pci.vertexShader = "./shaders/model_vertex.spv";
@@ -28,16 +32,15 @@ int main()
     dynamic_cast<VulkanDRHI*>(_platformContext)->createPipeline(pci);
     _platformContext->beginCommandBuffer();
 
-    while (!glfwWindowShouldClose(window))
+    bool running = true;
+
+    while (running)
     {
-        glfwPollEvents();
+        running = nwindow->tick();
     }
 
     _platformContext->clean();
 
-    glfwDestroyWindow(window);
-
-    glfwTerminate();
 
 	return 0;
 }

@@ -11,9 +11,9 @@ namespace DRHI
     //------------------public function---------------------//
     //------------------------------------------------------//
     //------------------------------------------------------//
-	VulkanDRHI::VulkanDRHI(RHICreatInfo createInfo)
+	VulkanDRHI::VulkanDRHI(RHICreateInfo createInfo)
 	{
-		_glfwWindowCreateInfo = createInfo.glfwWindowCreateInfo;
+        _platformInfo = createInfo.platformInfo;
 	}
 
 	void VulkanDRHI::clean()
@@ -61,23 +61,23 @@ namespace DRHI
         vkDestroySurfaceKHR(_instance, _surface, nullptr);
         vkDestroyInstance(_instance, nullptr);
 
-        cleanVulkanGlfwWindow(_glfwWindow);
+        //cleanVulkanGlfwWindow(_glfwWindow);
 	}
 
 	void VulkanDRHI::initialize()
 	{
-		_glfwWindow = createGlfwWindow(&_extensions, _glfwWindowCreateInfo);
 		createInstance(&_instance, _extensions);
-		createSurface(&_surface, &_instance, _glfwWindow);
+		createSurface(&_surface, &_instance, _platformInfo);
 		pickPhysicalDevice(&_physicalDevice, &_instance, 0);
 		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
 		createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices);
-		createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _glfwWindow, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent);
+		createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent);
 		createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
 		createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
 		createDescriptorSetLayout(&_descriptorSetLayout, &_device);
 		createDescriptorPool(&_descriptorPool, &_device);
         createCommandBuffers(&_commandBuffers, &_commandPool, &_device);
+        createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device);
 	}
 
     void VulkanDRHI::beginCommandBuffer()

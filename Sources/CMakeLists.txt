@@ -18,7 +18,6 @@ add_library(${TARGET_NAME} SHARED ${HEADER_FILES} ${SOURCE_FILES})
 set_target_properties(${TARGET_NAME} PROPERTIES OUTPUT_NAME "drhi")
 
 target_link_libraries(${TARGET_NAME} PUBLIC
-    glfw
     glm
     stb
     volk

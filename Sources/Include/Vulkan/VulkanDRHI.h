@@ -10,15 +10,14 @@
 #include "VulkanQueueFamily.h"
 #include "VulkanSwapChain.h"
 #include "VulkanCommand.h"
-#include "VulkanGlfwWindow.h"
 #include "VulkanDescriptor.h"
 #include "VulkanGraphicsPipeline.h"
 
 namespace DRHI
 {
-	struct RHICreatInfo
+	struct RHICreateInfo
 	{
-		VulkanGlfwWindowCreateInfo glfwWindowCreateInfo;
+		PlatformInfo platformInfo;
 	};
 
 	struct PipelineCreateInfo
@@ -28,13 +27,8 @@ namespace DRHI
 	};
 
 	class VulkanDRHI : public DynamicRHI
-	{
-	public:
-		GLFWwindow*              _glfwWindow{ VK_NULL_HANDLE };
-		std::vector<const char*> _extensions;
-		
+	{	
 	private:
-		VulkanGlfwWindowCreateInfo   _glfwWindowCreateInfo{ VK_NULL_HANDLE };
 		VkInstance                   _instance{ VK_NULL_HANDLE };
 		VkSurfaceKHR                 _surface{ VK_NULL_HANDLE };
 		VkPhysicalDevice             _physicalDevice{ VK_NULL_HANDLE };
@@ -55,10 +49,11 @@ namespace DRHI
 		VkDescriptorSet              _descriptorSet{ VK_NULL_HANDLE };
 		VkPipeline                   _graphicsPipeline{ VK_NULL_HANDLE };
 		VkPipelineLayout             _pipelineLayout{ VK_NULL_HANDLE };
+		PlatformInfo                 _platformInfo{};
 
 	public:
 		VulkanDRHI() = delete;
-		VulkanDRHI(RHICreatInfo createInfo);
+		VulkanDRHI(RHICreateInfo createInfo);
 		
 		virtual void initialize();
 		virtual void clean();
