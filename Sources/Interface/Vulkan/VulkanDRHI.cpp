@@ -2,6 +2,7 @@
 
 #include"../../Include/Vulkan/VulkanDRHI.h"
 #include"../../Include/Vulkan/VulkanShader.h"
+#include"../../Include/CoreFunction.h"
 
 namespace DRHI
 {
