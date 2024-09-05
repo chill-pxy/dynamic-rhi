@@ -66,7 +66,7 @@ namespace DRHI
 
 	void VulkanDRHI::initialize()
 	{
-		createInstance(&_instance, _extensions);
+		createInstance(&_instance);
 		createSurface(&_surface, &_instance, _platformInfo);
 		pickPhysicalDevice(&_physicalDevice, &_instance, 0);
 		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
@@ -129,7 +129,7 @@ namespace DRHI
 
             VkRenderingInfoKHR renderingInfo{};
             renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
-            renderingInfo.renderArea = { 0, 0, _glfwWindowCreateInfo.width, _glfwWindowCreateInfo.height };
+            renderingInfo.renderArea = { 0, 0,1920, 1080 };
             renderingInfo.layerCount = 1;
             renderingInfo.colorAttachmentCount = 1;
             renderingInfo.pColorAttachments = &colorAttachment;
@@ -140,16 +140,16 @@ namespace DRHI
             vkCmdBeginRenderingKHR(_commandBuffers[i], &renderingInfo);
 
             VkViewport viewport{};
-            viewport.width = _glfwWindowCreateInfo.width;
-            viewport.height = _glfwWindowCreateInfo.height;
+            viewport.width = 1920;
+            viewport.height = 1080;
             viewport.minDepth = 0.0f;
             viewport.maxDepth = 1.0f;
 
             vkCmdSetViewport(_commandBuffers[i], 0, 1, &viewport);
 
             VkRect2D scissor{};
-            scissor.extent.width = _glfwWindowCreateInfo.width;
-            scissor.extent.height = _glfwWindowCreateInfo.height;
+            scissor.extent.width = 1920;
+            scissor.extent.height = 1080;
             scissor.offset.x = 0;
             scissor.offset.y = 0;
 

@@ -8,7 +8,7 @@
 
 namespace DRHI
 {
-    void createInstance(VkInstance* instance, std::vector<const char*> extensions);
+    void createInstance(VkInstance* instance);
 }
 
 

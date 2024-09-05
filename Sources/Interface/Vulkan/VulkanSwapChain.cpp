@@ -152,21 +152,20 @@ namespace DRHI
     VkExtent2D chooseSwapExtent(HWND hwnd)
     {
         RECT rect;
-        if (GetWindowRect(hwnd, &rect)) {
-            int width = rect.right - rect.left;
-            int height = rect.bottom - rect.top;
+        GetWindowRect(hwnd, &rect);
+        int width = rect.right - rect.left;
+        int height = rect.bottom - rect.top;
 
-            VkExtent2D actualExtent =
-            {
-                static_cast<uint32_t>(width),
-                static_cast<uint32_t>(height)
-            };
+        VkExtent2D actualExtent =
+        {
+            static_cast<uint32_t>(width),
+            static_cast<uint32_t>(height)
+        };
 
-            actualExtent.width = std::clamp(actualExtent.width, (uint32_t)0, (uint32_t)GetSystemMetrics(SM_CXSCREEN));
-            actualExtent.height = std::clamp(actualExtent.height, (uint32_t)0, (uint32_t)GetSystemMetrics(SM_CYSCREEN));
+        actualExtent.width = std::clamp(actualExtent.width, (uint32_t)0, (uint32_t)GetSystemMetrics(SM_CXSCREEN));
+        actualExtent.height = std::clamp(actualExtent.height, (uint32_t)0, (uint32_t)GetSystemMetrics(SM_CYSCREEN));
 
-            return actualExtent;
-        }
+        return actualExtent;
     }
 
     void cleanSwapChain(VkDevice* device, std::vector<VkFramebuffer>* swapChainFramebuffers, std::vector<VkImageView>* swapChainImageViews, VkSwapchainKHR* swapChain)

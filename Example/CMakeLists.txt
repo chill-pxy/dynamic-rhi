@@ -7,7 +7,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 add_executable(example main.cpp "NativeWindow.cpp" "NativeWindow.h")
 
 target_link_libraries(example PUBLIC
-    glfw
     volk
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/drhi.lib
 )

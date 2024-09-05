@@ -2,7 +2,7 @@
 
 namespace DRHI
 {
-    void createInstance(VkInstance* instance, std::vector<const char*> extensions)
+    void createInstance(VkInstance* instance)
     {
         //≥ı ºªØvolk
         volkInitialize();
@@ -12,6 +12,13 @@ namespace DRHI
         {
             throw std::runtime_error("validation layers requested, but not available!");
         }
+
+        std::vector<const char*> extensions = {
+            "VK_KHR_surface",
+            "VK_KHR_win32_surface",
+            VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
+            VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME
+        };
 
         VkApplicationInfo appInfo{};
         appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
