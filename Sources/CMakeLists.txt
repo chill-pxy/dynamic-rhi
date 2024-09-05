@@ -29,23 +29,23 @@ include_directories(${THIRD_PARTY_DIR})
 #---------------------------------#
 #------------配置文件-------------#
 #---------------------------------#
-set(content " ")
-set(codeDefine "undefine")
-file(READ ${PROJECT_SOURCE_DIR}/config.txt content)
-if(content STREQUAL "vk")
-    set(codeDefine "#define VULKAN_IMPLEMENTATION")
-endif()
+#set(content " ")
+#set(codeDefine "undefine")
+#file(READ ${PROJECT_SOURCE_DIR}/config.txt content)
+#if(content STREQUAL "vk")
+#    set(codeDefine "#define VULKAN_IMPLEMENTATION")
+#endif()
 
-if(content STREQUAL "dx12")
-    set(codeDefine "#define DIRECT3D12_IMPLEMENTATION")
-endif()
+#if(content STREQUAL "dx12")
+#    set(codeDefine "#define DIRECT3D12_IMPLEMENTATION")
+#endif()
 
-if(content STREQUAL "undefine")
-    message(FATAL_ERROR "没有定义图形API")
-endif()
+#if(content STREQUAL "undefine")
+#    message(FATAL_ERROR "没有定义图形API")
+#endif()
 
-file(WRITE ${PROJECT_SOURCE_DIR}/Include/InterfaceConfig.h "${codeDefine}" )
-add_definitions(-DINCLUDE_GENERATED_HEADER)
+#file(WRITE ${PROJECT_SOURCE_DIR}/Include/InterfaceConfig.h "${codeDefine}" )
+#add_definitions(-DINCLUDE_GENERATED_HEADER)
 
 #---------------------------------#
 #------复制dll及lib到库目录-------#
