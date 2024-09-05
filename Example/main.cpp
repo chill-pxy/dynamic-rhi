@@ -21,6 +21,13 @@ int main()
 
     auto window = dynamic_cast<VulkanDRHI*>(_platformContext)->_glfwWindow;
 
+    PipelineCreateInfo pci = {};
+    pci.vertexShader = "./shaders/model_vertex.spv";
+    pci.fragmentShader = "./shaders/model_fragment.spv";
+
+    dynamic_cast<VulkanDRHI*>(_platformContext)->createPipeline(pci);
+    _platformContext->beginCommandBuffer();
+
     while (!glfwWindowShouldClose(window))
     {
         glfwPollEvents();

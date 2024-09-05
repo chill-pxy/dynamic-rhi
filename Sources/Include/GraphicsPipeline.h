@@ -45,10 +45,10 @@ namespace DRHI
 
 	struct PipelineCreateInfo
 	{
-		ShaderModule vertexShader;
-		ShaderModule fragmentShader;
-		PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo;
-		PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo;
+		const char* vertexShader;
+		const char* fragmentShader;
+		//PipelineVertexInputStateCreateInfo pipelineVertexInputStateCreateInfo;
+		//PipelineInputAssemblyStateCreateInfo pipelineInputAssemblyStateCreateInfo;
 	};
 
 	class GraphicsPipeline

@@ -21,6 +21,12 @@ namespace DRHI
 		VulkanGlfwWindowCreateInfo glfwWindowCreateInfo;
 	};
 
+	struct PipelineCreateInfo
+	{
+		const char* vertexShader;
+		const char* fragmentShader;
+	};
+
 	class VulkanDRHI : public DynamicRHI
 	{
 	public:
@@ -58,7 +64,7 @@ namespace DRHI
 		virtual void clean();
 		virtual void beginCommandBuffer();
 
-		void createPipeline(VulkanPipelineCreateInfo info);
+		void createPipeline(PipelineCreateInfo info);
 
 	private:
 		void insertImageMemoryBarrier(

@@ -1,6 +1,7 @@
 #include<stdexcept>
 
 #include"../../Include/Vulkan/VulkanDRHI.h"
+#include"../../Include/Vulkan/VulkanShader.h"
 
 namespace DRHI
 {
@@ -177,9 +178,19 @@ namespace DRHI
         }
     }
 
-    void VulkanDRHI::createPipeline(VulkanPipelineCreateInfo info)
+    void VulkanDRHI::createPipeline(PipelineCreateInfo info)
     {
-        createGraphicsPipeline(&_graphicsPipeline, &_pipelineLayout, info, &_device,& _descriptorSetLayout, &_swapChainImageFormat);
+        auto vertex = readFile(info.vertexShader);
+        auto fragment = readFile(info.fragmentShader);
+
+        auto vulkanVertex = createShaderModule(vertex, &_device);
+        auto vulkanFragment = createShaderModule(fragment, &_device);
+
+        VulkanPipelineCreateInfo pci{};
+        pci.vertexShader = vulkanVertex;
+        pci.fragmentShader = vulkanFragment;
+
+        createGraphicsPipeline(&_graphicsPipeline, &_pipelineLayout, pci, &_device,& _descriptorSetLayout, &_swapChainImageFormat);
     }
 
     //------------------------------------------------------//
