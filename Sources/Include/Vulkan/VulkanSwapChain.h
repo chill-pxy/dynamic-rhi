@@ -29,7 +29,7 @@ namespace DRHI
 
     VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
 
-    VkExtent2D chooseSwapExtent(HWND window);
+    VkExtent2D chooseSwapExtent(HWND window, const VkSurfaceCapabilitiesKHR& capabilities);
 
     void cleanSwapChain(VkDevice* device, std::vector<VkFramebuffer>* swapChainFramebuffers, std::vector<VkImageView>* swapChainImageViews, VkSwapchainKHR* swapChain);
 }

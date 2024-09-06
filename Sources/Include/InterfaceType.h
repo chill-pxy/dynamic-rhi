@@ -2,6 +2,8 @@
 
 #define VK_USE_PLATFORM_WIN32_KHR
 #include<volk.h>
+
+#define NOMINMAX
 #include<Windows.h>
 
 #ifdef NDEBUG

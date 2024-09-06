@@ -12,7 +12,7 @@ namespace DRHI
 
         VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
-        VkExtent2D extent = chooseSwapExtent(window);
+        VkExtent2D extent = chooseSwapExtent(window, swapChainSupport.capabilities);
 
         uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
         if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
@@ -149,23 +149,30 @@ namespace DRHI
         return VK_PRESENT_MODE_FIFO_KHR;
     }
 
-    VkExtent2D chooseSwapExtent(HWND hwnd)
+    VkExtent2D chooseSwapExtent(HWND hwnd, const VkSurfaceCapabilitiesKHR& capabilities)
     {
-        RECT rect;
-        GetWindowRect(hwnd, &rect);
-        int width = rect.right - rect.left;
-        int height = rect.bottom - rect.top;
-
-        VkExtent2D actualExtent =
+        if (capabilities.currentExtent.width != std::numeric_limits<uint32_t>::max()) 
         {
-            static_cast<uint32_t>(width),
-            static_cast<uint32_t>(height)
-        };
+            return capabilities.currentExtent;
+        }
+        else
+        {
+            RECT rect;
+            GetWindowRect(hwnd, &rect);
+            int width = rect.right - rect.left;
+            int height = rect.bottom - rect.top;
 
-        actualExtent.width = std::clamp(actualExtent.width, (uint32_t)0, (uint32_t)GetSystemMetrics(SM_CXSCREEN));
-        actualExtent.height = std::clamp(actualExtent.height, (uint32_t)0, (uint32_t)GetSystemMetrics(SM_CYSCREEN));
+            VkExtent2D actualExtent =
+            {
+                static_cast<uint32_t>(width),
+                static_cast<uint32_t>(height)
+            };
 
-        return actualExtent;
+            actualExtent.width = std::clamp(actualExtent.width, capabilities.minImageExtent.width, capabilities.maxImageExtent.width);
+            actualExtent.height = std::clamp(actualExtent.height, capabilities.minImageExtent.height, capabilities.maxImageExtent.height);
+
+            return actualExtent;
+        }
     }
 
     void cleanSwapChain(VkDevice* device, std::vector<VkFramebuffer>* swapChainFramebuffers, std::vector<VkImageView>* swapChainImageViews, VkSwapchainKHR* swapChain)
