@@ -33,6 +33,6 @@ namespace DRHI
 
     void cleanSwapChain(VkDevice* device, std::vector<VkFramebuffer>* swapChainFramebuffers, std::vector<VkImageView>* swapChainImageViews, VkSwapchainKHR* swapChain);
 
-    VkResult queuePresent(VkQueue* queue, VkSwapchainKHR* swapChain, uint32_t imageIndex, VkSemaphore* waitSemaphore);
+    VkResult queuePresent(VkQueue* queue, VkSwapchainKHR* swapChain, uint32_t* imageIndex, VkSemaphore* waitSemaphore);
 }
 

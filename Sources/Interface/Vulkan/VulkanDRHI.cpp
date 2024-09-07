@@ -212,7 +212,7 @@ namespace DRHI
 
     void VulkanDRHI::submitFrame()
     {
-        auto result = queuePresent(&_graphicQueue, &_swapChain, _currentBuffer, &_semaphores.renderComplete);
+        auto result = queuePresent(&_graphicQueue, &_swapChain, &_currentBuffer, &_semaphores.renderComplete);
         // Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
         if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
             //windowResize();
