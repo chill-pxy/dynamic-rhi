@@ -104,6 +104,10 @@ namespace DRHI
         pipelineRenderingCreateInfo.colorAttachmentCount = 1;
         pipelineRenderingCreateInfo.pColorAttachmentFormats = swapChainImageFormat;
 
+        VkPipelineTessellationStateCreateInfo pipelineTessellationStateCreateInfo{};
+        pipelineTessellationStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
+        pipelineTessellationStateCreateInfo.patchControlPoints = 3;
+
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
         pipelineInfo.stageCount = 2;
@@ -119,6 +123,7 @@ namespace DRHI
         pipelineInfo.layout = *pipelineLayout;
         pipelineInfo.renderPass = VK_NULL_HANDLE;
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
+        pipelineInfo.pTessellationState = &pipelineTessellationStateCreateInfo;
 
         if (vkCreateGraphicsPipelines(*device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, graphicsPipeline) != VK_SUCCESS) {
             throw std::runtime_error("failed to create graphics pipeline!");

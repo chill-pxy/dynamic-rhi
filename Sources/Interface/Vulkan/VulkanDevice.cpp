@@ -7,6 +7,7 @@ const std::vector<const char*> deviceExtensions =
 {
     VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
     VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+   
 };
 
 const std::vector<const char*> validationLayers = 
@@ -36,6 +37,8 @@ namespace DRHI
 
         VkPhysicalDeviceFeatures deviceFeatures{};
         deviceFeatures.samplerAnisotropy = VK_TRUE;
+        deviceFeatures.geometryShader = VK_TRUE;
+        deviceFeatures.tessellationShader = VK_TRUE;
 
         constexpr VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeature
         {
