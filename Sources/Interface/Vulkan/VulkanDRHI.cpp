@@ -179,6 +179,55 @@ namespace DRHI
         }
     }
 
+    void VulkanDRHI::prepareFrame()
+    {
+        auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentBuffer);
+        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
+            if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+                //windowResize();
+            }
+            return;
+        }
+        else {
+            if (result != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to acquire next image");
+            }
+        }
+    }
+
+    void VulkanDRHI::submitFrame()
+    {
+        auto result = queuePresent(&_graphicQueue, &_swapChain, _currentBuffer, &_semaphores.renderComplete);
+        // Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
+        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
+            //windowResize();
+            if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+                return;
+            }
+        }
+        else {
+            if (result != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to submit frame");
+            }
+        }
+        
+        if (vkQueueWaitIdle(_graphicQueue) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to wait queue");
+        }
+    }
+
+    void VulkanDRHI::draw()
+    {
+        prepareFrame();
+        _submitInfo.commandBufferCount = 1;
+        _submitInfo.pCommandBuffers = &_commandBuffers[_currentBuffer];
+        vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE);
+        submitFrame();
+    }
+
     void VulkanDRHI::createPipeline(PipelineCreateInfo info)
     {
         auto vertex = readFile(info.vertexShader);

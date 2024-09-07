@@ -29,6 +29,14 @@ namespace DRHI
 	class VulkanDRHI : public DynamicRHI
 	{	
 	private:
+		typedef struct Semaphores
+		{
+			// Swap chain image presentation
+			VkSemaphore presentComplete;
+			// Command buffer submission and execution
+			VkSemaphore renderComplete;
+		} Semaphores;
+
 		VkInstance                   _instance{ VK_NULL_HANDLE };
 		VkSurfaceKHR                 _surface{ VK_NULL_HANDLE };
 		VkPhysicalDevice             _physicalDevice{ VK_NULL_HANDLE };
@@ -50,6 +58,12 @@ namespace DRHI
 		VkPipeline                   _graphicsPipeline{ VK_NULL_HANDLE };
 		VkPipelineLayout             _pipelineLayout{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
+		Semaphores                   _semaphores{ VK_NULL_HANDLE, VK_NULL_HANDLE };
+
+		// Active frame buffer index
+		uint32_t _currentBuffer = 0;
+		// Contains command buffers and semaphores to be presented to the queue
+		VkSubmitInfo _submitInfo;
 
 	public:
 		VulkanDRHI() = delete;
@@ -58,6 +72,9 @@ namespace DRHI
 		virtual void initialize();
 		virtual void clean();
 		virtual void beginCommandBuffer();
+		virtual void prepareFrame();
+		virtual void submitFrame();
+		virtual void draw();
 
 		void createPipeline(PipelineCreateInfo info);
 

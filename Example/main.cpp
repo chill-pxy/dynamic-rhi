@@ -37,6 +37,7 @@ int main()
     while (running)
     {
         running = nwindow->tick();
+        _platformContext->draw();
     }
 
     _platformContext->clean();
