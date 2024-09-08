@@ -26,8 +26,8 @@ int main()
     _platformContext->initialize();
 
     PipelineCreateInfo pci = {};
-    pci.vertexShader = "./shaders/model_vertex.spv";
-    pci.fragmentShader = "./shaders/model_fragment.spv";
+    pci.vertexShader = "../../../Example/shaders/model_vertex.spv";
+    pci.fragmentShader = "../../../Example/shaders/model_fragment.spv";
 
     dynamic_cast<VulkanDRHI*>(_platformContext)->createPipeline(pci);
     _platformContext->beginCommandBuffer();

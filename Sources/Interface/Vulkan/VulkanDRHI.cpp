@@ -23,10 +23,10 @@ namespace DRHI
         vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
 
-        /*for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroyBuffer(device, uniformBuffers[i], nullptr);
-            vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
-        }*/
+        //for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        //    vkDestroyBuffer(device, uniformBuffers[i], nullptr);
+        //    vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
+        //}
 
         vkDestroyDescriptorPool(_device, _descriptorPool, nullptr);
 
@@ -52,6 +52,9 @@ namespace DRHI
 
         vkDestroyCommandPool(_device, _commandPool, nullptr);
 
+        vkDestroySemaphore(_device, _semaphores.presentComplete, nullptr);
+        vkDestroySemaphore(_device, _semaphores.renderComplete, nullptr);
+
         vkDestroyDevice(_device, nullptr);
 
         //if (enableValidationLayers) {
@@ -60,8 +63,6 @@ namespace DRHI
 
         vkDestroySurfaceKHR(_instance, _surface, nullptr);
         vkDestroyInstance(_instance, nullptr);
-
-        //cleanVulkanGlfwWindow(_glfwWindow);
 	}
 
 	void VulkanDRHI::initialize()
