@@ -30,14 +30,14 @@ int main()
     pci.fragmentShader = "../../../Example/shaders/model_fragment.spv";
 
     static_cast<VulkanDRHI*>(_platformContext)->createPipeline(pci);
-    _platformContext->beginCommandBuffer();
+    _platformContext->prepareCommandBuffer();
 
     bool running = true;
 
     while (running)
     {
         running = nwindow->tick();
-        _platformContext->draw();
+        _platformContext->frameOnTick();
     }
 
     _platformContext->clean();

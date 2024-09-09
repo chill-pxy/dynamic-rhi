@@ -81,6 +81,12 @@ namespace DRHI
         createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device);
         createSemaphore(&_semaphores, &_device);
 
+        //calculate viewport size
+        RECT rect;
+        GetWindowRect(_platformInfo.window, &rect);
+        _viewPortWidth = rect.right - rect.left;
+        _viewPortHeight = rect.bottom - rect.top;
+
         //initialize submit info
         /** @brief Pipeline stages used to wait at for graphics queue submissions */
         VkPipelineStageFlags submitPipelineStages = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
@@ -95,7 +101,7 @@ namespace DRHI
 
 	}
 
-    void VulkanDRHI::beginCommandBuffer()
+    void VulkanDRHI::prepareCommandBuffer()
     {
         VkCommandBufferBeginInfo cmdBufferBeginInfo{};
         cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -155,16 +161,16 @@ namespace DRHI
             vkCmdBeginRenderingKHR(_commandBuffers[i], &renderingInfo);
 
             VkViewport viewport{};
-            viewport.width = 1920;
-            viewport.height = 1080;
+            viewport.width = _viewPortWidth;
+            viewport.height = _viewPortHeight;
             viewport.minDepth = 0.0f;
             viewport.maxDepth = 1.0f;
 
             vkCmdSetViewport(_commandBuffers[i], 0, 1, &viewport);
 
             VkRect2D scissor{};
-            scissor.extent.width = 1920;
-            scissor.extent.height = 1080;
+            scissor.extent.width = _viewPortWidth;
+            scissor.extent.height = _viewPortHeight;
             scissor.offset.x = 0;
             scissor.offset.y = 0;
 
@@ -194,47 +200,7 @@ namespace DRHI
         }
     }
 
-    void VulkanDRHI::prepareFrame()
-    {
-        auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentBuffer);
-        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
-            if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-                //windowResize();
-            }
-            return;
-        }
-        else {
-            if (result != VK_SUCCESS)
-            {
-                throw std::runtime_error("failed to acquire next image");
-            }
-        }
-    }
-
-    void VulkanDRHI::submitFrame()
-    {
-        auto result = queuePresent(&_graphicQueue, &_swapChain, &_currentBuffer, &_semaphores.renderComplete);
-        // Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
-        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
-            //windowResize();
-            if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-                return;
-            }
-        }
-        else {
-            if (result != VK_SUCCESS)
-            {
-                throw std::runtime_error("failed to submit frame");
-            }
-        }
-        
-        if (vkQueueWaitIdle(_graphicQueue) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to wait queue");
-        }
-    }
-
-    void VulkanDRHI::draw()
+    void VulkanDRHI::frameOnTick()
     {
        // vkDeviceWaitIdle(_device);
         prepareFrame();
@@ -246,6 +212,47 @@ namespace DRHI
             vkDeviceWaitIdle(_device);
         }
     }
+
+
+
+    //---------------------------------------------
+    //---------------------------------------------
+    //---------------Buffer function---------------
+    //---------------------------------------------
+    //---------------------------------------------
+    void VulkanDRHI::createVertexBuffer()
+    {
+        VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+
+        VkBuffer stagingBuffer;
+        VkDeviceMemory stagingBufferMemory;
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+
+        void* data;
+        vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+        memcpy(data, vertices.data(), (size_t)bufferSize);
+        vkUnmapMemory(device, stagingBufferMemory);
+
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
+
+        copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
+
+        vkDestroyBuffer(device, stagingBuffer, nullptr);
+        vkFreeMemory(device, stagingBufferMemory, nullptr);
+    }
+
+    void VulkanDRHI::bindVertexBuffer()
+    {
+
+    }
+
+    void VulkanDRHI::bindIndexBuffer()
+    {
+
+    }
+
+
+
 
     void VulkanDRHI::createPipeline(PipelineCreateInfo info)
     {
@@ -299,5 +306,45 @@ namespace DRHI
             0, nullptr,
             0, nullptr,
             1, &imageMemoryBarrier);
+    }
+
+    void VulkanDRHI::prepareFrame()
+    {
+        auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentBuffer);
+        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
+            if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+                //windowResize();
+            }
+            return;
+        }
+        else {
+            if (result != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to acquire next image");
+            }
+        }
+    }
+
+    void VulkanDRHI::submitFrame()
+    {
+        auto result = queuePresent(&_graphicQueue, &_swapChain, &_currentBuffer, &_semaphores.renderComplete);
+        // Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
+        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
+            //windowResize();
+            if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+                return;
+            }
+        }
+        else {
+            if (result != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to submit frame");
+            }
+        }
+
+        if (vkQueueWaitIdle(_graphicQueue) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to wait queue");
+        }
     }
 }

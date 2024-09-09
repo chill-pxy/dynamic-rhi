@@ -6,11 +6,17 @@ namespace DRHI
 	class DynamicRHI
 	{
 	public:
+		//initialize vulkan rhi member
 		virtual void initialize() = 0;
+		//clean vulkan rhi member
 		virtual void clean() = 0;
-		virtual void beginCommandBuffer() = 0;
-		virtual void prepareFrame() = 0;
-		virtual void submitFrame() = 0;
-		virtual void draw() = 0;
+		//call vkCommandBegin function
+		virtual void prepareCommandBuffer() = 0;
+		//call within render loop
+		virtual void frameOnTick() = 0;
+		//
+		virtual void bindVertexBuffer() = 0;
+		//
+		virtual void bindIndexBuffer() = 0;
 	};
 }

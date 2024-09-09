@@ -52,6 +52,8 @@ namespace DRHI
 		VkPipelineLayout             _pipelineLayout{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
 		Semaphores                   _semaphores{ VK_NULL_HANDLE, VK_NULL_HANDLE };
+		uint32_t                     _viewPortWidth{ 0 };
+		uint32_t                     _viewPortHeight{ 0 };
 
 		// Active frame buffer index
 		uint32_t _currentBuffer = 0;
@@ -62,15 +64,29 @@ namespace DRHI
 		VulkanDRHI() = delete;
 		VulkanDRHI(RHICreateInfo createInfo);
 		
+		//initialize vulkan rhi member
 		virtual void initialize();
+		//clean vulkan rhi member
 		virtual void clean();
-		virtual void beginCommandBuffer();
-		virtual void prepareFrame();
-		virtual void submitFrame();
-		virtual void draw();
-
+		//call vkCommandBegin function
+		virtual void prepareCommandBuffer();
+		//call within render loop
+		virtual void frameOnTick();
+		
+		
+		
+		//Buffer class
+		virtual void createVertexBuffer();
+		//
+		virtual void bindVertexBuffer();
+		//
+		virtual void bindIndexBuffer();
+		
+		
+		
+		//create the particular pipeline
 		void createPipeline(PipelineCreateInfo info);
-
+		 
 	private:
 		void insertImageMemoryBarrier(
 			VkCommandBuffer cmdbuffer,
@@ -82,5 +98,7 @@ namespace DRHI
 			VkPipelineStageFlags srcStageMask,
 			VkPipelineStageFlags dstStageMask,
 			VkImageSubresourceRange subresourceRange);
+		void prepareFrame();
+		void submitFrame();
 	};
 }
