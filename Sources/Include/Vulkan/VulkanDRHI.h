@@ -13,6 +13,7 @@
 #include "VulkanDescriptor.h"
 #include "VulkanGraphicsPipeline.h"
 #include "VulkanSemphores.h"
+#include "VulkanBuffer.h"
 
 namespace DRHI
 {
@@ -76,11 +77,11 @@ namespace DRHI
 		
 		
 		//Buffer class
-		virtual void createVertexBuffer();
+		virtual void iCreateDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData);
 		//
-		virtual void bindVertexBuffer();
+		virtual void iBindVertexBuffer();
 		//
-		virtual void bindIndexBuffer();
+		virtual void iBindIndexBuffer();
 		
 		
 		

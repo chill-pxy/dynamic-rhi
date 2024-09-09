@@ -14,9 +14,14 @@ namespace DRHI
 		virtual void prepareCommandBuffer() = 0;
 		//call within render loop
 		virtual void frameOnTick() = 0;
+
+
+
+		//Buffer class
+		virtual void iCreateDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData) = 0;
 		//
-		virtual void bindVertexBuffer() = 0;
+		virtual void iBindVertexBuffer() = 0;
 		//
-		virtual void bindIndexBuffer() = 0;
+		virtual void iBindIndexBuffer() = 0;
 	};
 }

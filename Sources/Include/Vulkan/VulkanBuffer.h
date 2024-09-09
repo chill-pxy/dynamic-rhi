@@ -62,7 +62,7 @@ namespace DRHI
         vkBindBufferMemory(*device, buffer, bufferMemory, 0);
     }
 
-	void createVertexBuffer(DynamicBuffer* vertexBuffer , DynamicDeviceMemory vertexDeviceMemory, VkDevice* device, VkPhysicalDevice* physicalDevice, VkCommandPool* commandPool, VkQueue* graphicsQueue, uint64_t bufferSize, void* bufferData)
+	void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, VkDevice* device, VkPhysicalDevice* physicalDevice, VkCommandPool* commandPool, VkQueue* graphicsQueue)
 	{
         //VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
@@ -82,8 +82,8 @@ namespace DRHI
 
         copyBuffer(stagingBuffer, inputBuffer, bufferSize, commandPool, device, graphicsQueue);
 
-        vertexBuffer->internalID = inputBuffer;
-        vertexDeviceMemory.internalID = inputMemory;
+        buffer->internalID = inputBuffer;
+        deviceMemory->internalID = inputMemory;
 
         vkDestroyBuffer(*device, stagingBuffer, nullptr);
         vkFreeMemory(*device, stagingBufferMemory, nullptr);
