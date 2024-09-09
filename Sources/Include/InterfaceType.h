@@ -6,6 +6,8 @@
 #define NOMINMAX
 #include<Windows.h>
 
+#include<variant>
+
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
 #else
@@ -21,6 +23,18 @@ namespace DRHI
 		VULKAN,
 		DIRECT3D12
 	}API;
+
+	class DynamicBuffer
+	{
+	public:
+		std::variant<VkBuffer> internalID;
+	};
+
+	class DynamicDeviceMemory
+	{
+	public:
+		std::variant<VkDeviceMemory> internalID;
+	};
 }
 
 
