@@ -29,7 +29,7 @@ int main()
     pci.vertexShader = "../../../Example/shaders/model_vertex.spv";
     pci.fragmentShader = "../../../Example/shaders/model_fragment.spv";
 
-    dynamic_cast<VulkanDRHI*>(_platformContext)->createPipeline(pci);
+    static_cast<VulkanDRHI*>(_platformContext)->createPipeline(pci);
     _platformContext->beginCommandBuffer();
 
     bool running = true;

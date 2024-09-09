@@ -73,10 +73,5 @@ namespace DRHI
         vkGetDeviceQueue(*device, indices.presentFamily.value(), 0, presentQueue);
 
         *queueFamilyIndices = indices;
-
-        volkLoadDevice(*device);
-
-        VolkDeviceTable* deviceTable = new VolkDeviceTable();
-        volkLoadDeviceTable(deviceTable, *device);
     }
 }

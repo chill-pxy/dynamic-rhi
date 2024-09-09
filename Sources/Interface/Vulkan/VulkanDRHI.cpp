@@ -236,11 +236,15 @@ namespace DRHI
 
     void VulkanDRHI::draw()
     {
+       // vkDeviceWaitIdle(_device);
         prepareFrame();
         _submitInfo.commandBufferCount = 1;
         _submitInfo.pCommandBuffers = &_commandBuffers[_currentBuffer];
         vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE);
         submitFrame();
+        if (_device != VK_NULL_HANDLE) {
+            vkDeviceWaitIdle(_device);
+        }
     }
 
     void VulkanDRHI::createPipeline(PipelineCreateInfo info)
