@@ -59,7 +59,7 @@ namespace DRHI
 		// Active frame buffer index
 		uint32_t _currentBuffer = 0;
 		// Contains command buffers and semaphores to be presented to the queue
-		VkSubmitInfo _submitInfo;
+		VkSubmitInfo _submitInfo{};
 
 	public:
 		VulkanDRHI() = delete;
@@ -79,9 +79,9 @@ namespace DRHI
 		//Buffer class
 		virtual void iCreateDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData);
 		//
-		virtual void iBindVertexBuffer();
+		virtual void iBindVertexBuffer(DynamicBuffer* vertexBuffer, uint32_t commandBufferIndex);
 		//
-		virtual void iBindIndexBuffer();
+		virtual void iBindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t commandBufferIndex);
 		
 		
 		

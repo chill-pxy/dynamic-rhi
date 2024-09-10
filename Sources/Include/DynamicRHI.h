@@ -20,8 +20,8 @@ namespace DRHI
 		//Buffer class
 		virtual void iCreateDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData) = 0;
 		//
-		virtual void iBindVertexBuffer() = 0;
+		virtual void iBindVertexBuffer(DynamicBuffer* vertexBuffer, uint32_t commandBufferIndex) = 0;
 		//
-		virtual void iBindIndexBuffer() = 0;
+		virtual void iBindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t commandBufferIndex) = 0;
 	};
 }

@@ -28,12 +28,16 @@ namespace DRHI
 	{
 	public:
 		std::variant<VkBuffer> internalID;
+
+		VkBuffer getVulkanBuffer() { return std::get<VkBuffer>(internalID); }
 	};
 
 	class DynamicDeviceMemory
 	{
 	public:
 		std::variant<VkDeviceMemory> internalID;
+
+		VkDeviceMemory getVulkanDeviceMemory() { return std::get<VkDeviceMemory>(internalID); }
 	};
 }
 

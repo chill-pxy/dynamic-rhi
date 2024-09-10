@@ -220,19 +220,22 @@ namespace DRHI
     //---------------Buffer function---------------
     //---------------------------------------------
     //---------------------------------------------
-    void VulkanDRHI::iCreateDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData)
+    void VulkanDRHI::iCreateDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData)
     {
-        createDynamicBuffer(vertexBuffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue);
+        createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue);
     }
 
-    void VulkanDRHI::iBindVertexBuffer()
+    void VulkanDRHI::iBindVertexBuffer(DynamicBuffer* vertexBuffer, uint32_t commandBufferIndex)
     {
-        
+        auto vkVertexBuffer = vertexBuffer->getVulkanBuffer();
+        const VkDeviceSize offsets[1] = { 0 };
+        vkCmdBindVertexBuffers(_commandBuffers[commandBufferIndex], 0, 1, &vkVertexBuffer, offsets);
     }
 
-    void VulkanDRHI::iBindIndexBuffer()
+    void VulkanDRHI::iBindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t commandBufferIndex)
     {
-
+        auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
+        vkCmdBindIndexBuffer(_commandBuffers[commandBufferIndex], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
     }
 
 
