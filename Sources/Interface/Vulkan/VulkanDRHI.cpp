@@ -101,7 +101,7 @@ namespace DRHI
 
 	}
 
-    void VulkanDRHI::prepareCommandBuffer()
+    void VulkanDRHI::prepareCommandBuffer(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer)
     {
         VkCommandBufferBeginInfo cmdBufferBeginInfo{};
         cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -180,10 +180,19 @@ namespace DRHI
             vkCmdBindPipeline(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _graphicsPipeline);
 
             //....
-            // model draw
-            // ui draw
             //....
+            // ui draw
+            // ....
+            // ....
+            
+            //binding models vertex and index
+            auto vkVertexBuffer = vertexBuffer->getVulkanBuffer();
+            const VkDeviceSize offsets[1] = { 0 };
+            vkCmdBindVertexBuffers(_commandBuffers[i], 0, 1, &vkVertexBuffer, offsets);
 
+            auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
+            vkCmdBindIndexBuffer(_commandBuffers[i], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+            
             //End dynamic rendering
             vkCmdEndRenderingKHR(_commandBuffers[i]);
 
@@ -213,33 +222,10 @@ namespace DRHI
         //}
     }
 
-
-
-    //---------------------------------------------
-    //---------------------------------------------
-    //---------------Buffer function---------------
-    //---------------------------------------------
-    //---------------------------------------------
-    void VulkanDRHI::iCreateDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData)
+    void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData)
     {
-        createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue);
+        VulkanBuffer::createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue);
     }
-
-    void VulkanDRHI::iBindVertexBuffer(DynamicBuffer* vertexBuffer, uint32_t commandBufferIndex)
-    {
-        auto vkVertexBuffer = vertexBuffer->getVulkanBuffer();
-        const VkDeviceSize offsets[1] = { 0 };
-        vkCmdBindVertexBuffers(_commandBuffers[commandBufferIndex], 0, 1, &vkVertexBuffer, offsets);
-    }
-
-    void VulkanDRHI::iBindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t commandBufferIndex)
-    {
-        auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
-        vkCmdBindIndexBuffer(_commandBuffers[commandBufferIndex], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
-    }
-
-
-
 
     void VulkanDRHI::createPipeline(PipelineCreateInfo info)
     {

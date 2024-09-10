@@ -70,18 +70,11 @@ namespace DRHI
 		//clean vulkan rhi member
 		virtual void clean();
 		//call vkCommandBegin function
-		virtual void prepareCommandBuffer();
+		virtual void prepareCommandBuffer(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer);
 		//call within render loop
 		virtual void frameOnTick();
-		
-		
-		
 		//Buffer class
-		virtual void iCreateDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData);
-		//
-		virtual void iBindVertexBuffer(DynamicBuffer* vertexBuffer, uint32_t commandBufferIndex);
-		//
-		virtual void iBindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t commandBufferIndex);
+		virtual void createDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData);
 		
 		
 		
