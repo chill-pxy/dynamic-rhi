@@ -223,11 +223,11 @@ namespace DRHI
         prepareFrame();
         _submitInfo.commandBufferCount = 1;
         _submitInfo.pCommandBuffers = &_commandBuffers[_currentBuffer];
-        vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE);
-        submitFrame();
-        if (_device != VK_NULL_HANDLE) {
-            vkDeviceWaitIdle(_device);
+        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to submit queue");
         }
+        submitFrame();
     }
 
     void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData)
