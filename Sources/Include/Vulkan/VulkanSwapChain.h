@@ -16,6 +16,14 @@ namespace DRHI
         std::vector<VkPresentModeKHR>   presentModes;
     };
 
+    /** @brief Default depth stencil attachment used by the default render pass */
+    struct DepthStencil 
+    {
+        VkImage image;
+        VkDeviceMemory memory;
+        VkImageView view;
+    };
+
     void createSwapChain(VkSwapchainKHR* swapChain, VkPhysicalDevice* physicalDevice, VkDevice* device, VkSurfaceKHR* surface, HWND window,
         std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat, VkExtent2D* swapChainExtent);
 
@@ -34,5 +42,7 @@ namespace DRHI
     void cleanSwapChain(VkDevice* device, std::vector<VkFramebuffer>* swapChainFramebuffers, std::vector<VkImageView>* swapChainImageViews, VkSwapchainKHR* swapChain);
 
     VkResult queuePresent(VkQueue* queue, VkSwapchainKHR* swapChain, uint32_t* imageIndex, VkSemaphore* waitSemaphore);
+
+    void createDepthStencil(DepthStencil* depthStencil, VkFormat depthFormat, uint32_t width, uint32_t height, VkDevice* device, VkPhysicalDevice* physicalDevice);
 }
 

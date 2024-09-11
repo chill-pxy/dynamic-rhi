@@ -1,5 +1,7 @@
 #pragma once
 
+#include<stdexcept>
+
 #include"../../Include/InterfaceType.h"
 #include"VulkanQueueFamily.h"
 

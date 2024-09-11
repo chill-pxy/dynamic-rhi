@@ -69,23 +69,31 @@ namespace DRHI
 	{
 		createInstance(&_instance);
 		createSurface(&_surface, &_instance, _platformInfo);
-		pickPhysicalDevice(&_physicalDevice, &_instance, 0);
-		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
-		createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices);
-		createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent);
-		createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
-		createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
-		createDescriptorSetLayout(&_descriptorSetLayout, &_device);
-		createDescriptorPool(&_descriptorPool, &_device);
-        createCommandBuffers(&_commandBuffers, &_commandPool, &_device);
-        createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device);
-        createSemaphore(&_semaphores, &_device);
 
         //calculate viewport size
         RECT rect;
         GetWindowRect(_platformInfo.window, &rect);
         _viewPortWidth = rect.right - rect.left;
         _viewPortHeight = rect.bottom - rect.top;
+		
+        pickPhysicalDevice(&_physicalDevice, &_instance, 0);
+		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
+		createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices);
+		
+        createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent);
+		createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
+        createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
+
+        createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
+        createCommandBuffers(&_commandBuffers, &_commandPool, &_device); 
+        
+        createDescriptorSetLayout(&_descriptorSetLayout, &_device);
+        createDescriptorPool(&_descriptorPool, &_device);
+        createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device);
+        
+        createSemaphore(&_semaphores, &_device);
+
+        createSynchronizationPrimitives(&_waitFences, _commandBuffers.size(), &_device);
 
         //initialize submit info
         /** @brief Pipeline stages used to wait at for graphics queue submissions */
@@ -121,13 +129,13 @@ namespace DRHI
                 VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
 
             //need to setup depth image
-            //insertImageMemoryBarrier(_commandBuffers[i], _swapChainImages[i], 0,
-            //    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-            //    VK_IMAGE_LAYOUT_UNDEFINED,
-            //    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-            //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-            //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-            //    VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+            insertImageMemoryBarrier(_commandBuffers[i], _depthStencil.image, 0,
+                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
             
             // New structures are used to define the attachments used in dynamic rendering
             VkRenderingAttachmentInfoKHR colorAttachment{};
@@ -140,13 +148,13 @@ namespace DRHI
 
             // A single depth stencil attachment info can be used, but they can also be specified separately.
             // When both are specified separately, the only requirement is that the image view is identical.			
-            /*VkRenderingAttachmentInfoKHR depthStencilAttachment{};
+            VkRenderingAttachmentInfoKHR depthStencilAttachment{};
             depthStencilAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-            depthStencilAttachment.imageView = depthStencil.view;
+            depthStencilAttachment.imageView = _depthStencil.view;
             depthStencilAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
             depthStencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
             depthStencilAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-            depthStencilAttachment.clearValue.depthStencil = { 1.0f,  0 };*/
+            depthStencilAttachment.clearValue.depthStencil = { 1.0f,  0 };
 
             VkRenderingInfoKHR renderingInfo{};
             renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
@@ -154,8 +162,8 @@ namespace DRHI
             renderingInfo.layerCount = 1;
             renderingInfo.colorAttachmentCount = 1;
             renderingInfo.pColorAttachments = &colorAttachment;
-            //renderingInfo.pDepthAttachment = &depthStencilAttachment;
-            //renderingInfo.pStencilAttachment = &depthStencilAttachment;
+            renderingInfo.pDepthAttachment = &depthStencilAttachment;
+            renderingInfo.pStencilAttachment = &depthStencilAttachment;
 
             //Begin dynamic rendering
             vkCmdBeginRenderingKHR(_commandBuffers[i], &renderingInfo);
@@ -217,9 +225,9 @@ namespace DRHI
         _submitInfo.pCommandBuffers = &_commandBuffers[_currentBuffer];
         vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE);
         submitFrame();
-        //if (_device != VK_NULL_HANDLE) {
-        //    vkDeviceWaitIdle(_device);
-        //}
+        if (_device != VK_NULL_HANDLE) {
+            vkDeviceWaitIdle(_device);
+        }
     }
 
     void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData)
