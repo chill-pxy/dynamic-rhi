@@ -87,8 +87,8 @@ namespace DRHI
         createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
         createCommandBuffers(&_commandBuffers, &_commandPool, &_device); 
         
-        createDescriptorSetLayout(&_descriptorSetLayout, &_device);
-        createDescriptorPool(&_descriptorPool, &_device);
+        VulkanDescriptor::createDescriptorSetLayout(&_descriptorSetLayout, &_device);
+        VulkanDescriptor::createDescriptorPool(&_descriptorPool, &_device);
         //createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device);
         //createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device);
 
@@ -258,6 +258,11 @@ namespace DRHI
 
             vkMapMemory(_device, vkUniformBufferMemory, 0, bufferSize, 0, &(*uniformBuffersMapped)[i]);
         }
+    }
+
+    void VulkanDRHI::createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize)
+    {
+        VulkanDescriptor::createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device, uniformBuffers, uniformBufferSize);
     }
 
     void VulkanDRHI::createPipeline(PipelineCreateInfo info)

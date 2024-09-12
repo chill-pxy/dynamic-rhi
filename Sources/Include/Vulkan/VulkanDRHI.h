@@ -82,7 +82,8 @@ namespace DRHI
 		virtual void createDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData);
 		//unifrom buffer
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
-		
+		//create discriptor set
+		virtual void createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize);
 		
 		//create the particular pipeline
 		void createPipeline(PipelineCreateInfo info);
