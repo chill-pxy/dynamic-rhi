@@ -89,8 +89,9 @@ namespace DRHI
         
         createDescriptorSetLayout(&_descriptorSetLayout, &_device);
         createDescriptorPool(&_descriptorPool, &_device);
-        createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device);
-        
+        //createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device);
+        //createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device);
+
         createSemaphore(&_semaphores, &_device);
 
         createSynchronizationPrimitives(&_waitFences, _commandBuffers.size(), &_device);
@@ -109,7 +110,7 @@ namespace DRHI
 
 	}
 
-    void VulkanDRHI::prepareCommandBuffer(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer)
+    void VulkanDRHI::prepareCommandBuffer(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indicesSize)
     {
         VkCommandBufferBeginInfo cmdBufferBeginInfo{};
         cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
@@ -200,6 +201,10 @@ namespace DRHI
 
             auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
             vkCmdBindIndexBuffer(_commandBuffers[i], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+            vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSets[_currentBuffer], 0, nullptr);
+
+            vkCmdDrawIndexed(_commandBuffers[i], indicesSize, 1, 0, 0, 0);
             
             //End dynamic rendering
             vkCmdEndRenderingKHR(_commandBuffers[i]);
@@ -233,6 +238,26 @@ namespace DRHI
     void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData)
     {
         VulkanBuffer::createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue);
+    }
+
+    void VulkanDRHI::createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize)
+    {
+        uniformBuffers->resize(MAX_FRAMES_IN_FLIGHT);
+        uniformBuffersMemory->resize(MAX_FRAMES_IN_FLIGHT);
+        uniformBuffersMapped->resize(MAX_FRAMES_IN_FLIGHT);
+
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
+        {
+            DynamicBuffer uniformBuffer = (*uniformBuffers)[i];
+            VkBuffer vkUniformBuffer = uniformBuffer.getVulkanBuffer();
+
+            DynamicDeviceMemory uniformBufferDeviceMemory = (*uniformBuffersMemory)[i];
+            VkDeviceMemory vkUniformBufferMemory = uniformBufferDeviceMemory.getVulkanDeviceMemory();
+
+            VulkanBuffer::createBuffer(&_device, &_physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, vkUniformBuffer, vkUniformBufferMemory);
+
+            vkMapMemory(_device, vkUniformBufferMemory, 0, bufferSize, 0, &(*uniformBuffersMapped)[i]);
+        }
     }
 
     void VulkanDRHI::createPipeline(PipelineCreateInfo info)

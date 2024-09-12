@@ -52,6 +52,7 @@ namespace DRHI
 		VkDescriptorSetLayout        _descriptorSetLayout{ VK_NULL_HANDLE };
 		VkDescriptorPool             _descriptorPool{ VK_NULL_HANDLE };
 		VkDescriptorSet              _descriptorSet{ VK_NULL_HANDLE };
+		std::vector<VkDescriptorSet> _descriptorSets;
 		VkPipeline                   _graphicsPipeline{ VK_NULL_HANDLE };
 		VkPipelineLayout             _pipelineLayout{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
@@ -74,12 +75,13 @@ namespace DRHI
 		//clean vulkan rhi member
 		virtual void clean();
 		//call vkCommandBegin function
-		virtual void prepareCommandBuffer(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer);
+		virtual void prepareCommandBuffer(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indicesSize);
 		//call within render loop
 		virtual void frameOnTick();
 		//Buffer class
 		virtual void createDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData);
-		
+		//unifrom buffer
+		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		
 		
 		//create the particular pipeline
