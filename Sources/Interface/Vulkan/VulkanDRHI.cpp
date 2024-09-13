@@ -260,16 +260,20 @@ namespace DRHI
         }
     }
 
-    void VulkanDRHI::createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize)
+    void VulkanDRHI::createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize, DynamicImageView textureImageView, DynamicSampler textureSampler)
     {
-        VulkanDescriptor::createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device, uniformBuffers, uniformBufferSize);
+        VkImageView vkImageView = textureImageView.getVulkanImageView();
+        VkSampler vkSampler = textureSampler.getVulkanSampler();
+        VulkanDescriptor::createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device, uniformBuffers, uniformBufferSize, &vkImageView, &vkSampler);
     }
 
-    void VulkanDRHI::createTextureImage(DynamicImage* textureImage, int texWidth, int texHeight, stbi_uc* pixels)
+    void VulkanDRHI::createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels)
     {
         VkImage vkImage;
-        VulkanImage::createTextureImage(&vkImage, texWidth, texHeight, pixels, &_device, &_physicalDevice, &_graphicQueue, &_commandPool);
+        VkDeviceMemory vkMemory;
+        VulkanImage::createTextureImage(&vkImage, &vkMemory, texWidth, texHeight, texChannels, pixels, &_device, &_physicalDevice, &_graphicQueue, &_commandPool);
         textureImage->internalID = vkImage;
+        textureMemory->internalID = vkMemory;
     }
 
     void VulkanDRHI::createImageView(DynamicImageView* imageView, DynamicImage* image)

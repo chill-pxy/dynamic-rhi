@@ -8,7 +8,7 @@ namespace DRHI
 {
 	namespace VulkanImage
 	{
-        void createTextureImage(VkImage* textureImage, int texWidth, int texHeight, stbi_uc* pixels, VkDevice* device, VkPhysicalDevice* physicalDevice, VkQueue* graphicsQueue, VkCommandPool* commandPool);
+        void createTextureImage(VkImage* textureImage, VkDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels, VkDevice* device, VkPhysicalDevice* physicalDevice, VkQueue* graphicsQueue, VkCommandPool* commandPool);
 
         void createImage(
             VkImage* image,

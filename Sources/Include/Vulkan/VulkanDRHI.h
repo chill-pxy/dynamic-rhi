@@ -84,9 +84,9 @@ namespace DRHI
 		//unifrom buffer
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		//create discriptor set
-		virtual void createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize);
+		virtual void createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize, DynamicImageView textureImageView, DynamicSampler textureSampler);
 		//texture
-		virtual void createTextureImage(DynamicImage* textureImage, int texWidth, int texHeight, stbi_uc* pixels);
+		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels);
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image);
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
 		//create the particular pipeline

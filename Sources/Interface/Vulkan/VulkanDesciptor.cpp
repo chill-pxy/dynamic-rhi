@@ -65,7 +65,10 @@ namespace DRHI
             vkAllocateDescriptorSets(*device, &desciptorSetAllocateInfo, descriptorSet);
         }
 
-        void createDescriptorSets(std::vector<VkDescriptorSet>* descriptorSets, VkDescriptorSetLayout* descriptorSetLayout, VkDescriptorPool* descriptorPool, VkDevice* device, std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize)
+        void createDescriptorSets(std::vector<VkDescriptorSet>* descriptorSets, VkDescriptorSetLayout* descriptorSetLayout, 
+            VkDescriptorPool* descriptorPool, VkDevice* device, 
+            std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize,
+            VkImageView* textureImageView, VkSampler* textureSampler)
         {
             std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, *descriptorSetLayout);
             VkDescriptorSetAllocateInfo allocInfo{};
@@ -93,8 +96,8 @@ namespace DRHI
 
                 VkDescriptorImageInfo imageInfo{};
                 imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-                //imageInfo.imageView = textureImageView;
-                //imageInfo.sampler = textureSampler;
+                imageInfo.imageView = *textureImageView;
+                imageInfo.sampler = *textureSampler;
 
                 std::array<VkWriteDescriptorSet, 2> descriptorWrites{};
 
