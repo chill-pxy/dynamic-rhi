@@ -86,6 +86,8 @@ namespace DRHI
 
         createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
         createCommandBuffers(&_commandBuffers, &_commandPool, &_device); 
+
+        createPipelineCache(&_pipelineCache, &_device);
         
         VulkanDescriptor::createDescriptorSetLayout(&_descriptorSetLayout, &_device);
         VulkanDescriptor::createDescriptorPool(&_descriptorPool, &_device);
@@ -302,7 +304,7 @@ namespace DRHI
         pci.vertexShader = vulkanVertex;
         pci.fragmentShader = vulkanFragment;
 
-        createGraphicsPipeline(&_graphicsPipeline, &_pipelineLayout, pci, &_device,& _descriptorSetLayout, &_swapChainImageFormat);
+        createGraphicsPipeline(&_graphicsPipeline, &_pipelineLayout, &_pipelineCache, pci, &_device,& _descriptorSetLayout, &_swapChainImageFormat);
     }
 
     //------------------------------------------------------//

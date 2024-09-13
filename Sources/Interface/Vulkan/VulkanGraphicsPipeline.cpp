@@ -6,7 +6,7 @@
 
 namespace DRHI
 {
-	void createGraphicsPipeline(VkPipeline* graphicsPipeline, VkPipelineLayout* pipelineLayout, VulkanPipelineCreateInfo createInfo, VkDevice* device, VkDescriptorSetLayout* descriptorSetlayout, VkFormat* swapChainImageFormat)
+	void createGraphicsPipeline(VkPipeline* graphicsPipeline, VkPipelineLayout* pipelineLayout, VkPipelineCache* pipelineCache, VulkanPipelineCreateInfo createInfo, VkDevice* device, VkDescriptorSetLayout* descriptorSetlayout, VkFormat* swapChainImageFormat)
 	{
         VkPipelineShaderStageCreateInfo vertShaderStageInfo{};
         vertShaderStageInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_SHADER_STAGE_CREATE_INFO;
@@ -49,7 +49,7 @@ namespace DRHI
         rasterizer.rasterizerDiscardEnable = VK_FALSE;
         rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
         rasterizer.lineWidth = 1.0f;
-        rasterizer.cullMode = VK_CULL_MODE_BACK_BIT;
+        rasterizer.cullMode = VK_CULL_MODE_NONE;
         rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
         rasterizer.depthBiasEnable = VK_FALSE;
 
@@ -83,7 +83,7 @@ namespace DRHI
 
         std::vector<VkDynamicState> dynamicStates = {
             VK_DYNAMIC_STATE_VIEWPORT,
-            VK_DYNAMIC_STATE_SCISSOR
+            VK_DYNAMIC_STATE_SCISSOR,
         };
         VkPipelineDynamicStateCreateInfo dynamicState{};
         dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
@@ -99,10 +99,12 @@ namespace DRHI
             throw std::runtime_error("failed to create pipeline layout!");
         }
 
-        VkPipelineRenderingCreateInfoKHR pipelineRenderingCreateInfo;
+        VkPipelineRenderingCreateInfoKHR pipelineRenderingCreateInfo{};
         pipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
         pipelineRenderingCreateInfo.colorAttachmentCount = 1;
         pipelineRenderingCreateInfo.pColorAttachmentFormats = swapChainImageFormat;
+        pipelineRenderingCreateInfo.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
+        pipelineRenderingCreateInfo.stencilAttachmentFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
 
         VkPipelineTessellationStateCreateInfo pipelineTessellationStateCreateInfo{};
         pipelineTessellationStateCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_TESSELLATION_STATE_CREATE_INFO;
@@ -110,6 +112,7 @@ namespace DRHI
 
         VkGraphicsPipelineCreateInfo pipelineInfo{};
         pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
+        pipelineInfo.pNext = &pipelineRenderingCreateInfo;
         pipelineInfo.stageCount = 2;
         pipelineInfo.pStages = shaderStages;
         pipelineInfo.pVertexInputState = &vertexInputInfo;
@@ -125,11 +128,22 @@ namespace DRHI
         pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
         pipelineInfo.pTessellationState = &pipelineTessellationStateCreateInfo;
 
-        if (vkCreateGraphicsPipelines(*device, VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, graphicsPipeline) != VK_SUCCESS) {
+        if (vkCreateGraphicsPipelines(*device, *pipelineCache, 1, &pipelineInfo, nullptr, graphicsPipeline) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to create graphics pipeline!");
         }
 
         vkDestroyShaderModule(*device, createInfo.fragmentShader, nullptr);
         vkDestroyShaderModule(*device, createInfo.vertexShader, nullptr);
 	}
+
+    void createPipelineCache(VkPipelineCache* pipelineCache, VkDevice* device)
+    {
+        VkPipelineCacheCreateInfo pipelineCacheCreateInfo = {};
+        pipelineCacheCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_CACHE_CREATE_INFO;
+        if (vkCreatePipelineCache(*device, &pipelineCacheCreateInfo, nullptr, pipelineCache))
+        {
+            throw std::runtime_error("failed to create pipeline cache");
+        }
+    }
 }
