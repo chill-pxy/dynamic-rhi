@@ -1,5 +1,7 @@
 #include<stdexcept>
 
+#include<stb_image.h>
+
 #include"../../Include/Vulkan/VulkanDRHI.h"
 #include"../../Include/Vulkan/VulkanShader.h"
 #include"../../Include/CoreFunction.h"
@@ -263,6 +265,13 @@ namespace DRHI
     void VulkanDRHI::createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize)
     {
         VulkanDescriptor::createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device, uniformBuffers, uniformBufferSize);
+    }
+
+    void VulkanDRHI::createTextureImage(DynamicImage* textureImage, int texWidth, int texHeight, stbi_uc* pixels)
+    {
+        VkImage vkImage;
+        VulkanImage::createTextureImage(&vkImage, texWidth, texHeight, pixels, &_device, &_physicalDevice, &_graphicQueue, &_commandPool);
+        textureImage->internalID = vkImage;
     }
 
     void VulkanDRHI::createPipeline(PipelineCreateInfo info)

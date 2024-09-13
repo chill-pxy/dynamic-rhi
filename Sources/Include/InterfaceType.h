@@ -6,6 +6,8 @@
 #define NOMINMAX
 #include<Windows.h>
 
+#include<stb_image.h>
+
 #include<variant>
 
 #ifdef NDEBUG
@@ -38,6 +40,30 @@ namespace DRHI
 		std::variant<VkDeviceMemory> internalID;
 
 		VkDeviceMemory getVulkanDeviceMemory() { return std::get<VkDeviceMemory>(internalID); }
+	};
+
+	class DynamicImage
+	{
+	public:
+		std::variant<VkImage> internalID;
+
+		VkImage getVulkanImage() { return std::get<VkImage>(internalID); }
+	};
+
+	class DynamicImageView
+	{
+	public:
+		std::variant<VkImageView> internalID;
+
+		VkImageView getVulkanImageView() { return std::get<VkImageView>(internalID); }
+	};
+
+	class DynamicSampler
+	{
+	public:
+		std::variant<VkSampler> internalID;
+
+		VkSampler getVulkanSampler() { return std::get<VkSampler>(internalID); }
 	};
 }
 

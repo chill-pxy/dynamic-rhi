@@ -15,6 +15,7 @@
 #include "VulkanSemphores.h"
 #include "VulkanBuffer.h"
 #include "VulkanFence.h"
+#include "VulkanImage.h"
 
 namespace DRHI
 {
@@ -84,7 +85,8 @@ namespace DRHI
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		//create discriptor set
 		virtual void createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize);
-		
+		//texture
+		virtual void createTextureImage(DynamicImage* textureImage, int texWidth, int texHeight, stbi_uc* pixels);
 		//create the particular pipeline
 		void createPipeline(PipelineCreateInfo info);
 		 
