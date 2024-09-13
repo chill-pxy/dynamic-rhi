@@ -1,7 +1,5 @@
 #include<stdexcept>
 
-#include<stb_image.h>
-
 #include"../../Include/Vulkan/VulkanDRHI.h"
 #include"../../Include/Vulkan/VulkanShader.h"
 #include"../../Include/CoreFunction.h"
@@ -272,6 +270,20 @@ namespace DRHI
         VkImage vkImage;
         VulkanImage::createTextureImage(&vkImage, texWidth, texHeight, pixels, &_device, &_physicalDevice, &_graphicQueue, &_commandPool);
         textureImage->internalID = vkImage;
+    }
+
+    void VulkanDRHI::createImageView(DynamicImageView* imageView, DynamicImage* image)
+    {
+        VkImage vkImage = image->getVulkanImage();
+        VkImageView vkTextureImageView = VulkanImage::createImageView(&_device, &vkImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+        imageView->internalID = vkTextureImageView;
+    }
+
+    void VulkanDRHI::createTextureSampler(DynamicSampler* textureSampler)
+    {
+        VkSampler vkSampler;
+        VulkanImage::createTextureSampler(&vkSampler, &_physicalDevice, &_device);
+        textureSampler->internalID = vkSampler;
     }
 
     void VulkanDRHI::createPipeline(PipelineCreateInfo info)

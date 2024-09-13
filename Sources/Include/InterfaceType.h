@@ -6,8 +6,6 @@
 #define NOMINMAX
 #include<Windows.h>
 
-#include<stb_image.h>
-
 #include<variant>
 
 #ifdef NDEBUG

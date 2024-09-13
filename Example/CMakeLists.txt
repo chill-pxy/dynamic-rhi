@@ -8,5 +8,6 @@ add_executable(example main.cpp "NativeWindow.cpp" "NativeWindow.h")
 
 target_link_libraries(example PUBLIC
     volk
+    stb
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/drhi.lib
 )

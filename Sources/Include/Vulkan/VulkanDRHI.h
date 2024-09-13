@@ -87,6 +87,8 @@ namespace DRHI
 		virtual void createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize);
 		//texture
 		virtual void createTextureImage(DynamicImage* textureImage, int texWidth, int texHeight, stbi_uc* pixels);
+		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image);
+		virtual void createTextureSampler(DynamicSampler* textureSampler);
 		//create the particular pipeline
 		void createPipeline(PipelineCreateInfo info);
 		 

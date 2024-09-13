@@ -1,6 +1,8 @@
 #pragma once
 #include<vector>
 
+#include<stb_image.h>
+
 #include"InterfaceType.h"
 
 namespace DRHI
@@ -24,5 +26,7 @@ namespace DRHI
 		virtual void createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize) = 0;
 		//texture
 		virtual void createTextureImage(DynamicImage* textureImage, int texWidth, int texHeight, stbi_uc* pixels) = 0;
+		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image) = 0;
+		virtual void createTextureSampler(DynamicSampler* textureSampler) = 0;
 	};
 }
