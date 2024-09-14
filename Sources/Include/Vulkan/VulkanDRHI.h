@@ -59,6 +59,7 @@ namespace DRHI
 		VkPipelineCache              _pipelineCache{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
 		Semaphores                   _semaphores{ VK_NULL_HANDLE, VK_NULL_HANDLE };
+		VkPipelineStageFlags         _submitPipelineStages{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		uint32_t                     _viewPortWidth{ 0 };
 		uint32_t                     _viewPortHeight{ 0 };
 		std::vector<VkFence>         _waitFences;

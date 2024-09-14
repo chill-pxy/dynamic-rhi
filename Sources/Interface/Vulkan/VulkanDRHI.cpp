@@ -97,11 +97,9 @@ namespace DRHI
 
         //initialize submit info
         /** @brief Pipeline stages used to wait at for graphics queue submissions */
-        VkPipelineStageFlags submitPipelineStages = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT;
-
         _submitInfo = VkSubmitInfo{};
         _submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        _submitInfo.pWaitDstStageMask = &submitPipelineStages;
+        _submitInfo.pWaitDstStageMask = &_submitPipelineStages;
         _submitInfo.waitSemaphoreCount = 1;
         _submitInfo.pWaitSemaphores = &_semaphores.presentComplete;
         _submitInfo.signalSemaphoreCount = 1;
