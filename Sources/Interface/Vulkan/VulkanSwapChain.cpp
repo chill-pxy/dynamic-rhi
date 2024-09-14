@@ -215,10 +215,15 @@ namespace DRHI
         memAllloc.allocationSize = memReqs.size;
         memAllloc.memoryTypeIndex = getMemoryType(physicalDevice, memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
 
-        if (vkAllocateMemory(*device, &memAllloc, nullptr, &depthStencil->memory) != VK_SUCCESS)
+        VkDeviceMemory depthMemory;
+
+        if (vkAllocateMemory(*device, &memAllloc, nullptr, &depthMemory) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to allocate memory");
         }
+
+        depthStencil->memory = depthMemory;
+
         if (vkBindImageMemory(*device, depthStencil->image, depthStencil->memory, 0) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to allocate memory");
