@@ -14,6 +14,9 @@ namespace DRHI
 	VulkanDRHI::VulkanDRHI(RHICreateInfo createInfo)
 	{
         _platformInfo = createInfo.platformInfo;
+
+        _viewPortWidth = _platformInfo.width;
+        _viewPortHeight = _platformInfo.height;
 	}
 
 	void VulkanDRHI::clean()
@@ -69,12 +72,6 @@ namespace DRHI
 	{
 		createInstance(&_instance);
 		createSurface(&_surface, &_instance, _platformInfo);
-
-        //calculate viewport size
-        RECT rect;
-        GetWindowRect(_platformInfo.window, &rect);
-        _viewPortWidth = rect.right - rect.left;
-        _viewPortHeight = rect.bottom - rect.top;
 		
         pickPhysicalDevice(&_physicalDevice, &_instance, 0);
 		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);

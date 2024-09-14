@@ -18,6 +18,8 @@ int main()
 
     DRHI::PlatformInfo pCi{};
     pCi.window = nwindow->_hwnd;
+    pCi.width = windowInfo.width;
+    pCi.height = windowInfo.height;
 
     DRHI::RHICreateInfo rhiCi{};
     rhiCi.platformInfo = pCi;
