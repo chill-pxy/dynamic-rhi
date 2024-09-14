@@ -123,22 +123,22 @@ namespace DRHI
 
             // With dynamic rendering there are no subpass dependencies, so we need to take care of proper layout transitions by using barriers
             // This set of barriers prepares the color and depth images for output
-            insertImageMemoryBarrier(_commandBuffers[i], _swapChainImages[i], 0,
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                VK_IMAGE_LAYOUT_UNDEFINED,
-                VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+            //insertImageMemoryBarrier(_commandBuffers[i], _swapChainImages[i], 0,
+            //    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+            //    VK_IMAGE_LAYOUT_UNDEFINED,
+            //    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+            //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            //    VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
 
-            //need to setup depth image
-            insertImageMemoryBarrier(_commandBuffers[i], _depthStencil.image, 0,
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                VK_IMAGE_LAYOUT_UNDEFINED,
-                VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+            ////need to setup depth image
+            //insertImageMemoryBarrier(_commandBuffers[i], _depthStencil.image, 0,
+            //    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+            //    VK_IMAGE_LAYOUT_UNDEFINED,
+            //    VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+            //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            //    VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
             
             // New structures are used to define the attachments used in dynamic rendering
             VkRenderingAttachmentInfoKHR colorAttachment{};
@@ -161,7 +161,7 @@ namespace DRHI
 
             VkRenderingInfoKHR renderingInfo{};
             renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
-            renderingInfo.renderArea = { 0, 0,1920, 1080 };
+            renderingInfo.renderArea = { 0, 0, _viewPortWidth, _viewPortHeight };
             renderingInfo.layerCount = 1;
             renderingInfo.colorAttachmentCount = 1;
             renderingInfo.pColorAttachments = &colorAttachment;
@@ -211,14 +211,42 @@ namespace DRHI
             //End dynamic rendering
             vkCmdEndRenderingKHR(_commandBuffers[i]);
 
-            insertImageMemoryBarrier(_commandBuffers[i], _swapChainImages[i], 
+           /* insertImageMemoryBarrier(_commandBuffers[i], _swapChainImages[i], 
                 VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
                 0,
                 VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
                 VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });*/
+
+            const VkImageMemoryBarrier imageMemoryBarrier{
+                .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
+                .srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                .oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+                .newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+                .image = _swapChainImages[i],
+                .subresourceRange = {
+                  .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
+                  .baseMipLevel = 0,
+                  .levelCount = 1,
+                  .baseArrayLayer = 0,
+                  .layerCount = 1,
+                }
+            };
+
+            vkCmdPipelineBarrier(
+                _commandBuffers[i],
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // srcStageMask
+                VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, // dstStageMask
+                0,
+                0,
+                nullptr,
+                0,
+                nullptr,
+                1, // imageMemoryBarrierCount
+                &imageMemoryBarrier // pImageMemoryBarriers
+            );
 
             vkEndCommandBuffer(_commandBuffers[i]);
         }
@@ -250,15 +278,15 @@ namespace DRHI
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
         {
-            DynamicBuffer uniformBuffer = (*uniformBuffers)[i];
-            VkBuffer vkUniformBuffer = uniformBuffer.getVulkanBuffer();
+            VkBuffer vkUniformBuffer;
+            VkDeviceMemory vkUniformBufferMemory;
 
-            DynamicDeviceMemory uniformBufferDeviceMemory = (*uniformBuffersMemory)[i];
-            VkDeviceMemory vkUniformBufferMemory = uniformBufferDeviceMemory.getVulkanDeviceMemory();
-
-            VulkanBuffer::createBuffer(&_device, &_physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, vkUniformBuffer, vkUniformBufferMemory);
+            VulkanBuffer::createBuffer(&_device, &_physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vkUniformBuffer, &vkUniformBufferMemory);
 
             vkMapMemory(_device, vkUniformBufferMemory, 0, bufferSize, 0, &(*uniformBuffersMapped)[i]);
+
+            (*uniformBuffers)[i].internalID = vkUniformBuffer;
+            (*uniformBuffersMemory)[i].internalID = vkUniformBufferMemory;
         }
     }
 

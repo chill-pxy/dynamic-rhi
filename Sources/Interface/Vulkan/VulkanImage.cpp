@@ -13,10 +13,10 @@ namespace DRHI
 	{
         void createTextureImage(VkImage* textureImage, VkDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels, VkDevice* device, VkPhysicalDevice* physicalDevice, VkQueue* graphicsQueue, VkCommandPool* commandPool)
         {
-            VkDeviceSize imageSize = texWidth * texHeight * texChannels;
+            VkDeviceSize imageSize = texWidth * texHeight * 4;
             VkBuffer stagingBuffer;
             VkDeviceMemory stagingBufferMemory;
-            VulkanBuffer::createBuffer(device, physicalDevice, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
+            VulkanBuffer::createBuffer(device, physicalDevice, imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
 
             void* data;
             vkMapMemory(*device, stagingBufferMemory, 0, imageSize, 0, &data);
