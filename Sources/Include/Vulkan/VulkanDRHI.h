@@ -81,6 +81,10 @@ namespace DRHI
 		virtual void prepareCommandBuffer(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indicesSize);
 		//call within render loop
 		virtual void frameOnTick();
+		//get commandBuffersize
+		virtual uint32_t getCommandBufferSize();
+		//get current buffer
+		virtual uint32_t getCurrentBuffer();
 		//Buffer class
 		virtual void createDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, const char* type);
 		//unifrom buffer
