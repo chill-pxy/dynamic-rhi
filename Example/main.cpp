@@ -42,7 +42,7 @@ int main()
         _platformContext->frameOnTick();
     }
 
-    _platformContext->clean();
+   // _platformContext->clean();
 
 
 	return 0;

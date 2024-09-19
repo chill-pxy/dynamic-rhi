@@ -19,33 +19,34 @@ namespace DRHI
         _viewPortHeight = _platformInfo.height;
 	}
 
-	void VulkanDRHI::clean()
+	void VulkanDRHI::clean(std::vector<DynamicBuffer>* uniformBuffers, std::vector <DynamicDeviceMemory>* uniformBuffersMemory, DynamicImageView* textureImageView, DynamicSampler* textureSampler,
+        DynamicImage* textureImage, DynamicDeviceMemory* textureImageMemory, DynamicBuffer* indexBuffer, DynamicDeviceMemory* indexBufferMemory, DynamicBuffer* vertexBuffer, DynamicDeviceMemory* vertexBufferMemory)
 	{
         cleanSwapChain(&_device, &_swapChainFramebuffers, &_swapChainImageViews, &_swapChain);
 
         vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
 
-        //for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-        //    vkDestroyBuffer(device, uniformBuffers[i], nullptr);
-        //    vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
-        //}
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+            vkDestroyBuffer(_device, std::get<VkBuffer>((*uniformBuffers)[i].internalID), nullptr);
+            vkFreeMemory(_device, std::get<VkDeviceMemory>((*uniformBuffersMemory)[i].internalID), nullptr);
+        }
 
         vkDestroyDescriptorPool(_device, _descriptorPool, nullptr);
 
-        //vkDestroySampler(device, textureSampler, nullptr);
-        //vkDestroyImageView(device, textureImageView, nullptr);
+        vkDestroySampler(_device, std::get<VkSampler>(textureSampler->internalID), nullptr);
+        vkDestroyImageView(_device, std::get<VkImageView>(textureImageView->internalID), nullptr);
 
-        //vkDestroyImage(device, textureImage, nullptr);
-        //vkFreeMemory(device, textureImageMemory, nullptr);
+        vkDestroyImage(_device, std::get<VkImage>(textureImage->internalID), nullptr);
+        vkFreeMemory(_device, std::get<VkDeviceMemory>(textureImageMemory->internalID), nullptr);
 
         vkDestroyDescriptorSetLayout(_device, _descriptorSetLayout, nullptr);
 
-        //vkDestroyBuffer(device, indexBuffer, nullptr);
-        //vkFreeMemory(device, indexBufferMemory, nullptr);
+        vkDestroyBuffer(_device, std::get<VkBuffer>(indexBuffer->internalID), nullptr);
+        vkFreeMemory(_device, std::get<VkDeviceMemory>(indexBufferMemory->internalID), nullptr);
 
-        //vkDestroyBuffer(device, vertexBuffer, nullptr);
-        //vkFreeMemory(device, vertexBufferMemory, nullptr);
+        vkDestroyBuffer(_device, std::get<VkBuffer>(vertexBuffer->internalID), nullptr);
+        vkFreeMemory(_device, std::get<VkDeviceMemory>(vertexBufferMemory->internalID), nullptr);
 
         /*for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
@@ -191,7 +192,11 @@ namespace DRHI
             // ....
             // ....
             
-            //binding models vertex and index
+            //---------------------------------------------------------------------------
+            //---------------------------------------------------------------------------
+            //----------------------------------model draw-------------------------------
+            //---------------------------------------------------------------------------
+            //---------------------------------------------------------------------------
             auto vkVertexBuffer = vertexBuffer->getVulkanBuffer();
             const VkDeviceSize offsets[1] = { 0 };
             vkCmdBindVertexBuffers(_commandBuffers[i], 0, 1, &vkVertexBuffer, offsets);
@@ -202,6 +207,11 @@ namespace DRHI
             vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSet, 0, nullptr);
 
             vkCmdDrawIndexed(_commandBuffers[i], indicesSize, 1, 0, 0, 0);
+            //---------------------------------------------------------------------------
+            //---------------------------------------------------------------------------
+            //----------------------------------model draw-------------------------------
+            //---------------------------------------------------------------------------
+            //---------------------------------------------------------------------------
             
             //End dynamic rendering
             vkCmdEndRenderingKHR(_commandBuffers[i]);
@@ -214,34 +224,6 @@ namespace DRHI
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
                 VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
-
-            //const VkImageMemoryBarrier imageMemoryBarrier{
-            //    .sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER,
-            //    .srcAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-            //    .oldLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-            //    .newLayout = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-            //    .image = _swapChainImages[i],
-            //    .subresourceRange = {
-            //      .aspectMask = VK_IMAGE_ASPECT_COLOR_BIT,
-            //      .baseMipLevel = 0,
-            //      .levelCount = 1,
-            //      .baseArrayLayer = 0,
-            //      .layerCount = 1,
-            //    }
-            //};
-
-            //vkCmdPipelineBarrier(
-            //    _commandBuffers[i],
-            //    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,  // srcStageMask
-            //    VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT, // dstStageMask
-            //    0,
-            //    0,
-            //    nullptr,
-            //    0,
-            //    nullptr,
-            //    1, // imageMemoryBarrierCount
-            //    &imageMemoryBarrier // pImageMemoryBarriers
-            //);
 
             vkEndCommandBuffer(_commandBuffers[i]);
         }

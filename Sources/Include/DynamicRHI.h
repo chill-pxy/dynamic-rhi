@@ -13,7 +13,8 @@ namespace DRHI
 		//initialize vulkan rhi member
 		virtual void initialize() = 0;
 		//clean vulkan rhi member
-		virtual void clean() = 0;
+		virtual void clean(std::vector<DynamicBuffer>* uniformBuffers, std::vector <DynamicDeviceMemory>* uniformBuffersMemory, DynamicImageView* textureImageView, DynamicSampler* textureSampler,
+			DynamicImage* textureImage, DynamicDeviceMemory* textureImageMemory, DynamicBuffer* indexBuffer, DynamicDeviceMemory* indexBufferMemory, DynamicBuffer* vertexBuffer, DynamicDeviceMemory* vertexBufferMemory) = 0;
 		//call vkCommandBegin function
 		virtual void prepareCommandBuffer(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indicesSize) = 0;
 		//call within render loop
