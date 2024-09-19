@@ -296,16 +296,11 @@ namespace DRHI
         }
     }
 
-    void VulkanDRHI::createDescriptorSets(std::vector<DynamicBuffer>* uniformBuffers, uint32_t uniformBufferSize, DynamicImageView textureImageView, DynamicSampler textureSampler)
+    void VulkanDRHI::createDescriptorSet(std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler)
     {
         VkImageView vkImageView = textureImageView.getVulkanImageView();
         VkSampler vkSampler = textureSampler.getVulkanSampler();
-        VulkanDescriptor::createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device, uniformBuffers, uniformBufferSize, &vkImageView, &vkSampler);
-    }
-
-    void VulkanDRHI::createDescriptorSet(std::vector<DynamicDescriptorBufferInfo>* descriptor)
-    {
-        VulkanDescriptor::createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device, descriptor);
+        VulkanDescriptor::createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device, descriptor, &vkImageView, &vkSampler);
     }
 
     void VulkanDRHI::createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels)
