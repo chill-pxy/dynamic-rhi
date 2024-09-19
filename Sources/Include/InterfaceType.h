@@ -63,6 +63,23 @@ namespace DRHI
 
 		VkSampler getVulkanSampler() { return std::get<VkSampler>(internalID); }
 	};
+
+	class DynamicDescriptorBufferInfo
+	{
+	public:
+		std::variant<VkDescriptorBufferInfo> internalID;
+
+		void set(DynamicBuffer buffer, uint64_t bufferSize, uint32_t offset = 0)
+		{
+			VkDescriptorBufferInfo vkinfo{};
+			vkinfo.buffer = buffer.getVulkanBuffer();
+			vkinfo.offset = offset;
+			vkinfo.range = bufferSize;
+
+			internalID = vkinfo;
+		}
+		VkDescriptorBufferInfo getVulkanDrscriptorBufferInfo() { return std::get<VkDescriptorBufferInfo>(internalID); }
+	};
 }
 
 

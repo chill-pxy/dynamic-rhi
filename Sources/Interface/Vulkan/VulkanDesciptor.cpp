@@ -54,16 +54,29 @@ namespace DRHI
             }
         }
 
-        void createDescriptorSet(VkDescriptorSet* descriptorSet, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* descriptorSetLayout, uint32_t descriptorSetCount, VkDevice* device)
+        void createDescriptorSet(VkDescriptorSet* descriptorSet, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* descriptorSetLayout, uint32_t descriptorSetCount, VkDevice* device, VkDescriptorBufferInfo* uniformBufferInfo)
         {
-            VkDescriptorSetAllocateInfo desciptorSetAllocateInfo{};
-            desciptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
-            desciptorSetAllocateInfo.descriptorPool = *descriptorPool;
-            desciptorSetAllocateInfo.pSetLayouts = descriptorSetLayout;
-            desciptorSetAllocateInfo.descriptorSetCount = descriptorSetCount;
+            VkDescriptorSetAllocateInfo descriptorSetAllocateInfo{};
+            descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
+            descriptorSetAllocateInfo.descriptorPool = *descriptorPool;
+            descriptorSetAllocateInfo.pSetLayouts = descriptorSetLayout;
+            descriptorSetAllocateInfo.descriptorSetCount = descriptorSetCount;
+            if (vkAllocateDescriptorSets(*device, &descriptorSetAllocateInfo, descriptorSet))
+            {
+                throw std::runtime_error("failed to allocate descriptorsets");
+            }
 
-            vkAllocateDescriptorSets(*device, &desciptorSetAllocateInfo, descriptorSet);
+            VkWriteDescriptorSet writeDescriptorSet{};
+            writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescriptorSet.dstSet = *descriptorSet;
+            writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            writeDescriptorSet.dstBinding = 0;
+            writeDescriptorSet.pBufferInfo = uniformBufferInfo;
+            writeDescriptorSet.descriptorCount = 1;
+
+            vkUpdateDescriptorSets(*device, 1, &writeDescriptorSet, 0, nullptr);
         }
+
 
         void createDescriptorSets(std::vector<VkDescriptorSet>* descriptorSets, VkDescriptorSetLayout* descriptorSetLayout, 
             VkDescriptorPool* descriptorPool, VkDevice* device, 
@@ -120,5 +133,7 @@ namespace DRHI
                 vkUpdateDescriptorSets(*device, static_cast<uint32_t>(descriptorWrites.size()), descriptorWrites.data(), 0, nullptr);
             }
         }
+
+
     }
 }

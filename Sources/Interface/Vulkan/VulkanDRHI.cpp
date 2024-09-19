@@ -182,7 +182,7 @@ namespace DRHI
 
             vkCmdSetScissor(_commandBuffers[i], 0, 1, &scissor);
 
-            vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSets[_currentBuffer], 0, nullptr);
+            //vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSets[_currentBuffer], 0, nullptr);
             vkCmdBindPipeline(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _graphicsPipeline);
 
             //....
@@ -199,7 +199,7 @@ namespace DRHI
             auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
             vkCmdBindIndexBuffer(_commandBuffers[i], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
 
-            vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSets[_currentBuffer], 0, nullptr);
+            vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSet, 0, nullptr);
 
             vkCmdDrawIndexed(_commandBuffers[i], indicesSize, 1, 0, 0, 0);
             
@@ -285,6 +285,7 @@ namespace DRHI
         {
             VkBuffer vkUniformBuffer;
             VkDeviceMemory vkUniformBufferMemory;
+            VkDescriptorBufferInfo vkdescriptorInfo;
 
             VulkanBuffer::createBuffer(&_device, &_physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vkUniformBuffer, &vkUniformBufferMemory);
 
@@ -300,6 +301,12 @@ namespace DRHI
         VkImageView vkImageView = textureImageView.getVulkanImageView();
         VkSampler vkSampler = textureSampler.getVulkanSampler();
         VulkanDescriptor::createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device, uniformBuffers, uniformBufferSize, &vkImageView, &vkSampler);
+    }
+
+    void VulkanDRHI::createDescriptorSet(DynamicDescriptorBufferInfo* descriptor)
+    {
+        auto vkdescriptor = descriptor->getVulkanDrscriptorBufferInfo();
+        VulkanDescriptor::createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device, &vkdescriptor);
     }
 
     void VulkanDRHI::createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels)
