@@ -303,10 +303,9 @@ namespace DRHI
         VulkanDescriptor::createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device, uniformBuffers, uniformBufferSize, &vkImageView, &vkSampler);
     }
 
-    void VulkanDRHI::createDescriptorSet(DynamicDescriptorBufferInfo* descriptor)
+    void VulkanDRHI::createDescriptorSet(std::vector<DynamicDescriptorBufferInfo>* descriptor)
     {
-        auto vkdescriptor = descriptor->getVulkanDrscriptorBufferInfo();
-        VulkanDescriptor::createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device, &vkdescriptor);
+        VulkanDescriptor::createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device, descriptor);
     }
 
     void VulkanDRHI::createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels)

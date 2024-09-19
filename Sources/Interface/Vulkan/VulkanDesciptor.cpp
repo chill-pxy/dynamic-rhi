@@ -54,7 +54,20 @@ namespace DRHI
             }
         }
 
-        void createDescriptorSet(VkDescriptorSet* descriptorSet, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* descriptorSetLayout, uint32_t descriptorSetCount, VkDevice* device, VkDescriptorBufferInfo* uniformBufferInfo)
+        VkWriteDescriptorSet createWriteDescriptorSets(VkDescriptorSet* descriptorSet, VkDescriptorBufferInfo bufferInfo,VkDevice* device)
+        {
+            VkWriteDescriptorSet writeDescriptorSet{};
+            writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            writeDescriptorSet.dstSet = *descriptorSet;
+            writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+            writeDescriptorSet.dstBinding = 0;
+            writeDescriptorSet.pBufferInfo = &bufferInfo;
+            writeDescriptorSet.descriptorCount = 1;
+
+            return writeDescriptorSet;
+        }
+
+        void createDescriptorSet(VkDescriptorSet* descriptorSet, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* descriptorSetLayout, uint32_t descriptorSetCount, VkDevice* device, std::vector<DynamicDescriptorBufferInfo>* uniformBufferInfo)
         {
             VkDescriptorSetAllocateInfo descriptorSetAllocateInfo{};
             descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -66,15 +79,15 @@ namespace DRHI
                 throw std::runtime_error("failed to allocate descriptorsets");
             }
 
-            VkWriteDescriptorSet writeDescriptorSet{};
-            writeDescriptorSet.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptorSet.dstSet = *descriptorSet;
-            writeDescriptorSet.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            writeDescriptorSet.dstBinding = 0;
-            writeDescriptorSet.pBufferInfo = uniformBufferInfo;
-            writeDescriptorSet.descriptorCount = 1;
+            std::vector<VkWriteDescriptorSet> writeDescriptorSets;
 
-            vkUpdateDescriptorSets(*device, 1, &writeDescriptorSet, 0, nullptr);
+            for (int i = 0; i < uniformBufferInfo->size(); ++i)
+            {
+                DynamicDescriptorBufferInfo v = (*uniformBufferInfo)[i];
+                writeDescriptorSets.push_back(createWriteDescriptorSets(descriptorSet, v.getVulkanDrscriptorBufferInfo(), device));
+            }
+
+            vkUpdateDescriptorSets(*device, static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
         }
 
 
