@@ -108,130 +108,114 @@ namespace DRHI
 
 	}
 
-    void VulkanDRHI::prepareCommandBuffer(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indicesSize)
+    void VulkanDRHI::beginCommandBuffer(uint32_t index)
     {
         VkCommandBufferBeginInfo cmdBufferBeginInfo{};
         cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
-        for (int32_t i = 0; i < _commandBuffers.size(); ++i)
-        {
-            vkBeginCommandBuffer(_commandBuffers[i], &cmdBufferBeginInfo);
+        vkBeginCommandBuffer(_commandBuffers[index], &cmdBufferBeginInfo);
 
-            // With dynamic rendering there are no subpass dependencies, so we need to take care of proper layout transitions by using barriers
-            // This set of barriers prepares the color and depth images for output
-            insertImageMemoryBarrier(_commandBuffers[i], _swapChainImages[i], 0,
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                VK_IMAGE_LAYOUT_UNDEFINED,
-                VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+        // With dynamic rendering there are no subpass dependencies, so we need to take care of proper layout transitions by using barriers
+        // This set of barriers prepares the color and depth images for output
+        insertImageMemoryBarrier(_commandBuffers[index], _swapChainImages[index], 0,
+            VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+            VK_IMAGE_LAYOUT_UNDEFINED,
+            VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
 
-            ////need to setup depth image
-            insertImageMemoryBarrier(_commandBuffers[i], _depthStencil.image, 0,
-                VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
-                VK_IMAGE_LAYOUT_UNDEFINED,
-                VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-                VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
-            
-            // New structures are used to define the attachments used in dynamic rendering
-            VkRenderingAttachmentInfoKHR colorAttachment{};
-            colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-            colorAttachment.imageView = _swapChainImageViews[i];
-            colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
-            colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-            colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-            colorAttachment.clearValue.color = { 0.52f, 0.52f, 0.52f,0.0f };
+        ////need to setup depth image
+        insertImageMemoryBarrier(_commandBuffers[index], _depthStencil.image, 0,
+            VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+            VK_IMAGE_LAYOUT_UNDEFINED,
+            VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+            VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
 
-            // A single depth stencil attachment info can be used, but they can also be specified separately.
-            // When both are specified separately, the only requirement is that the image view is identical.			
-            VkRenderingAttachmentInfoKHR depthStencilAttachment{};
-            depthStencilAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-            depthStencilAttachment.imageView = _depthStencil.view;
-            depthStencilAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-            depthStencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-            depthStencilAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-            depthStencilAttachment.clearValue.depthStencil = { 1.0f,  0 };
+        // New structures are used to define the attachments used in dynamic rendering
+        VkRenderingAttachmentInfoKHR colorAttachment{};
+        colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
+        colorAttachment.imageView = _swapChainImageViews[index];
+        colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+        colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+        colorAttachment.clearValue.color = { 0.52f, 0.52f, 0.52f,0.0f };
 
-            VkRenderingInfoKHR renderingInfo{};
-            renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
-            renderingInfo.renderArea = { 0, 0, _viewPortWidth, _viewPortHeight };
-            renderingInfo.layerCount = 1;
-            renderingInfo.colorAttachmentCount = 1;
-            renderingInfo.pColorAttachments = &colorAttachment;
-            renderingInfo.pDepthAttachment = &depthStencilAttachment;
-            renderingInfo.pStencilAttachment = &depthStencilAttachment;
+        // A single depth stencil attachment info can be used, but they can also be specified separately.
+        // When both are specified separately, the only requirement is that the image view is identical.			
+        VkRenderingAttachmentInfoKHR depthStencilAttachment{};
+        depthStencilAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
+        depthStencilAttachment.imageView = _depthStencil.view;
+        depthStencilAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+        depthStencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        depthStencilAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+        depthStencilAttachment.clearValue.depthStencil = { 1.0f,  0 };
 
-            //Begin dynamic rendering
-            vkCmdBeginRenderingKHR(_commandBuffers[i], &renderingInfo);
+        VkRenderingInfoKHR renderingInfo{};
+        renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
+        renderingInfo.renderArea = { 0, 0, _viewPortWidth, _viewPortHeight };
+        renderingInfo.layerCount = 1;
+        renderingInfo.colorAttachmentCount = 1;
+        renderingInfo.pColorAttachments = &colorAttachment;
+        renderingInfo.pDepthAttachment = &depthStencilAttachment;
+        renderingInfo.pStencilAttachment = &depthStencilAttachment;
 
-            VkViewport viewport{};
-            viewport.width = _viewPortWidth;
-            viewport.height = _viewPortHeight;
-            viewport.minDepth = 0.0f;
-            viewport.maxDepth = 1.0f;
+        //Begin dynamic rendering
+        vkCmdBeginRenderingKHR(_commandBuffers[index], &renderingInfo);
 
-            vkCmdSetViewport(_commandBuffers[i], 0, 1, &viewport);
+        VkViewport viewport{};
+        viewport.width = _viewPortWidth;
+        viewport.height = _viewPortHeight;
+        viewport.minDepth = 0.0f;
+        viewport.maxDepth = 1.0f;
 
-            VkRect2D scissor{};
-            scissor.extent.width = _viewPortWidth;
-            scissor.extent.height = _viewPortHeight;
-            scissor.offset.x = 0;
-            scissor.offset.y = 0;
+        vkCmdSetViewport(_commandBuffers[index], 0, 1, &viewport);
 
-            vkCmdSetScissor(_commandBuffers[i], 0, 1, &scissor);
+        VkRect2D scissor{};
+        scissor.extent.width = _viewPortWidth;
+        scissor.extent.height = _viewPortHeight;
+        scissor.offset.x = 0;
+        scissor.offset.y = 0;
 
-            //vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSets[_currentBuffer], 0, nullptr);
-            vkCmdBindPipeline(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _graphicsPipeline);
+        vkCmdSetScissor(_commandBuffers[index], 0, 1, &scissor);
 
-            //....
-            //....
-            // ui draw
-            // ....
-            // ....
-            
-            //---------------------------------------------------------------------------
-            //---------------------------------------------------------------------------
-            //----------------------------------model draw-------------------------------
-            //---------------------------------------------------------------------------
-            //---------------------------------------------------------------------------
-            auto vkVertexBuffer = vertexBuffer->getVulkanBuffer();
-            const VkDeviceSize offsets[1] = { 0 };
-            vkCmdBindVertexBuffers(_commandBuffers[i], 0, 1, &vkVertexBuffer, offsets);
+        vkCmdBindPipeline(_commandBuffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, _graphicsPipeline);
+    }
 
-            auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
-            vkCmdBindIndexBuffer(_commandBuffers[i], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    void VulkanDRHI::endCommandBuffer(uint32_t index)
+    {
+        vkCmdEndRenderingKHR(_commandBuffers[index]);
 
-            vkCmdBindDescriptorSets(_commandBuffers[i], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSet, 0, nullptr);
+        insertImageMemoryBarrier(_commandBuffers[index], _swapChainImages[index],
+            VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+            0,
+            VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
+            VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
+            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+            VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
 
-            vkCmdDrawIndexed(_commandBuffers[i], indicesSize, 1, 0, 0, 0);
-            //---------------------------------------------------------------------------
-            //---------------------------------------------------------------------------
-            //----------------------------------model draw-------------------------------
-            //---------------------------------------------------------------------------
-            //---------------------------------------------------------------------------
-            
-            //End dynamic rendering
-            vkCmdEndRenderingKHR(_commandBuffers[i]);
+        vkEndCommandBuffer(_commandBuffers[index]);
+    }
 
-            insertImageMemoryBarrier(_commandBuffers[i], _swapChainImages[i], 
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                0,
-                VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-                VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+    void VulkanDRHI::modelDraw(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indexSize, uint32_t index)
+    {
+        auto vkVertexBuffer = vertexBuffer->getVulkanBuffer();
+        const VkDeviceSize offsets[1] = { 0 };
+        vkCmdBindVertexBuffers(_commandBuffers[index], 0, 1, &vkVertexBuffer, offsets);
 
-            vkEndCommandBuffer(_commandBuffers[i]);
-        }
+        auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
+        vkCmdBindIndexBuffer(_commandBuffers[index], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+
+        vkCmdBindDescriptorSets(_commandBuffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSet, 0, nullptr);
+
+        vkCmdDrawIndexed(_commandBuffers[index], indexSize, 1, 0, 0, 0);
     }
 
     void VulkanDRHI::frameOnTick()
     {
-       // vkDeviceWaitIdle(_device);
         prepareFrame();
         _submitInfo.commandBufferCount = 1;
         _submitInfo.pCommandBuffers = &_commandBuffers[_currentBuffer];
