@@ -7,6 +7,14 @@
 
 namespace DRHI
 {
+	struct PipelineCreateInfo
+	{
+		const char* vertexShader;
+		const char* fragmentShader;
+		DynamicVertexInputBindingDescription vertexInputBinding;
+		std::vector<DynamicVertexInputAttributeDescription> vertexInputAttributes;
+	};
+
 	class DynamicRHI
 	{
 	public:
@@ -33,5 +41,7 @@ namespace DRHI
 		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels) = 0;
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image) = 0;
 		virtual void createTextureSampler(DynamicSampler* textureSampler) = 0;
+		//create the particular pipeline
+		virtual void createPipeline(PipelineCreateInfo info) = 0;
 	};
 }

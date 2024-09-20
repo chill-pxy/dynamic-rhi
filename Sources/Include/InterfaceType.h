@@ -39,8 +39,8 @@ namespace DRHI
 			}
 		}
 
-		uint32_t FORMAT_R32G32B32_SFLOAT;
-		uint32_t FORMAT_R32G32_SFLOAT;
+		uint32_t FORMAT_R32G32B32_SFLOAT{0};
+		uint32_t FORMAT_R32G32_SFLOAT{0};
 
 	}DynamicFormat;
 
@@ -106,14 +106,23 @@ namespace DRHI
 	public:
 		std::variant<VkVertexInputBindingDescription> internalID;
 
-		void set(uint32_t binding, uint32_t stride)
+		void set(API api, uint32_t binding, uint32_t stride)
 		{
-			VkVertexInputBindingDescription vkinfo{};
-			vkinfo.binding = binding;
-			vkinfo.stride = stride;
-			vkinfo.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+			switch (api)
+			{
+			case DRHI::VULKAN:
+			{
+				VkVertexInputBindingDescription vkinfo{};
+				vkinfo.binding = binding;
+				vkinfo.stride = stride;
+				vkinfo.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
 
-			internalID = vkinfo;
+				internalID = vkinfo;
+					
+			}break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
 		}
 
 		VkVertexInputBindingDescription getVulkanVertexInputBindingDescription(){ return std::get<VkVertexInputBindingDescription>(internalID); }
@@ -124,15 +133,23 @@ namespace DRHI
 	public:
 		std::variant<VkVertexInputAttributeDescription> internalID;
 		
-		void set(uint32_t location, uint32_t binding, uint32_t format, uint32_t offset)
+		void set(API api, uint32_t location, uint32_t binding, uint32_t format, uint32_t offset)
 		{
-			VkVertexInputAttributeDescription vkinfo{};
-			vkinfo.binding = binding;
-			vkinfo.location = location;
-			vkinfo.offset = offset;
-			vkinfo.format = (VkFormat)format;
+			switch (api)
+			{
+			case DRHI::VULKAN:
+			{
+				VkVertexInputAttributeDescription vkinfo{};
+				vkinfo.binding = binding;
+				vkinfo.location = location;
+				vkinfo.offset = offset;
+				vkinfo.format = (VkFormat)format;
 
-			internalID = vkinfo;
+				internalID = vkinfo;
+			}break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
 		}
 
 		VkVertexInputAttributeDescription getVulkanVertexInputAttributeDescription() { return std::get<VkVertexInputAttributeDescription>(internalID); }

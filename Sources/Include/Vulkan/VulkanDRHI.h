@@ -24,14 +24,6 @@ namespace DRHI
 		PlatformInfo platformInfo;
 	};
 
-	struct PipelineCreateInfo
-	{
-		const char* vertexShader;
-		const char* fragmentShader;
-		DynamicVertexInputBindingDescription vertexInputBinding;
-		std::vector<DynamicVertexInputAttributeDescription> vertexInputAttributes;
-	};
-
 	class VulkanDRHI : public DynamicRHI
 	{	
 	private:
@@ -99,7 +91,7 @@ namespace DRHI
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image);
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
 		//create the particular pipeline
-		void createPipeline(PipelineCreateInfo info);
+		virtual void createPipeline(PipelineCreateInfo info);
 		 
 	private:
 		void insertImageMemoryBarrier(

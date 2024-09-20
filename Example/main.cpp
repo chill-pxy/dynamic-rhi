@@ -27,11 +27,11 @@ int main()
     _platformContext = new VulkanDRHI(rhiCi);
     _platformContext->initialize();
 
-    PipelineCreateInfo pci = {};
-    pci.vertexShader = "../../../Example/shaders/model_vertex.spv";
-    pci.fragmentShader = "../../../Example/shaders/model_fragment.spv";
+    //PipelineCreateInfo pci = {};
+    //pci.vertexShader = "../../../Example/shaders/model_vertex.spv";
+    //pci.fragmentShader = "../../../Example/shaders/model_fragment.spv";
 
-    static_cast<VulkanDRHI*>(_platformContext)->createPipeline(pci);
+    //static_cast<VulkanDRHI*>(_platformContext)->createPipeline(pci);
    // _platformContext->prepareCommandBuffer();
 
     bool running = true;
