@@ -19,34 +19,12 @@ namespace DRHI
         _viewPortHeight = _platformInfo.height;
 	}
 
-	void VulkanDRHI::clean(std::vector<DynamicBuffer>* uniformBuffers, std::vector <DynamicDeviceMemory>* uniformBuffersMemory, DynamicImageView* textureImageView, DynamicSampler* textureSampler,
-        DynamicImage* textureImage, DynamicDeviceMemory* textureImageMemory, DynamicBuffer* indexBuffer, DynamicDeviceMemory* indexBufferMemory, DynamicBuffer* vertexBuffer, DynamicDeviceMemory* vertexBufferMemory)
+	void VulkanDRHI::clean()
 	{
         cleanSwapChain(&_device, &_swapChainFramebuffers, &_swapChainImageViews, &_swapChain);
 
         vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
         vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
-
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroyBuffer(_device, std::get<VkBuffer>((*uniformBuffers)[i].internalID), nullptr);
-            vkFreeMemory(_device, std::get<VkDeviceMemory>((*uniformBuffersMemory)[i].internalID), nullptr);
-        }
-
-        vkDestroyDescriptorPool(_device, _descriptorPool, nullptr);
-
-        vkDestroySampler(_device, std::get<VkSampler>(textureSampler->internalID), nullptr);
-        vkDestroyImageView(_device, std::get<VkImageView>(textureImageView->internalID), nullptr);
-
-        vkDestroyImage(_device, std::get<VkImage>(textureImage->internalID), nullptr);
-        vkFreeMemory(_device, std::get<VkDeviceMemory>(textureImageMemory->internalID), nullptr);
-
-        vkDestroyDescriptorSetLayout(_device, _descriptorSetLayout, nullptr);
-
-        vkDestroyBuffer(_device, std::get<VkBuffer>(indexBuffer->internalID), nullptr);
-        vkFreeMemory(_device, std::get<VkDeviceMemory>(indexBufferMemory->internalID), nullptr);
-
-        vkDestroyBuffer(_device, std::get<VkBuffer>(vertexBuffer->internalID), nullptr);
-        vkFreeMemory(_device, std::get<VkDeviceMemory>(vertexBufferMemory->internalID), nullptr);
 
         /*for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
@@ -68,6 +46,21 @@ namespace DRHI
         vkDestroySurfaceKHR(_instance, _surface, nullptr);
         vkDestroyInstance(_instance, nullptr);
 	}
+
+    void VulkanDRHI::clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory)
+    {
+        vkDestroyBuffer(_device, std::get<VkBuffer>(buffer->internalID), nullptr);
+        vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
+    }
+
+    void VulkanDRHI::clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory)
+    {
+        vkDestroySampler(_device, std::get<VkSampler>(sampler->internalID), nullptr);
+        vkDestroyImageView(_device, std::get<VkImageView>(imageView->internalID), nullptr);
+
+        vkDestroyImage(_device, std::get<VkImage>(image->internalID), nullptr);
+        vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
+    }
 
 	void VulkanDRHI::initialize()
 	{

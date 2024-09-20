@@ -67,22 +67,28 @@ namespace DRHI
 		VulkanDRHI() = delete;
 		VulkanDRHI(RHICreateInfo createInfo);
 		
+		//-------------------------------------------------------------------------------------------------------------------------- 
+		//--------------------------------------------------------------------------------------------------------------------------  
+		//--------------------------------------------------------public interfaces-------------------------------------------------
+		//-------------------------------------------------------------------------------------------------------------------------- 
+		//--------------------------------------------------------------------------------------------------------------------------  
 		//initialize vulkan rhi member
 		virtual void initialize();
 		//clean vulkan rhi member
-		virtual void clean(std::vector<DynamicBuffer>* uniformBuffers, std::vector <DynamicDeviceMemory>* uniformBuffersMemory, DynamicImageView* textureImageView, DynamicSampler* textureSampler,
-			DynamicImage* textureImage, DynamicDeviceMemory* textureImageMemory, DynamicBuffer* indexBuffer, DynamicDeviceMemory* indexBufferMemory, DynamicBuffer* vertexBuffer, DynamicDeviceMemory* vertexBufferMemory);
+		virtual void clean();
+		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory);
+		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
 		//begin command buffer
 		virtual void beginCommandBuffer(uint32_t index);
 		//end command buffer
 		virtual void endCommandBuffer(uint32_t index);
-		//
+		//model draw
 		virtual void modelDraw(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indexSize, uint32_t index);
 		//call within render loop
 		virtual void frameOnTick();
 		//get commandBuffersize
 		virtual uint32_t getCommandBufferSize();
-		//
+		//get current buffer
 		virtual uint32_t getCurrentBuffer();
 		//Buffer class
 		virtual void createDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, const char* type);
@@ -96,6 +102,11 @@ namespace DRHI
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
 		//create the particular pipeline
 		virtual void createPipeline(PipelineCreateInfo info);
+		//-------------------------------------------------------------------------------------------------------------------------- 
+		//--------------------------------------------------------------------------------------------------------------------------  
+		//--------------------------------------------------------------------------------------------------------------------------
+		//-------------------------------------------------------------------------------------------------------------------------- 
+		//--------------------------------------------------------------------------------------------------------------------------  
 		 
 	private:
 		void insertImageMemoryBarrier(

@@ -21,19 +21,20 @@ namespace DRHI
 		//initialize vulkan rhi member
 		virtual void initialize() = 0;
 		//clean vulkan rhi member
-		virtual void clean(std::vector<DynamicBuffer>* uniformBuffers, std::vector <DynamicDeviceMemory>* uniformBuffersMemory, DynamicImageView* textureImageView, DynamicSampler* textureSampler,
-			DynamicImage* textureImage, DynamicDeviceMemory* textureImageMemory, DynamicBuffer* indexBuffer, DynamicDeviceMemory* indexBufferMemory, DynamicBuffer* vertexBuffer, DynamicDeviceMemory* vertexBufferMemory) = 0;
+		virtual void clean() = 0;
+		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory) = 0;
+		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory) = 0;
 		//call within render loop
 		virtual void frameOnTick() = 0;
 		//begin command buffer
 		virtual void beginCommandBuffer(uint32_t index) = 0;
 		//end command buffer
 		virtual void endCommandBuffer(uint32_t index) = 0;
-		//
+		//model draw
 		virtual void modelDraw(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indexSize, uint32_t index) = 0;
 		//get commandBuffersize
 		virtual uint32_t getCommandBufferSize() = 0;
-		//
+		//get current buffer
 		virtual uint32_t getCurrentBuffer() = 0;
 		//Buffer class
 		virtual void createDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, const char* type) = 0;
