@@ -28,6 +28,8 @@ namespace DRHI
 	{
 		const char* vertexShader;
 		const char* fragmentShader;
+		DynamicVertexInputBindingDescription vertexInputBinding;
+		std::vector<DynamicVertexInputAttributeDescription> vertexInputAttributes;
 	};
 
 	class VulkanDRHI : public DynamicRHI

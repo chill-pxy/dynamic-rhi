@@ -98,7 +98,7 @@ namespace DRHI
                 throw std::runtime_error("failed to allocate descriptorsets");
             }
 
-            auto buffer1 = (*uniformBufferInfo)[0].getVulkanDrscriptorBufferInfo();
+            auto buffer1 = (*uniformBufferInfo)[0].getVulkanDescriptorBufferInfo();
             VkWriteDescriptorSet writeDescriptorSet1{};
             writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             writeDescriptorSet1.dstSet = *descriptorSet;
@@ -112,7 +112,7 @@ namespace DRHI
             imageInfo.imageView = *textureImageView;
             imageInfo.sampler = *textureSampler;
 
-            auto buffer2 = (*uniformBufferInfo)[1].getVulkanDrscriptorBufferInfo();
+            auto buffer2 = (*uniformBufferInfo)[1].getVulkanDescriptorBufferInfo();
             VkWriteDescriptorSet writeDescriptorSet2{};
             writeDescriptorSet2.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             writeDescriptorSet2.dstSet = *descriptorSet;

@@ -320,7 +320,16 @@ namespace DRHI
         pci.vertexShader = vulkanVertex;
         pci.fragmentShader = vulkanFragment;
 
-        createGraphicsPipeline(&_graphicsPipeline, &_pipelineLayout, &_pipelineCache, pci, &_device,& _descriptorSetLayout, &_swapChainImageFormat);
+        auto vkVertexInputBinding = info.vertexInputBinding.getVulkanVertexInputBindingDescription();
+
+        std::vector<VkVertexInputAttributeDescription> vkVertexInputAttribute;
+       // vkVertexInputAttribute.resize(info.vertexInputAttributes.size());
+        for (int i = 0; i < info.vertexInputAttributes.size(); ++i)
+        {
+            vkVertexInputAttribute.emplace_back(info.vertexInputAttributes[i].getVulkanVertexInputAttributeDescription());
+        }
+
+        createGraphicsPipeline(&_graphicsPipeline, &_pipelineLayout, &_pipelineCache, pci, &_device,& _descriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
     }
 
     //------------------------------------------------------//
