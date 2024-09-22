@@ -119,6 +119,7 @@ namespace DRHI
 			VkPipelineStageFlags srcStageMask,
 			VkPipelineStageFlags dstStageMask,
 			VkImageSubresourceRange subresourceRange);
+		void windowResize(uint32_t dstWidth, uint32_t dstHeight);
 		void prepareFrame();
 		void submitFrame();
 	};

@@ -348,6 +348,29 @@ namespace DRHI
             1, &imageMemoryBarrier);
     }
 
+    void VulkanDRHI::windowResize(uint32_t dstWidth, uint32_t dstHeight)
+    {
+        vkDeviceWaitIdle(_device);
+
+        createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, &_viewPortWidth, &_viewPortHeight);
+
+        vkDestroyImageView(_device, _depthStencil.view, nullptr);
+        vkDestroyImage(_device, _depthStencil.image, nullptr);
+        vkFreeMemory(_device, _depthStencil.memory, nullptr);
+
+        createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
+
+        vkFreeCommandBuffers(_device, _commandPool, _commandBuffers.size(), _commandBuffers.data());
+        createCommandBuffers(&_commandBuffers, &_commandPool, &_device);
+
+        for (auto& fence : _waitFences) 
+        {
+            vkDestroyFence(_device, fence, nullptr);
+        }
+
+        vkDeviceWaitIdle(_device);
+    }
+
     void VulkanDRHI::prepareFrame()
     {
         auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentBuffer);
