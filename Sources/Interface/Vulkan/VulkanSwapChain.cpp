@@ -10,6 +10,8 @@ namespace DRHI
     void createSwapChain(VkSwapchainKHR* swapChain, VkPhysicalDevice* physicalDevice, VkDevice* device, VkSurfaceKHR* surface, HWND window,
         std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat, VkExtent2D* swapChainExtent, uint32_t* viewPortWidth, uint32_t* viewPortHeight)
     {
+        VkSwapchainKHR oldSwapChain = *swapChain;
+
         SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice, surface);
 
         VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -32,6 +34,7 @@ namespace DRHI
         createInfo.imageExtent = extent;
         createInfo.imageArrayLayers = 1;
         createInfo.imageUsage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
+        createInfo.oldSwapchain = oldSwapChain;
 
         QueueFamilyIndices indices = findQueueFamilies(*physicalDevice, *surface);
         uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };

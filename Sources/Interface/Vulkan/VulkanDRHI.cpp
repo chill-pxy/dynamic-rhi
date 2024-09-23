@@ -348,9 +348,15 @@ namespace DRHI
             1, &imageMemoryBarrier);
     }
 
-    void VulkanDRHI::windowResize(uint32_t dstWidth, uint32_t dstHeight)
+    void VulkanDRHI::windowResize()
     {
         vkDeviceWaitIdle(_device);
+
+        for (auto imageView : _swapChainImageViews) {
+            vkDestroyImageView(_device, imageView, nullptr);
+        }
+
+        vkDestroySwapchainKHR(_device, _swapChain, nullptr);
 
         createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, &_viewPortWidth, &_viewPortHeight);
 
@@ -376,7 +382,7 @@ namespace DRHI
         auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentBuffer);
         if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
             if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-                //windowResize();
+                windowResize();
             }
             return;
         }
@@ -393,7 +399,7 @@ namespace DRHI
         auto result = queuePresent(&_graphicQueue, &_swapChain, &_currentBuffer, &_semaphores.renderComplete);
         // Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
         if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
-            //windowResize();
+            windowResize();
             if (result == VK_ERROR_OUT_OF_DATE_KHR) {
                 return;
             }
