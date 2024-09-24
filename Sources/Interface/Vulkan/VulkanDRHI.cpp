@@ -212,6 +212,26 @@ namespace DRHI
         vkCmdDrawIndexed(_commandBuffers[index], indexSize, 1, 0, 0, 0);
     }
 
+    void VulkanDRHI::bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index)
+    {
+        auto vkVertexBuffer = vertexBuffer->getVulkanBuffer();
+        const VkDeviceSize offsets[1] = { 0 };
+        vkCmdBindVertexBuffers(_commandBuffers[index], 0, 1, &vkVertexBuffer, offsets);
+    }
+
+    void VulkanDRHI::bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index)
+    {
+        auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
+        vkCmdBindIndexBuffer(_commandBuffers[index], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+    }
+
+    void VulkanDRHI::bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index)
+    {
+        auto vkDescriptorSet = descriptorSet->getVulkanDescriptorSet();
+        vkCmdBindDescriptorSets(_commandBuffers[index], (VkPipelineBindPoint)bindPoint, pipelineLayout.getVulkanPipelineLayout(), 0, 1, &vkDescriptorSet, 0, nullptr);
+        descriptorSet->internalID = vkDescriptorSet;
+    }
+
     void VulkanDRHI::frameOnTick()
     {
         prepareFrame();
@@ -290,9 +310,10 @@ namespace DRHI
         textureSampler->internalID = vkSampler;
     }
 
-    void VulkanDRHI::createPipeline(DynamicPipeline* pipeline, PipelineCreateInfo info)
+    void VulkanDRHI::createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout ,PipelineCreateInfo info)
     {
         VkPipeline vkpipeline;
+        VkPipelineLayout vkpipelineLayout;
 
         auto vertex = readFile(info.vertexShader);
         auto fragment = readFile(info.fragmentShader);
@@ -313,9 +334,10 @@ namespace DRHI
             vkVertexInputAttribute.emplace_back(info.vertexInputAttributes[i].getVulkanVertexInputAttributeDescription());
         }
 
-        createGraphicsPipeline(&vkpipeline, &_pipelineLayout, &_pipelineCache, pci, &_device,& _descriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
+        createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device,& _descriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
         
         pipeline->internalID = vkpipeline;
+        pipelineLayout->internalID = vkpipelineLayout;
     }
 
     //------------------------------------------------------//

@@ -82,7 +82,10 @@ namespace DRHI
 		virtual void beginCommandBuffer(uint32_t index);
 		//end command buffer
 		virtual void endCommandBuffer(uint32_t index);
+		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index);
+		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index);
 		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
+		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index);
 		//model draw
 		virtual void modelDraw(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indexSize, uint32_t index);
 		//call within render loop

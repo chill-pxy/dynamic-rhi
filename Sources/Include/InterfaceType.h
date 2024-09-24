@@ -67,7 +67,7 @@ namespace DRHI
 	public:
 		std::variant<VkBuffer> internalID;
 
-		VkBuffer getVulkanBuffer() { return std::get<VkBuffer>(internalID); }
+		inline VkBuffer getVulkanBuffer() { return std::get<VkBuffer>(internalID); }
 	};
 
 	class DynamicDeviceMemory
@@ -75,7 +75,7 @@ namespace DRHI
 	public:
 		std::variant<VkDeviceMemory> internalID;
 
-		VkDeviceMemory getVulkanDeviceMemory() { return std::get<VkDeviceMemory>(internalID); }
+		inline VkDeviceMemory getVulkanDeviceMemory() { return std::get<VkDeviceMemory>(internalID); }
 	};
 
 	class DynamicImage
@@ -83,7 +83,7 @@ namespace DRHI
 	public:
 		std::variant<VkImage> internalID;
 
-		VkImage getVulkanImage() { return std::get<VkImage>(internalID); }
+		inline VkImage getVulkanImage() { return std::get<VkImage>(internalID); }
 	};
 
 	class DynamicImageView
@@ -91,7 +91,7 @@ namespace DRHI
 	public:
 		std::variant<VkImageView> internalID;
 
-		VkImageView getVulkanImageView() { return std::get<VkImageView>(internalID); }
+		inline VkImageView getVulkanImageView() { return std::get<VkImageView>(internalID); }
 	};
 
 	class DynamicSampler
@@ -99,7 +99,7 @@ namespace DRHI
 	public:
 		std::variant<VkSampler> internalID;
 
-		VkSampler getVulkanSampler() { return std::get<VkSampler>(internalID); }
+		inline VkSampler getVulkanSampler() { return std::get<VkSampler>(internalID); }
 	};
 
 	class DynamicPipeline
@@ -107,7 +107,23 @@ namespace DRHI
 	public:
 		std::variant<VkPipeline> internalID;
 
-		VkPipeline getVulkanPipeline() { return std::get<VkPipeline>(internalID); }
+		inline VkPipeline getVulkanPipeline() { return std::get<VkPipeline>(internalID); }
+	};
+
+	class DynamicPipelineLayout
+	{
+	public:
+		std::variant<VkPipelineLayout> internalID;
+
+		inline VkPipelineLayout getVulkanPipelineLayout() { return std::get<VkPipelineLayout>(internalID); }
+	};
+
+	class DynamicDescriptorSet
+	{
+	public:
+		std::variant<VkDescriptorSet> internalID;
+
+		inline VkDescriptorSet getVulkanDescriptorSet() { return std::get<VkDescriptorSet>(internalID); }
 	};
 
 	class DynamicDescriptorBufferInfo
@@ -133,7 +149,7 @@ namespace DRHI
 			}
 			
 		}
-		VkDescriptorBufferInfo getVulkanDescriptorBufferInfo() { return std::get<VkDescriptorBufferInfo>(internalID); }
+		inline VkDescriptorBufferInfo getVulkanDescriptorBufferInfo() { return std::get<VkDescriptorBufferInfo>(internalID); }
 	};
 
 	class DynamicVertexInputBindingDescription
@@ -160,7 +176,7 @@ namespace DRHI
 			}
 		}
 
-		VkVertexInputBindingDescription getVulkanVertexInputBindingDescription(){ return std::get<VkVertexInputBindingDescription>(internalID); }
+		inline VkVertexInputBindingDescription getVulkanVertexInputBindingDescription(){ return std::get<VkVertexInputBindingDescription>(internalID); }
 	};
 
 	class DynamicVertexInputAttributeDescription
@@ -187,7 +203,7 @@ namespace DRHI
 			}
 		}
 
-		VkVertexInputAttributeDescription getVulkanVertexInputAttributeDescription() { return std::get<VkVertexInputAttributeDescription>(internalID); }
+		inline VkVertexInputAttributeDescription getVulkanVertexInputAttributeDescription() { return std::get<VkVertexInputAttributeDescription>(internalID); }
 	};
 
 
