@@ -174,7 +174,12 @@ namespace DRHI
 
         vkCmdSetScissor(_commandBuffers[index], 0, 1, &scissor);
 
-        vkCmdBindPipeline(_commandBuffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, _graphicsPipeline);
+        //vkCmdBindPipeline(_commandBuffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, pipeline.getVulkanPipeline());
+    }
+
+    void VulkanDRHI::bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index)
+    {
+        vkCmdBindPipeline(_commandBuffers[index], (VkPipelineBindPoint)bindPoint, pipeline.getVulkanPipeline());
     }
 
     void VulkanDRHI::endCommandBuffer(uint32_t index)
@@ -285,8 +290,10 @@ namespace DRHI
         textureSampler->internalID = vkSampler;
     }
 
-    void VulkanDRHI::createPipeline(PipelineCreateInfo info)
+    void VulkanDRHI::createPipeline(DynamicPipeline* pipeline, PipelineCreateInfo info)
     {
+        VkPipeline vkpipeline;
+
         auto vertex = readFile(info.vertexShader);
         auto fragment = readFile(info.fragmentShader);
 
@@ -306,7 +313,9 @@ namespace DRHI
             vkVertexInputAttribute.emplace_back(info.vertexInputAttributes[i].getVulkanVertexInputAttributeDescription());
         }
 
-        createGraphicsPipeline(&_graphicsPipeline, &_pipelineLayout, &_pipelineCache, pci, &_device,& _descriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
+        createGraphicsPipeline(&vkpipeline, &_pipelineLayout, &_pipelineCache, pci, &_device,& _descriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
+        
+        pipeline->internalID = vkpipeline;
     }
 
     //------------------------------------------------------//

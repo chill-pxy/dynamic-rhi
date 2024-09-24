@@ -28,6 +28,7 @@ namespace DRHI
 		virtual void frameOnTick() = 0;
 		//begin command buffer
 		virtual void beginCommandBuffer(uint32_t index) = 0;
+		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index) = 0;
 		//end command buffer
 		virtual void endCommandBuffer(uint32_t index) = 0;
 		//model draw
@@ -47,6 +48,6 @@ namespace DRHI
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image) = 0;
 		virtual void createTextureSampler(DynamicSampler* textureSampler) = 0;
 		//create the particular pipeline
-		virtual void createPipeline(PipelineCreateInfo info) = 0;
+		virtual void createPipeline(DynamicPipeline* pipeline, PipelineCreateInfo info) = 0;
 	};
 }

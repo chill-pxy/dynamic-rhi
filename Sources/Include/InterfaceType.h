@@ -44,6 +44,24 @@ namespace DRHI
 
 	}DynamicFormat;
 
+	typedef struct DynamicPipelineBindPoint
+	{
+		DynamicPipelineBindPoint(API api)
+		{
+			switch (api)
+			{
+			case DRHI::VULKAN:
+				PIPELINE_BIND_POINT_GRAPHICS = VK_PIPELINE_BIND_POINT_GRAPHICS;
+				break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t PIPELINE_BIND_POINT_GRAPHICS{ 0 };
+
+	}DynamicPipelineBindPoint;
+
 	class DynamicBuffer
 	{
 	public:
@@ -84,19 +102,36 @@ namespace DRHI
 		VkSampler getVulkanSampler() { return std::get<VkSampler>(internalID); }
 	};
 
+	class DynamicPipeline
+	{
+	public:
+		std::variant<VkPipeline> internalID;
+
+		VkPipeline getVulkanPipeline() { return std::get<VkPipeline>(internalID); }
+	};
+
 	class DynamicDescriptorBufferInfo
 	{
 	public:
 		std::variant<VkDescriptorBufferInfo> internalID;
 
-		void set(DynamicBuffer buffer, uint64_t bufferSize, uint32_t offset = 0)
+		void set(API api, DynamicBuffer buffer, uint64_t bufferSize, uint32_t offset = 0)
 		{
-			VkDescriptorBufferInfo vkinfo{};
-			vkinfo.buffer = buffer.getVulkanBuffer();
-			vkinfo.offset = offset;
-			vkinfo.range = bufferSize;
+			switch (api)
+			{
+			case DRHI::VULKAN:
+			{
+				VkDescriptorBufferInfo vkinfo{};
+				vkinfo.buffer = buffer.getVulkanBuffer();
+				vkinfo.offset = offset;
+				vkinfo.range = bufferSize;
 
-			internalID = vkinfo;
+				internalID = vkinfo;
+			}break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
+			
 		}
 		VkDescriptorBufferInfo getVulkanDescriptorBufferInfo() { return std::get<VkDescriptorBufferInfo>(internalID); }
 	};

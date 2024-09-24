@@ -82,6 +82,7 @@ namespace DRHI
 		virtual void beginCommandBuffer(uint32_t index);
 		//end command buffer
 		virtual void endCommandBuffer(uint32_t index);
+		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
 		//model draw
 		virtual void modelDraw(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indexSize, uint32_t index);
 		//call within render loop
@@ -101,7 +102,7 @@ namespace DRHI
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image);
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
 		//create the particular pipeline
-		virtual void createPipeline(PipelineCreateInfo info);
+		virtual void createPipeline(DynamicPipeline* pipeline, PipelineCreateInfo info);
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  
 		//--------------------------------------------------------------------------------------------------------------------------
