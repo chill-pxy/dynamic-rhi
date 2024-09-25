@@ -72,40 +72,44 @@ namespace DRHI
 		//--------------------------------------------------------public interfaces-------------------------------------------------
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  
-		//initialize vulkan rhi member
+		
+		//initialize function
 		virtual void initialize();
-		//clean vulkan rhi member
+
+		//tick function
+		virtual void frameOnTick();
+
+		//clear functions
 		virtual void clean();
-		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory);
 		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
-		//begin command buffer
+		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory);
+
+		//command functions
 		virtual void beginCommandBuffer(uint32_t index);
-		//end command buffer
 		virtual void endCommandBuffer(uint32_t index);
+		virtual uint32_t getCommandBufferSize();
+		virtual void modelDraw(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indexSize, uint32_t index);
+
+		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index);
 		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index);
-		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
-		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index);
-		//model draw
-		virtual void modelDraw(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indexSize, uint32_t index);
-		//call within render loop
-		virtual void frameOnTick();
-		//get commandBuffersize
-		virtual uint32_t getCommandBufferSize();
-		//get current buffer
 		virtual uint32_t getCurrentBuffer();
-		//Buffer class
 		virtual void createDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, const char* type);
-		//unifrom buffer
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
-		//create discriptor set
+		
+		//descriptor funcions
 		virtual void createDescriptorSet(std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler);
-		//texture
+		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index);
+
+		//texture funcitons
 		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels);
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image);
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
-		//create the particular pipeline
-		virtual void createPipeline(DynamicPipeline* pipeline, PipelineCreateInfo info);
+
+		//pipeline functions
+		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info);
+		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
+
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  
 		//--------------------------------------------------------------------------------------------------------------------------
