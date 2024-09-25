@@ -120,20 +120,6 @@ namespace DRHI
 
         vkEndCommandBuffer(_commandBuffers[index]);
     }
-
-    void VulkanDRHI::modelDraw(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indexSize, uint32_t index)
-    {
-        auto vkVertexBuffer = vertexBuffer->getVulkanBuffer();
-        const VkDeviceSize offsets[1] = { 0 };
-        vkCmdBindVertexBuffers(_commandBuffers[index], 0, 1, &vkVertexBuffer, offsets);
-
-        auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
-        vkCmdBindIndexBuffer(_commandBuffers[index], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
-
-        vkCmdBindDescriptorSets(_commandBuffers[index], VK_PIPELINE_BIND_POINT_GRAPHICS, _pipelineLayout, 0, 1, &_descriptorSet, 0, nullptr);
-
-        vkCmdDrawIndexed(_commandBuffers[index], indexSize, 1, 0, 0, 0);
-    }
     //----------------------------------------------------------------------------------------
 
 
@@ -192,10 +178,11 @@ namespace DRHI
 
 
     //------------------------------------pipeline functions----------------------------------
-    void VulkanDRHI::createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info)
+    void VulkanDRHI::createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicDescriptorSetLayout* descriptorSetLayout, PipelineCreateInfo info)
     {
         VkPipeline vkpipeline;
         VkPipelineLayout vkpipelineLayout;
+        VkDescriptorSetLayout vkdesscriptorSetLayout = descriptorSetLayout->getVulkanDescriptorSetLayout();
 
         auto vertex = readFile(info.vertexShader);
         auto fragment = readFile(info.fragmentShader);
@@ -210,16 +197,17 @@ namespace DRHI
         auto vkVertexInputBinding = info.vertexInputBinding.getVulkanVertexInputBindingDescription();
 
         std::vector<VkVertexInputAttributeDescription> vkVertexInputAttribute;
-        // vkVertexInputAttribute.resize(info.vertexInputAttributes.size());
+
         for (int i = 0; i < info.vertexInputAttributes.size(); ++i)
         {
             vkVertexInputAttribute.emplace_back(info.vertexInputAttributes[i].getVulkanVertexInputAttributeDescription());
         }
 
-        createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, &_descriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
+        createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, &vkdesscriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
 
         pipeline->internalID = vkpipeline;
         pipelineLayout->internalID = vkpipelineLayout;
+        descriptorSetLayout->internalID = vkdesscriptorSetLayout;
     }
 
     void VulkanDRHI::bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index)
@@ -234,11 +222,15 @@ namespace DRHI
 
 
     //-------------------------------------descriptor functions-------------------------------
-    void VulkanDRHI::createDescriptorSet(std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler)
+    void VulkanDRHI::createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler)
     {
         VkImageView vkImageView = textureImageView.getVulkanImageView();
         VkSampler vkSampler = textureSampler.getVulkanSampler();
-        VulkanDescriptor::createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device, descriptor, &vkImageView, &vkSampler);
+        VkDescriptorSet vkdescriptorSet{};
+        VkDescriptorSetLayout vkdescriptorSetLayout = descriptorSetLayout->getVulkanDescriptorSetLayout();
+        VulkanDescriptor::createDescriptorSet(&vkdescriptorSet, &_descriptorPool, &vkdescriptorSetLayout, 1, &_device, descriptor, &vkImageView, &vkSampler);
+        descriptorSet->internalID = vkdescriptorSet;
+        descriptorSetLayout->internalID = vkdescriptorSetLayout;
     }
 
     void VulkanDRHI::bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index)
@@ -246,6 +238,15 @@ namespace DRHI
         auto vkDescriptorSet = descriptorSet->getVulkanDescriptorSet();
         vkCmdBindDescriptorSets(_commandBuffers[index], (VkPipelineBindPoint)bindPoint, pipelineLayout.getVulkanPipelineLayout(), 0, 1, &vkDescriptorSet, 0, nullptr);
         descriptorSet->internalID = vkDescriptorSet;
+    }
+
+    void VulkanDRHI::createDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout)
+    {
+        VkDescriptorSetLayout vkdescriptorSetLayout{};
+
+        VulkanDescriptor::createDescriptorSetLayout(&vkdescriptorSetLayout, &_device);
+
+        descriptorSetLayout->internalID = vkdescriptorSetLayout;
     }
     //-----------------------------------------------------------------------------------------
 

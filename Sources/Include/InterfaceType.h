@@ -126,6 +126,14 @@ namespace DRHI
 		inline VkDescriptorSet getVulkanDescriptorSet() { return std::get<VkDescriptorSet>(internalID); }
 	};
 
+	class DynamicDescriptorSetLayout
+	{
+	public:
+		std::variant<VkDescriptorSetLayout> internalID;
+
+		inline VkDescriptorSetLayout getVulkanDescriptorSetLayout() { return std::get<VkDescriptorSetLayout>(internalID); }
+	};
+
 	class DynamicDescriptorBufferInfo
 	{
 	public:

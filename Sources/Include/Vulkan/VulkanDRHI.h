@@ -44,13 +44,8 @@ namespace DRHI
 		std::vector<VkFramebuffer>   _swapChainFramebuffers;
 		std::vector<VkCommandBuffer> _commandBuffers;
 		VkCommandPool                _commandPool{ VK_NULL_HANDLE };
-		VkDescriptorSetLayout        _descriptorSetLayout{ VK_NULL_HANDLE };
-		VkDescriptorPool             _descriptorPool{ VK_NULL_HANDLE };
-		VkDescriptorSet              _descriptorSet{ VK_NULL_HANDLE };
-		std::vector<VkDescriptorSet> _descriptorSets;
-		VkPipeline                   _graphicsPipeline{ VK_NULL_HANDLE };
-		VkPipelineLayout             _pipelineLayout{ VK_NULL_HANDLE };
 		VkPipelineCache              _pipelineCache{ VK_NULL_HANDLE };
+		VkDescriptorPool             _descriptorPool{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
 		Semaphores                   _semaphores{ VK_NULL_HANDLE, VK_NULL_HANDLE };
 		VkPipelineStageFlags         _submitPipelineStages{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -79,6 +74,9 @@ namespace DRHI
 		//tick function
 		virtual void frameOnTick();
 
+		//draw function
+		virtual void drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance);
+
 		//clear functions
 		virtual void clean();
 		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
@@ -88,7 +86,6 @@ namespace DRHI
 		virtual void beginCommandBuffer(uint32_t index);
 		virtual void endCommandBuffer(uint32_t index);
 		virtual uint32_t getCommandBufferSize();
-		virtual void modelDraw(DynamicBuffer* vertexBuffer, DynamicBuffer* indexBuffer, uint32_t indexSize, uint32_t index);
 
 		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index);
@@ -98,8 +95,9 @@ namespace DRHI
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		
 		//descriptor funcions
-		virtual void createDescriptorSet(std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler);
+		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler);
 		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index);
+		virtual void createDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout);
 
 		//texture funcitons
 		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels);
@@ -107,7 +105,7 @@ namespace DRHI
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
 
 		//pipeline functions
-		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info);
+		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicDescriptorSetLayout* descriptorSetLayout, PipelineCreateInfo info);
 		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
 
 		//-------------------------------------------------------------------------------------------------------------------------- 

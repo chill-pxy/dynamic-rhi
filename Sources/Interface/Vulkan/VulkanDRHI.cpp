@@ -21,8 +21,8 @@ namespace DRHI
 	{
         cleanSwapChain(&_device, &_swapChainFramebuffers, &_swapChainImageViews, &_swapChain);
 
-        vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
-        vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
+        //vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
+        //vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
 
         /*for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
@@ -63,7 +63,7 @@ namespace DRHI
 
         createPipelineCache(&_pipelineCache, &_device);
         
-        VulkanDescriptor::createDescriptorSetLayout(&_descriptorSetLayout, &_device);
+        //VulkanDescriptor::createDescriptorSetLayout(&_descriptorSetLayout, &_device);
         VulkanDescriptor::createDescriptorPool(&_descriptorPool, &_device);
         //createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device);
         //createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device);
@@ -94,6 +94,11 @@ namespace DRHI
             throw std::runtime_error("failed to submit queue");
         }
         submitFrame();
+    }
+
+    void VulkanDRHI::drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance)
+    {
+        vkCmdDrawIndexed(_commandBuffers[index], indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
     }
 
     //------------------------------------------------------//
