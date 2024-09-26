@@ -18,6 +18,9 @@ namespace DRHI
 	class DynamicRHI
 	{
 	public:
+		//get current api type
+		virtual API getCurrentAPI() = 0;
+
 		//initialize function
 		virtual void initialize() = 0;
 
