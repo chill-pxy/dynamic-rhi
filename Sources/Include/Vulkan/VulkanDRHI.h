@@ -26,7 +26,7 @@ namespace DRHI
 
 	class VulkanDRHI : public DynamicRHI
 	{	
-	private:
+	public:
 		VkInstance                   _instance{ VK_NULL_HANDLE };
 		VkSurfaceKHR                 _surface{ VK_NULL_HANDLE };
 		VkPhysicalDevice             _physicalDevice{ VK_NULL_HANDLE };
