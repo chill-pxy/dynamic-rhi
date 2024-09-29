@@ -46,7 +46,7 @@ namespace DRHI
 	}
 
 	void VulkanDRHI::initialize()
-	{
+	{   
 		createInstance(&_instance);
 		createSurface(&_surface, &_instance, _platformInfo);
 		
@@ -61,7 +61,7 @@ namespace DRHI
         createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
         createCommandBuffers(&_commandBuffers, &_commandPool, &_device); 
 
-        createPipelineCache(&_pipelineCache, &_device);
+        VulkanPipeline::createPipelineCache(&_pipelineCache, &_device);
         
         //VulkanDescriptor::createDescriptorSetLayout(&_descriptorSetLayout, &_device);
         VulkanDescriptor::createDescriptorPool(&_descriptorPool, &_device);

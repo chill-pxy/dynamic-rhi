@@ -190,7 +190,7 @@ namespace DRHI
         auto vulkanVertex = createShaderModule(vertex, &_device);
         auto vulkanFragment = createShaderModule(fragment, &_device);
 
-        VulkanPipelineCreateInfo pci{};
+        VulkanPipeline::VulkanPipelineCreateInfo pci{};
         pci.vertexShader = vulkanVertex;
         pci.fragmentShader = vulkanFragment;
 
@@ -203,7 +203,7 @@ namespace DRHI
             vkVertexInputAttribute.emplace_back(info.vertexInputAttributes[i].getVulkanVertexInputAttributeDescription());
         }
 
-        createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, &vkdesscriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
+        VulkanPipeline::createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, &vkdesscriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
 
         pipeline->internalID = vkpipeline;
         pipelineLayout->internalID = vkpipelineLayout;
@@ -213,6 +213,11 @@ namespace DRHI
     void VulkanDRHI::bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index)
     {
         vkCmdBindPipeline(_commandBuffers[index], (VkPipelineBindPoint)bindPoint, pipeline.getVulkanPipeline());
+    }
+
+    VkPipelineRenderingCreateInfoKHR VulkanDRHI::getPipelineRenderingCreateInfo()
+    {
+        return VulkanPipeline::getPipelineRenderingCreateInfo(&_swapChainImageFormat);
     }
     //----------------------------------------------------------------------------------------
 

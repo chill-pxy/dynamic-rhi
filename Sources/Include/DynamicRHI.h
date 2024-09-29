@@ -59,6 +59,6 @@ namespace DRHI
 
 		//pipeline functions
 		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicDescriptorSetLayout* descriptorSetLayout, PipelineCreateInfo info) = 0;
-		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index) = 0;
+		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index) = 0;   
 	};
 }

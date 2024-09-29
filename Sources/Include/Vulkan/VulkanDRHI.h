@@ -11,7 +11,7 @@
 #include "VulkanSwapChain.h"
 #include "VulkanCommand.h"
 #include "VulkanDescriptor.h"
-#include "VulkanGraphicsPipeline.h"
+#include "VulkanPipeline.h"
 #include "VulkanSemphores.h"
 #include "VulkanBuffer.h"
 #include "VulkanFence.h"
@@ -110,7 +110,7 @@ namespace DRHI
 		//pipeline functions
 		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicDescriptorSetLayout* descriptorSetLayout, PipelineCreateInfo info);
 		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
-
+		        VkPipelineRenderingCreateInfoKHR getPipelineRenderingCreateInfo();
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  
 		//--------------------------------------------------------------------------------------------------------------------------
