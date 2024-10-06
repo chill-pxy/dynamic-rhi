@@ -80,6 +80,9 @@ namespace DRHI
 		//draw function
 		virtual void drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance);
 
+		//scissor
+		virtual void setScissor(uint32_t index, uint32_t firstScissor, uint32_t scissorCount, DynamicRect2D rect);
+
 		//clear functions
 		virtual void clean();
 		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);

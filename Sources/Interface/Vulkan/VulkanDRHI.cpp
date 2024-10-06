@@ -101,6 +101,24 @@ namespace DRHI
         vkCmdDrawIndexed(_commandBuffers[index], indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
     }
 
+    void VulkanDRHI::setScissor(uint32_t index, uint32_t firstScissor, uint32_t scissorCount,DynamicRect2D rect)
+    {
+        VkRect2D vkrect{};
+        VkExtent2D vkextent{};
+        VkOffset2D vkoffset{};
+        
+        vkextent.width = rect.extent.width;
+        vkextent.height = rect.extent.height;
+
+        vkoffset.x = rect.offset.x;
+        vkoffset.y = rect.offset.y;
+
+        vkrect.extent = vkextent;
+        vkrect.offset = vkoffset;
+
+        vkCmdSetScissor(_commandBuffers[index], firstScissor, scissorCount, &vkrect);
+    }
+
     //------------------------------------------------------//
     //------------------------------------------------------//
     //------------------private function--------------------//

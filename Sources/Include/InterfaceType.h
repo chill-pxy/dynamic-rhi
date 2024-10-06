@@ -62,6 +62,24 @@ namespace DRHI
 
 	}DynamicPipelineBindPoint;
 
+	typedef struct DynamicExtent2D
+	{
+		uint32_t width;
+		uint32_t height;
+	}DynamicExtent2D;
+
+	typedef struct DynamicOffset2D
+	{
+		int32_t x;
+		int32_t y;
+	}DynamicOffset2D;
+
+	typedef struct DynamicRect2D
+	{
+		DynamicExtent2D extent;
+		DynamicOffset2D offset;
+	}DynamicRect2D;
+
 	class DynamicBuffer
 	{
 	public:
