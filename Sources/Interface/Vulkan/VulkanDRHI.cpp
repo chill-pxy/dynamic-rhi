@@ -166,9 +166,9 @@ namespace DRHI
             vkDestroyImageView(_device, imageView, nullptr);
         }
 
-        vkDestroySwapchainKHR(_device, _swapChain, nullptr);
-
         createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, &_viewPortWidth, &_viewPortHeight);
+
+        //vkDestroySwapchainKHR(_device, _swapChain, nullptr);
 
         vkDestroyImageView(_device, _depthStencil.view, nullptr);
         vkDestroyImage(_device, _depthStencil.image, nullptr);

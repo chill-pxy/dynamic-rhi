@@ -16,7 +16,16 @@ namespace DRHI
 
         VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
         VkPresentModeKHR presentMode = chooseSwapPresentMode(swapChainSupport.presentModes);
-        VkExtent2D extent = chooseSwapExtent(window, swapChainSupport.capabilities);
+        VkExtent2D extent{};
+        if ((!viewPortWidth) || (!viewPortHeight))
+        {
+            extent = chooseSwapExtent(window, swapChainSupport.capabilities);
+        }
+        else
+        {
+            extent.width = *viewPortWidth;
+            extent.height = *viewPortHeight;
+        }
 
         uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
         if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount)
