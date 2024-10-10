@@ -39,7 +39,7 @@ int main()
     while (running)
     {
         running = nwindow->tick();
-        _platformContext->frameOnTick();
+//        _platformContext->frameOnTick();
     }
 
    // _platformContext->clean();

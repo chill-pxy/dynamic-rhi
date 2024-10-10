@@ -75,7 +75,7 @@ namespace DRHI
 		virtual void initialize();
 
 		//tick function
-		virtual void frameOnTick();
+		virtual void frameOnTick(void (*recreateFunc)());
 
 		//draw function
 		virtual void drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance);
@@ -131,8 +131,12 @@ namespace DRHI
 			VkPipelineStageFlags srcStageMask,
 			VkPipelineStageFlags dstStageMask,
 			VkImageSubresourceRange subresourceRange);
-		void windowResize();
-		void prepareFrame();
-		void submitFrame();
+
+		void prepareFrame(void (*recreateFunc)());
+		void submitFrame(void (*recreateFunc)());
+
+		//recreate functions
+		void beginRecreate();
+		void endRecreate();
 	};
 }

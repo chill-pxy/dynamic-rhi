@@ -25,7 +25,7 @@ namespace DRHI
 		virtual void initialize() = 0;
 
 		//tick function
-		virtual void frameOnTick() = 0;
+		virtual void frameOnTick(void (*recreateFunc)()) = 0;
 
 		//draw function
 		virtual void drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance) = 0;
