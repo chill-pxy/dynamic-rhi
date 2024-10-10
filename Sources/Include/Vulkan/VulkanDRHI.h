@@ -1,6 +1,7 @@
 #pragma once
 
 #include<vector>
+#include<functional>
 
 #include "../DynamicRHI.h"
 #include "VulkanInstance.h"
@@ -75,7 +76,7 @@ namespace DRHI
 		virtual void initialize();
 
 		//tick function
-		virtual void frameOnTick(void (*recreateFunc)());
+		virtual void frameOnTick(std::function<void()> recreatefunc);
 
 		//draw function
 		virtual void drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance);
@@ -132,11 +133,10 @@ namespace DRHI
 			VkPipelineStageFlags dstStageMask,
 			VkImageSubresourceRange subresourceRange);
 
-		void prepareFrame(void (*recreateFunc)());
-		void submitFrame(void (*recreateFunc)());
+		void prepareFrame(std::function<void()> recreatefunc);
+		void submitFrame(std::function<void()> recreatefunc);
 
 		//recreate functions
-		void beginRecreate();
-		void endRecreate();
+		void recreate(std::function<void()> recreatefunc);
 	};
 }
