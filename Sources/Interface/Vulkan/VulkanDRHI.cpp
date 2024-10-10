@@ -171,7 +171,7 @@ namespace DRHI
         }
 
         createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, &_viewPortWidth, &_viewPortHeight);
-
+        createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
         //vkDestroySwapchainKHR(_device, _swapChain, nullptr);
 
         vkDestroyImageView(_device, _depthStencil.view, nullptr);
