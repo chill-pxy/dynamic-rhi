@@ -33,16 +33,95 @@ namespace DRHI
 			case DRHI::VULKAN:
 				FORMAT_R32G32B32_SFLOAT = VK_FORMAT_R32G32B32_SFLOAT;
 				FORMAT_R32G32_SFLOAT = VK_FORMAT_R32G32_SFLOAT;
+				FORMAT_R8G8B8A8_UNORM = VK_FORMAT_R8G8B8A8_UNORM;
 				break;
 			case DRHI::DIRECT3D12:
 				break;
 			}
 		}
 
-		uint32_t FORMAT_R32G32B32_SFLOAT{0};
-		uint32_t FORMAT_R32G32_SFLOAT{0};
+		uint32_t FORMAT_R32G32B32_SFLOAT{ 0 }, FORMAT_R32G32_SFLOAT{ 0 }, FORMAT_R8G8B8A8_UNORM{ 0 };
 
 	}DynamicFormat;
+
+	typedef struct DynamicImageTiling
+	{
+		DynamicImageTiling(API api)
+		{
+			switch (api)
+			{
+			case DRHI::VULKAN:
+				IMAGE_TILING_OPTIMAL = VK_IMAGE_TILING_OPTIMAL;
+				IMAGE_TILING_LINEAR = VK_IMAGE_TILING_LINEAR;
+				IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT = VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT;
+				IMAGE_TILING_MAX_ENUM = VK_IMAGE_TILING_MAX_ENUM;
+				break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t IMAGE_TILING_OPTIMAL{0};
+		uint32_t IMAGE_TILING_LINEAR{0};
+		uint32_t IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT{0};
+		uint32_t IMAGE_TILING_MAX_ENUM{0};
+	}DynamicImageTiling;
+
+	typedef struct DynamicImageUsageFlagBits
+	{
+		DynamicImageUsageFlagBits(API api)
+		{
+			switch (api)
+			{
+			case DRHI::VULKAN:
+				IMAGE_USAGE_SAMPLED_BIT = VK_IMAGE_USAGE_SAMPLED_BIT;
+				IMAGE_USAGE_TRANSFER_DST_BIT = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+				break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t IMAGE_USAGE_SAMPLED_BIT{ 0 }, IMAGE_USAGE_TRANSFER_DST_BIT{ 0 };
+	}DynamicImageUsageFlagBits;
+
+	typedef struct DynamicMemoryPropertyFlags
+	{
+		DynamicMemoryPropertyFlags(API api)
+		{
+			switch (api)
+			{
+			case DRHI::VULKAN:
+				MEMORY_PROPERTY_DEVICE_LOCAL_BIT = VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT;
+				break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t MEMORY_PROPERTY_DEVICE_LOCAL_BIT{ 0 };
+	}DynamicMemoryPropertyFlags;
+
+	typedef struct DynamicBufferUsageFlags
+	{
+		DynamicBufferUsageFlags(API api)
+		{
+			switch (api)
+			{
+			case DRHI::VULKAN:
+				BUFFER_USAGE_VERTEX_BUFFER_BIT = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
+				BUFFER_USAGE_INDEX_BUFFER_BIT = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
+				BUFFER_USAGE_TRANSFER_DST_BIT = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
+				BUFFER_USAGE_TRANSFER_SRC_BIT = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+				break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t BUFFER_USAGE_VERTEX_BUFFER_BIT{ 0 }, BUFFER_USAGE_INDEX_BUFFER_BIT{ 0 }, BUFFER_USAGE_TRANSFER_DST_BIT{ 0 }, BUFFER_USAGE_TRANSFER_SRC_BIT{ 0 };
+
+	}; DynamicBufferUsageFlags;
 
 	typedef struct DynamicPipelineBindPoint
 	{

@@ -100,9 +100,10 @@ namespace DRHI
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index);
 		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index);
 		virtual uint32_t getCurrentBuffer();
-		virtual void createDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, const char* type);
+		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage);
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		
+
 		//descriptor funcions
 		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler);
 		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index);
@@ -110,8 +111,12 @@ namespace DRHI
 
 		//texture funcitons
 		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels);
-		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image);
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
+
+		//image functions
+		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image);
+		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
+			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory);
 
 		//pipeline functions
 		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicDescriptorSetLayout* descriptorSetLayout, PipelineCreateInfo info);

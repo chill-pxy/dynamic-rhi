@@ -58,7 +58,7 @@ namespace DRHI
             vkBindBufferMemory(*device, *buffer, *bufferMemory, 0);
         }
 
-        void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, VkDevice* device, VkPhysicalDevice* physicalDevice, VkCommandPool* commandPool, VkQueue* graphicsQueue, const char* type)
+        void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, VkDevice* device, VkPhysicalDevice* physicalDevice, VkCommandPool* commandPool, VkQueue* graphicsQueue, uint32_t usage)
         {
             //VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
 
@@ -74,19 +74,7 @@ namespace DRHI
             VkBuffer inputBuffer;
             VkDeviceMemory inputMemory;
 
-            auto bufferFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-
-            if (strcmp(type, "VertexBuffer") == 0)
-            {
-                bufferFlag = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
-            }
-
-            if (strcmp(type, "IndexBuffer") == 0)
-            {
-                bufferFlag = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
-            }
-
-            createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | bufferFlag, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &inputBuffer, &inputMemory);
+            createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | (VkBufferUsageFlagBits)usage, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &inputBuffer, &inputMemory);
 
             copyBuffer(stagingBuffer, inputBuffer, bufferSize, commandPool, device, graphicsQueue);
 

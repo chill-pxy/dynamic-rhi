@@ -140,9 +140,9 @@ namespace DRHI
         vkCmdBindIndexBuffer(_commandBuffers[index], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
     }
 
-    void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, const char* type)
+    void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage)
     {
-        VulkanBuffer::createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue, type);
+        VulkanBuffer::createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue, usage);
     }
 
     void VulkanDRHI::createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize)
@@ -270,13 +270,6 @@ namespace DRHI
         textureMemory->internalID = vkMemory;
     }
 
-    void VulkanDRHI::createImageView(DynamicImageView* imageView, DynamicImage* image)
-    {
-        VkImage vkImage = image->getVulkanImage();
-        VkImageView vkTextureImageView = VulkanImage::createImageView(&_device, &vkImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
-        imageView->internalID = vkTextureImageView;
-    }
-
     void VulkanDRHI::createTextureSampler(DynamicSampler* textureSampler)
     {
         VkSampler vkSampler;
@@ -284,4 +277,32 @@ namespace DRHI
         textureSampler->internalID = vkSampler;
     }
     //------------------------------------------------------------------------------------------
+
+
+
+
+
+    //-----------------------------------image functions----------------------------------------
+    void VulkanDRHI::createImageView(DynamicImageView* imageView, DynamicImage* image)
+    {
+        VkImage vkImage = image->getVulkanImage();
+        VkImageView vkTextureImageView = VulkanImage::createImageView(&_device, &vkImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+        imageView->internalID = vkTextureImageView;
+    }
+
+    void VulkanDRHI::createImage(DynamicImage* image, uint32_t width, uint32_t height, 
+        uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory)
+    {
+        VkImage vkimage{};
+        VkDeviceMemory vkmemory{};
+        VkFormat vkformat = (VkFormat)format;
+        VkImageTiling vkimageTiling = (VkImageTiling)imageTiling;
+        VkImageUsageFlagBits vkImageUsageFlagBits = (VkImageUsageFlagBits)imageUsageFlagBits;
+        VkMemoryPropertyFlagBits vkMemoryPropertyFlagBits = (VkMemoryPropertyFlagBits)memoryPropertyFlags;
+
+        VulkanImage::createImage(&vkimage, width, height, vkformat, vkimageTiling, vkImageUsageFlagBits, vkMemoryPropertyFlagBits, vkmemory, &_device, &_physicalDevice);
+
+        image->internalID = vkimage;
+        imageMemory->internalID = vkmemory;
+    }
 }
