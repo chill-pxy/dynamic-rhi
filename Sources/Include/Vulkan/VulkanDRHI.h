@@ -54,6 +54,8 @@ namespace DRHI
 		uint32_t                     _viewPortHeight{ 0 };
 		std::vector<VkFence>         _waitFences;
 
+		bool _prepare{ false };
+
 		// Active frame buffer index
 		uint32_t _currentBuffer = 0;
 		// Contains command buffers and semaphores to be presented to the queue

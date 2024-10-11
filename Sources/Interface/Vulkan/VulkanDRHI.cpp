@@ -82,6 +82,8 @@ namespace DRHI
         _submitInfo.signalSemaphoreCount = 1;
         _submitInfo.pSignalSemaphores = &_semaphores.renderComplete;
 
+        _prepare = true;
+
 	}
 
     void VulkanDRHI::frameOnTick(std::function<void()> recreatefunc)
@@ -164,6 +166,10 @@ namespace DRHI
 
     void VulkanDRHI::recreate(std::function<void()> recreatefunc)
     {
+        if (!_prepare) return;
+
+        _prepare = false;
+
         vkDeviceWaitIdle(_device);
 
         for (auto imageView : _swapChainImageViews) {
@@ -190,7 +196,11 @@ namespace DRHI
             vkDestroyFence(_device, fence, nullptr);
         }
 
+        createSynchronizationPrimitives(&_waitFences, _commandBuffers.size(), &_device);
+
         vkDeviceWaitIdle(_device);
+
+        _prepare = true;
     }
 
     void VulkanDRHI::prepareFrame(std::function<void()> recreatefunc)
