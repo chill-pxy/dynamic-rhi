@@ -283,10 +283,10 @@ namespace DRHI
 
 
     //-----------------------------------image functions----------------------------------------
-    void VulkanDRHI::createImageView(DynamicImageView* imageView, DynamicImage* image)
+    void VulkanDRHI::createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat)
     {
         VkImage vkImage = image->getVulkanImage();
-        VkImageView vkTextureImageView = VulkanImage::createImageView(&_device, &vkImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+        VkImageView vkTextureImageView = VulkanImage::createImageView(&_device, &vkImage, (VkFormat)imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
         imageView->internalID = vkTextureImageView;
     }
 

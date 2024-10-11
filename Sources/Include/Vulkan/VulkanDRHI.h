@@ -103,7 +103,6 @@ namespace DRHI
 		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage);
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		
-
 		//descriptor funcions
 		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler);
 		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index);
@@ -114,7 +113,7 @@ namespace DRHI
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
 
 		//image functions
-		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image);
+		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat);
 		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory);
 

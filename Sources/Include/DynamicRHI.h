@@ -48,7 +48,7 @@ namespace DRHI
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index) = 0;
 		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index) = 0;
 		virtual uint32_t getCurrentBuffer() = 0;
-		virtual void createDynamicBuffer(DynamicBuffer* vertexBuffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage) = 0;
+		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage) = 0;
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize) = 0;
 
 		//descriptor funcions
@@ -61,7 +61,7 @@ namespace DRHI
 		virtual void createTextureSampler(DynamicSampler* textureSampler) = 0;
 		
 		//image functions
-		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image) = 0;
+		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat) = 0;
 		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory) = 0;
 
