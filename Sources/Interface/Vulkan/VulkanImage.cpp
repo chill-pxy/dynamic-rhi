@@ -32,7 +32,7 @@ namespace DRHI
                 VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, *textureMemory, device, physicalDevice);
 
             VulkanImage::transitionImageLayout(*textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, graphicsQueue, commandPool, device);
-            VulkanImage::copyBufferToImage(stagingBuffer, *textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight), graphicsQueue, commandPool, device);
+            VulkanImage::copyBufferToImage(&stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight), graphicsQueue, commandPool, device);
             VulkanImage::transitionImageLayout(*textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, graphicsQueue, commandPool, device);
 
             vkDestroyBuffer(*device, stagingBuffer, nullptr);
@@ -132,7 +132,7 @@ namespace DRHI
             endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
         }
 
-        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height, VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device)
+        void copyBufferToImage(VkBuffer* buffer, VkImage* image, uint32_t width, uint32_t height, VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device)
         {
             VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool, device);
 
@@ -151,7 +151,7 @@ namespace DRHI
                 1
             };
 
-            vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+            vkCmdCopyBufferToImage(commandBuffer, *buffer, *image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
             endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
         }
@@ -199,6 +199,32 @@ namespace DRHI
             samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
 
             if (vkCreateSampler(*device, &samplerInfo, nullptr, textureSampler) != VK_SUCCESS) 
+            {
+                throw std::runtime_error("failed to create texture sampler!");
+            }
+        }
+
+        void createSampler(VkSampler* sampler, DynamicSmplerCreateInfo createInfo, VkPhysicalDevice* physicalDevice, VkDevice* device)
+        {
+            VkPhysicalDeviceProperties properties{};
+            vkGetPhysicalDeviceProperties(*physicalDevice, &properties);
+
+            VkSamplerCreateInfo samplerInfo{};
+            samplerInfo.sType = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
+            samplerInfo.magFilter = VK_FILTER_LINEAR;
+            samplerInfo.minFilter = VK_FILTER_LINEAR;
+            samplerInfo.addressModeU = (VkSamplerAddressMode)(createInfo.sampleraAddressMode);
+            samplerInfo.addressModeV = (VkSamplerAddressMode)(createInfo.sampleraAddressMode);
+            samplerInfo.addressModeW = (VkSamplerAddressMode)(createInfo.sampleraAddressMode);
+            samplerInfo.anisotropyEnable = VK_TRUE;
+            samplerInfo.maxAnisotropy = properties.limits.maxSamplerAnisotropy;
+            samplerInfo.borderColor = (VkBorderColor)(createInfo.borderColor);
+            samplerInfo.unnormalizedCoordinates = VK_FALSE;
+            samplerInfo.compareEnable = VK_FALSE;
+            samplerInfo.compareOp = VK_COMPARE_OP_ALWAYS;
+            samplerInfo.mipmapMode = VK_SAMPLER_MIPMAP_MODE_LINEAR;
+
+            if (vkCreateSampler(*device, &samplerInfo, nullptr, sampler) != VK_SUCCESS)
             {
                 throw std::runtime_error("failed to create texture sampler!");
             }

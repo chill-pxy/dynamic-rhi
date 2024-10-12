@@ -116,6 +116,8 @@ namespace DRHI
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat);
 		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory);
+		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, uint32_t width, uint32_t height);
+		virtual void createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo);
 
 		//pipeline functions
 		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicDescriptorSetLayout* descriptorSetLayout, PipelineCreateInfo info);

@@ -305,4 +305,22 @@ namespace DRHI
         image->internalID = vkimage;
         imageMemory->internalID = vkmemory;
     }
+
+    void VulkanDRHI::copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, uint32_t width, uint32_t height)
+    {
+        VkBuffer vkbuffer = buffer->getVulkanBuffer();
+        VkImage vkimage = image->getVulkanImage();
+        
+        VulkanImage::copyBufferToImage(&vkbuffer, &vkimage, width, height, &_graphicQueue, &_commandPool, &_device);
+        
+        buffer->internalID = vkbuffer;
+        image->internalID = vkimage;
+    }
+
+    void VulkanDRHI::createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo)
+    {
+        VkSampler vksampler{};
+        VulkanImage::createSampler(&vksampler, createInfo, &_physicalDevice, &_device);
+        sampler->internalID = vksampler;
+    }
 }
