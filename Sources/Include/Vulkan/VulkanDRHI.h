@@ -46,7 +46,6 @@ namespace DRHI
 		std::vector<VkCommandBuffer> _commandBuffers;
 		VkCommandPool                _commandPool{ VK_NULL_HANDLE };
 		VkPipelineCache              _pipelineCache{ VK_NULL_HANDLE };
-		VkDescriptorPool             _descriptorPool{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
 		Semaphores                   _semaphores{ VK_NULL_HANDLE, VK_NULL_HANDLE };
 		VkPipelineStageFlags         _submitPipelineStages{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
@@ -104,7 +103,8 @@ namespace DRHI
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		
 		//descriptor funcions
-		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler);
+		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool);
+		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler);
 		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index);
 		virtual void createDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout);
 

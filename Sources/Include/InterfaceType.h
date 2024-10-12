@@ -283,6 +283,14 @@ namespace DRHI
 		inline VkPipelineLayout getVulkanPipelineLayout() { return std::get<VkPipelineLayout>(internalID); }
 	};
 
+	class DynamicDescriptorPool
+	{
+	public:
+		std::variant<VkDescriptorPool> internalID;
+
+		inline VkDescriptorPool getVulkanDescriptorPool() { return std::get<VkDescriptorPool>(internalID); }
+	};
+
 	class DynamicDescriptorSet
 	{
 	public:

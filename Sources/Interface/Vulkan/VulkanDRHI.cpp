@@ -62,11 +62,6 @@ namespace DRHI
         createCommandBuffers(&_commandBuffers, &_commandPool, &_device); 
 
         VulkanPipeline::createPipelineCache(&_pipelineCache, &_device);
-        
-        //VulkanDescriptor::createDescriptorSetLayout(&_descriptorSetLayout, &_device);
-        VulkanDescriptor::createDescriptorPool(&_descriptorPool, &_device);
-        //createDescriptorSet(&_descriptorSet, &_descriptorPool, &_descriptorSetLayout, 1, &_device);
-        //createDescriptorSets(&_descriptorSets, &_descriptorSetLayout, &_descriptorPool, &_device);
 
         createSemaphore(&_semaphores, &_device);
 
