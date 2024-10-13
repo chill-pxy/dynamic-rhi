@@ -11,7 +11,6 @@ set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/bin)
 
 add_subdirectory(ThirdParty)
 add_subdirectory(Sources)
-add_subdirectory(Example)
 
 set(LIBRARY_OUT_DIR ${CMAKE_CURRENT_BINARY_DIR}/drhi)
 
