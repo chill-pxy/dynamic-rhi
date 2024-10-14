@@ -100,6 +100,15 @@ namespace DRHI
                 throw std::runtime_error("failed to allocate descriptorsets");
             }
 
+            DynamicWriteDescriptorSet wd{};
+
+            VkWriteDescriptorSet vkwd{};
+            vkwd.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+            vkwd.dstSet = wd.dstSet.getVulkanDescriptorSet();
+            vkwd.descriptorType = (VkDescriptorType)wd.descriptorType;
+            vkwd.dstBinding = wd.dstBinding;
+            vkwd.pBufferInfo = &wd.pBufferInfo->getVulkanDescriptorBufferInfo();
+
             auto buffer1 = (*uniformBufferInfo)[0].getVulkanDescriptorBufferInfo();
             VkWriteDescriptorSet writeDescriptorSet1{};
             writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;

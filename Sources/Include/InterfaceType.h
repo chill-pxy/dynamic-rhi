@@ -543,8 +543,8 @@ namespace DRHI
 		uint32_t                           dstArrayElement;
 		uint32_t                           descriptorCount;
 		uint32_t                           descriptorType;
-		const DynamicDescriptorImageInfo*  pImageInfo;
-		const DynamicDescriptorBufferInfo* pBufferInfo;
+		DynamicDescriptorImageInfo*        pImageInfo;
+		DynamicDescriptorBufferInfo*       pBufferInfo;
 	}DynamicWriteDescriptorSet;
 
 	
