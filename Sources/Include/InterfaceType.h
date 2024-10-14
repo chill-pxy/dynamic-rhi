@@ -24,6 +24,166 @@ namespace DRHI
 		DIRECT3D12
 	}API;
 
+	class DynamicBuffer
+	{
+	public:
+		std::variant<VkBuffer> internalID;
+
+		inline VkBuffer getVulkanBuffer() { return std::get<VkBuffer>(internalID); }
+	};
+
+	class DynamicDeviceMemory
+	{
+	public:
+		std::variant<VkDeviceMemory> internalID;
+
+		inline VkDeviceMemory getVulkanDeviceMemory() { return std::get<VkDeviceMemory>(internalID); }
+	};
+
+	class DynamicImage
+	{
+	public:
+		std::variant<VkImage> internalID;
+
+		inline VkImage getVulkanImage() { return std::get<VkImage>(internalID); }
+	};
+
+	class DynamicImageView
+	{
+	public:
+		std::variant<VkImageView> internalID;
+
+		inline VkImageView getVulkanImageView() { return std::get<VkImageView>(internalID); }
+	};
+
+	class DynamicSampler
+	{
+	public:
+		std::variant<VkSampler> internalID;
+
+		inline VkSampler getVulkanSampler() { return std::get<VkSampler>(internalID); }
+	};
+
+	class DynamicPipeline
+	{
+	public:
+		std::variant<VkPipeline> internalID;
+
+		inline VkPipeline getVulkanPipeline() { return std::get<VkPipeline>(internalID); }
+	};
+
+	class DynamicPipelineLayout
+	{
+	public:
+		std::variant<VkPipelineLayout> internalID;
+
+		inline VkPipelineLayout getVulkanPipelineLayout() { return std::get<VkPipelineLayout>(internalID); }
+	};
+
+	class DynamicDescriptorPool
+	{
+	public:
+		std::variant<VkDescriptorPool> internalID;
+
+		inline VkDescriptorPool getVulkanDescriptorPool() { return std::get<VkDescriptorPool>(internalID); }
+	};
+
+	class DynamicDescriptorSet
+	{
+	public:
+		std::variant<VkDescriptorSet> internalID;
+
+		inline VkDescriptorSet getVulkanDescriptorSet() { return std::get<VkDescriptorSet>(internalID); }
+	};
+
+	class DynamicDescriptorSetLayout
+	{
+	public:
+		std::variant<VkDescriptorSetLayout> internalID;
+
+		inline VkDescriptorSetLayout getVulkanDescriptorSetLayout() { return std::get<VkDescriptorSetLayout>(internalID); }
+	};
+
+	class DynamicDescriptorBufferInfo
+	{
+	public:
+		std::variant<VkDescriptorBufferInfo> internalID;
+
+		void set(API api, DynamicBuffer buffer, uint64_t bufferSize, uint32_t offset = 0)
+		{
+			switch (api)
+			{
+			case DRHI::VULKAN:
+			{
+				VkDescriptorBufferInfo vkinfo{};
+				vkinfo.buffer = buffer.getVulkanBuffer();
+				vkinfo.offset = offset;
+				vkinfo.range = bufferSize;
+
+				internalID = vkinfo;
+			}break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
+
+		}
+		inline VkDescriptorBufferInfo getVulkanDescriptorBufferInfo() { return std::get<VkDescriptorBufferInfo>(internalID); }
+	};
+
+	class DynamicVertexInputBindingDescription
+	{
+	public:
+		std::variant<VkVertexInputBindingDescription> internalID;
+
+		void set(API api, uint32_t binding, uint32_t stride)
+		{
+			switch (api)
+			{
+			case DRHI::VULKAN:
+			{
+				VkVertexInputBindingDescription vkinfo{};
+				vkinfo.binding = binding;
+				vkinfo.stride = stride;
+				vkinfo.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
+
+				internalID = vkinfo;
+
+			}break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
+		}
+
+		inline VkVertexInputBindingDescription getVulkanVertexInputBindingDescription() { return std::get<VkVertexInputBindingDescription>(internalID); }
+	};
+
+	class DynamicVertexInputAttributeDescription
+	{
+	public:
+		std::variant<VkVertexInputAttributeDescription> internalID;
+
+		void set(API api, uint32_t location, uint32_t binding, uint32_t format, uint32_t offset)
+		{
+			switch (api)
+			{
+			case DRHI::VULKAN:
+			{
+				VkVertexInputAttributeDescription vkinfo{};
+				vkinfo.binding = binding;
+				vkinfo.location = location;
+				vkinfo.offset = offset;
+				vkinfo.format = (VkFormat)format;
+
+				internalID = vkinfo;
+			}break;
+			case DRHI::DIRECT3D12:
+				break;
+			}
+		}
+
+		inline VkVertexInputAttributeDescription getVulkanVertexInputAttributeDescription() { return std::get<VkVertexInputAttributeDescription>(internalID); }
+	};
+
 	typedef struct DynamicFormat
 	{
 		DynamicFormat(API api)
@@ -122,7 +282,7 @@ namespace DRHI
 
 		uint32_t BUFFER_USAGE_VERTEX_BUFFER_BIT{ 0 }, BUFFER_USAGE_INDEX_BUFFER_BIT{ 0 }, BUFFER_USAGE_TRANSFER_DST_BIT{ 0 }, BUFFER_USAGE_TRANSFER_SRC_BIT{ 0 };
 
-	}; DynamicBufferUsageFlags;
+	}DynamicBufferUsageFlags;
 
 	typedef struct DynamicPipelineBindPoint
 	{
@@ -227,165 +387,167 @@ namespace DRHI
 		uint32_t borderColor;
 	}DynamicSmplerCreateInfo;
 
-	class DynamicBuffer
+	typedef struct DynamicDescriptorType
 	{
-	public:
-		std::variant<VkBuffer> internalID;
-
-		inline VkBuffer getVulkanBuffer() { return std::get<VkBuffer>(internalID); }
-	};
-
-	class DynamicDeviceMemory
-	{
-	public:
-		std::variant<VkDeviceMemory> internalID;
-
-		inline VkDeviceMemory getVulkanDeviceMemory() { return std::get<VkDeviceMemory>(internalID); }
-	};
-
-	class DynamicImage
-	{
-	public:
-		std::variant<VkImage> internalID;
-
-		inline VkImage getVulkanImage() { return std::get<VkImage>(internalID); }
-	};
-
-	class DynamicImageView
-	{
-	public:
-		std::variant<VkImageView> internalID;
-
-		inline VkImageView getVulkanImageView() { return std::get<VkImageView>(internalID); }
-	};
-
-	class DynamicSampler
-	{
-	public:
-		std::variant<VkSampler> internalID;
-
-		inline VkSampler getVulkanSampler() { return std::get<VkSampler>(internalID); }
-	};
-
-	class DynamicPipeline
-	{
-	public:
-		std::variant<VkPipeline> internalID;
-
-		inline VkPipeline getVulkanPipeline() { return std::get<VkPipeline>(internalID); }
-	};
-
-	class DynamicPipelineLayout
-	{
-	public:
-		std::variant<VkPipelineLayout> internalID;
-
-		inline VkPipelineLayout getVulkanPipelineLayout() { return std::get<VkPipelineLayout>(internalID); }
-	};
-
-	class DynamicDescriptorPool
-	{
-	public:
-		std::variant<VkDescriptorPool> internalID;
-
-		inline VkDescriptorPool getVulkanDescriptorPool() { return std::get<VkDescriptorPool>(internalID); }
-	};
-
-	class DynamicDescriptorSet
-	{
-	public:
-		std::variant<VkDescriptorSet> internalID;
-
-		inline VkDescriptorSet getVulkanDescriptorSet() { return std::get<VkDescriptorSet>(internalID); }
-	};
-
-	class DynamicDescriptorSetLayout
-	{
-	public:
-		std::variant<VkDescriptorSetLayout> internalID;
-
-		inline VkDescriptorSetLayout getVulkanDescriptorSetLayout() { return std::get<VkDescriptorSetLayout>(internalID); }
-	};
-
-	class DynamicDescriptorBufferInfo
-	{
-	public:
-		std::variant<VkDescriptorBufferInfo> internalID;
-
-		void set(API api, DynamicBuffer buffer, uint64_t bufferSize, uint32_t offset = 0)
+		DynamicDescriptorType(API api)
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
-			{
-				VkDescriptorBufferInfo vkinfo{};
-				vkinfo.buffer = buffer.getVulkanBuffer();
-				vkinfo.offset = offset;
-				vkinfo.range = bufferSize;
-
-				internalID = vkinfo;
-			}break;
-			case DRHI::DIRECT3D12:
+			case VULKAN:
+				DESCRIPTOR_TYPE_SAMPLER = VK_DESCRIPTOR_TYPE_SAMPLER;
+				DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
+				DESCRIPTOR_TYPE_SAMPLED_IMAGE = VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE;
+				DESCRIPTOR_TYPE_STORAGE_IMAGE = VK_DESCRIPTOR_TYPE_STORAGE_IMAGE;
+				DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER = VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER;
+				DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER = VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER;
+				DESCRIPTOR_TYPE_UNIFORM_BUFFER = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+				DESCRIPTOR_TYPE_STORAGE_BUFFER = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER;
+				DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC;
+				DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC = VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC;
+				DESCRIPTOR_TYPE_INPUT_ATTACHMENT = VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT;
+				DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK = VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK;
+				DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR;
+				DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NV = VK_DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NV;
+				DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM = VK_DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM;
+				DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM = VK_DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM;
+				DESCRIPTOR_TYPE_MUTABLE_EXT = VK_DESCRIPTOR_TYPE_MUTABLE_EXT;
+				DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT = VK_DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT;
+				DESCRIPTOR_TYPE_MUTABLE_VALVE = VK_DESCRIPTOR_TYPE_MUTABLE_VALVE;
+				DESCRIPTOR_TYPE_MAX_ENUM = VK_DESCRIPTOR_TYPE_MAX_ENUM;
 				break;
-			}
-			
-		}
-		inline VkDescriptorBufferInfo getVulkanDescriptorBufferInfo() { return std::get<VkDescriptorBufferInfo>(internalID); }
-	};
-
-	class DynamicVertexInputBindingDescription
-	{
-	public:
-		std::variant<VkVertexInputBindingDescription> internalID;
-
-		void set(API api, uint32_t binding, uint32_t stride)
-		{
-			switch (api)
-			{
-			case DRHI::VULKAN:
-			{
-				VkVertexInputBindingDescription vkinfo{};
-				vkinfo.binding = binding;
-				vkinfo.stride = stride;
-				vkinfo.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-				internalID = vkinfo;
-					
-			}break;
-			case DRHI::DIRECT3D12:
+			case DIRECT3D12:
 				break;
 			}
 		}
 
-		inline VkVertexInputBindingDescription getVulkanVertexInputBindingDescription(){ return std::get<VkVertexInputBindingDescription>(internalID); }
-	};
+		uint32_t 
+			DESCRIPTOR_TYPE_SAMPLER{ 0 },
+			DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER{ 0 },
+			DESCRIPTOR_TYPE_SAMPLED_IMAGE{ 0 },
+			DESCRIPTOR_TYPE_STORAGE_IMAGE{ 0 },
+			DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER{ 0 },
+			DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER{ 0 },
+			DESCRIPTOR_TYPE_UNIFORM_BUFFER{ 0 },
+			DESCRIPTOR_TYPE_STORAGE_BUFFER{ 0 },
+			DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC{ 0 },
+			DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC{ 0 },
+			DESCRIPTOR_TYPE_INPUT_ATTACHMENT{ 0 },
+			DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK{ 0 },
+			DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_KHR{ 0 },
+			DESCRIPTOR_TYPE_ACCELERATION_STRUCTURE_NV{ 0 },
+			DESCRIPTOR_TYPE_SAMPLE_WEIGHT_IMAGE_QCOM{ 0 },
+			DESCRIPTOR_TYPE_BLOCK_MATCH_IMAGE_QCOM{ 0 },
+			DESCRIPTOR_TYPE_MUTABLE_EXT{ 0 },
+			DESCRIPTOR_TYPE_INLINE_UNIFORM_BLOCK_EXT{ 0 },
+			DESCRIPTOR_TYPE_MUTABLE_VALVE{ 0 },
+			DESCRIPTOR_TYPE_MAX_ENUM{ 0 };
+	}DynamicDescriptorType;
 
-	class DynamicVertexInputAttributeDescription
+	typedef struct DynamicImageLayout 
 	{
-	public:
-		std::variant<VkVertexInputAttributeDescription> internalID;
-		
-		void set(API api, uint32_t location, uint32_t binding, uint32_t format, uint32_t offset)
+		DynamicImageLayout(API api)
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
-			{
-				VkVertexInputAttributeDescription vkinfo{};
-				vkinfo.binding = binding;
-				vkinfo.location = location;
-				vkinfo.offset = offset;
-				vkinfo.format = (VkFormat)format;
-
-				internalID = vkinfo;
-			}break;
-			case DRHI::DIRECT3D12:
+			case VULKAN:
+				IMAGE_LAYOUT_UNDEFINED = VK_IMAGE_LAYOUT_UNDEFINED;
+				IMAGE_LAYOUT_GENERAL = VK_IMAGE_LAYOUT_GENERAL;
+				IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+				IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+				IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL = VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL;
+				IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+				IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL = VK_IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL;
+				IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL = VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL;
+				IMAGE_LAYOUT_PREINITIALIZED = VK_IMAGE_LAYOUT_PREINITIALIZED;
+				IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL;
+				IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL;
+				IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL;
+				IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL;
+				IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL = VK_IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL;
+				IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL = VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL;
+				IMAGE_LAYOUT_READ_ONLY_OPTIMAL = VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL;
+				IMAGE_LAYOUT_ATTACHMENT_OPTIMAL = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL;
+				IMAGE_LAYOUT_PRESENT_SRC_KHR = VK_IMAGE_LAYOUT_PRESENT_SRC_KHR;
+				IMAGE_LAYOUT_VIDEO_DECODE_DST_KHR = VK_IMAGE_LAYOUT_VIDEO_DECODE_DST_KHR;
+				IMAGE_LAYOUT_VIDEO_DECODE_SRC_KHR = VK_IMAGE_LAYOUT_VIDEO_DECODE_SRC_KHR;
+				IMAGE_LAYOUT_VIDEO_DECODE_DPB_KHR = VK_IMAGE_LAYOUT_VIDEO_DECODE_DPB_KHR;
+				IMAGE_LAYOUT_SHARED_PRESENT_KHR = VK_IMAGE_LAYOUT_SHARED_PRESENT_KHR;
+				IMAGE_LAYOUT_FRAGMENT_DENSITY_MAP_OPTIMAL_EXT = VK_IMAGE_LAYOUT_FRAGMENT_DENSITY_MAP_OPTIMAL_EXT;
+				IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR = VK_IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR;
+				IMAGE_LAYOUT_ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT = VK_IMAGE_LAYOUT_ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT;
+				IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL_KHR = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL_KHR;
+				IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR;
+				IMAGE_LAYOUT_SHADING_RATE_OPTIMAL_NV = VK_IMAGE_LAYOUT_SHADING_RATE_OPTIMAL_NV;
+				IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL_KHR = VK_IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL_KHR;
+				IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL_KHR = VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL_KHR;
+				IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL_KHR = VK_IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL_KHR;
+				IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL_KHR = VK_IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL_KHR;
+				IMAGE_LAYOUT_READ_ONLY_OPTIMAL_KHR = VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL_KHR;
+				IMAGE_LAYOUT_ATTACHMENT_OPTIMAL_KHR = VK_IMAGE_LAYOUT_ATTACHMENT_OPTIMAL_KHR;
+				IMAGE_LAYOUT_MAX_ENUM = VK_IMAGE_LAYOUT_MAX_ENUM;
+				break;
+			case DIRECT3D12:
 				break;
 			}
 		}
 
-		inline VkVertexInputAttributeDescription getVulkanVertexInputAttributeDescription() { return std::get<VkVertexInputAttributeDescription>(internalID); }
-	};
+		uint32_t
+			IMAGE_LAYOUT_UNDEFINED{0},
+			IMAGE_LAYOUT_GENERAL{ 0 },
+			IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_TRANSFER_SRC_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_PREINITIALIZED{ 0 },
+			IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_READ_ONLY_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_ATTACHMENT_OPTIMAL{ 0 },
+			IMAGE_LAYOUT_PRESENT_SRC_KHR{ 0 },
+			IMAGE_LAYOUT_VIDEO_DECODE_DST_KHR{ 0 },
+			IMAGE_LAYOUT_VIDEO_DECODE_SRC_KHR{ 0 },
+			IMAGE_LAYOUT_VIDEO_DECODE_DPB_KHR{ 0 },
+			IMAGE_LAYOUT_SHARED_PRESENT_KHR{ 0 },
+			IMAGE_LAYOUT_FRAGMENT_DENSITY_MAP_OPTIMAL_EXT{ 0 },
+			IMAGE_LAYOUT_FRAGMENT_SHADING_RATE_ATTACHMENT_OPTIMAL_KHR{ 0 },
+			IMAGE_LAYOUT_ATTACHMENT_FEEDBACK_LOOP_OPTIMAL_EXT{ 0 },
+			IMAGE_LAYOUT_DEPTH_READ_ONLY_STENCIL_ATTACHMENT_OPTIMAL_KHR{ 0 },
+			IMAGE_LAYOUT_DEPTH_ATTACHMENT_STENCIL_READ_ONLY_OPTIMAL_KHR{ 0 },
+			IMAGE_LAYOUT_SHADING_RATE_OPTIMAL_NV{ 0 },
+			IMAGE_LAYOUT_DEPTH_ATTACHMENT_OPTIMAL_KHR{ 0 },
+			IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL_KHR{ 0 },
+			IMAGE_LAYOUT_STENCIL_ATTACHMENT_OPTIMAL_KHR{ 0 },
+			IMAGE_LAYOUT_STENCIL_READ_ONLY_OPTIMAL_KHR{ 0 },
+			IMAGE_LAYOUT_READ_ONLY_OPTIMAL_KHR{ 0 },
+			IMAGE_LAYOUT_ATTACHMENT_OPTIMAL_KHR{ 0 },
+			IMAGE_LAYOUT_MAX_ENUM{ 0 };
+
+	}DynamicImageLayout;
+
+	typedef struct DynamicDescriptorImageInfo {
+		DynamicSampler        sampler;
+		DynamicImageView      imageView;
+		uint32_t              imageLayout;
+	} DynamicDescriptorImageInfo;
+
+	typedef struct DynamicWriteDescriptorSet
+	{
+		DynamicDescriptorSet               dstSet;
+		uint32_t                           dstBinding;
+		uint32_t                           dstArrayElement;
+		uint32_t                           descriptorCount;
+		uint32_t                           descriptorType;
+		const DynamicDescriptorImageInfo*  pImageInfo;
+		const DynamicDescriptorBufferInfo* pBufferInfo;
+	}DynamicWriteDescriptorSet;
+
+	
 
 
 }
