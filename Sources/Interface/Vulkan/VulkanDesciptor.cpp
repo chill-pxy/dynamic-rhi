@@ -88,28 +88,49 @@ namespace DRHI
             }
         }
 
-        void createDescriptorSet(VkDescriptorSet* descriptorSet, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* descriptorSetLayout, uint32_t descriptorSetCount, VkDevice* device, std::vector<DynamicDescriptorBufferInfo>* uniformBufferInfo, VkImageView* textureImageView, VkSampler* textureSampler)
+        void createDescriptorSet(VkDescriptorSet* descriptorSet, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicWriteDescriptorSet>* wds, VkDevice* device)
         {
             VkDescriptorSetAllocateInfo descriptorSetAllocateInfo{};
             descriptorSetAllocateInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
             descriptorSetAllocateInfo.descriptorPool = *descriptorPool;
             descriptorSetAllocateInfo.pSetLayouts = descriptorSetLayout;
-            descriptorSetAllocateInfo.descriptorSetCount = descriptorSetCount;
+            descriptorSetAllocateInfo.descriptorSetCount = 1;
             if (vkAllocateDescriptorSets(*device, &descriptorSetAllocateInfo, descriptorSet))
             {
                 throw std::runtime_error("failed to allocate descriptorsets");
             }
 
-            DynamicWriteDescriptorSet wd{};
+            std::vector<VkWriteDescriptorSet> writeDescriptorSets;
 
-            VkWriteDescriptorSet vkwd{};
-            vkwd.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            vkwd.dstSet = wd.dstSet.getVulkanDescriptorSet();
-            vkwd.descriptorType = (VkDescriptorType)wd.descriptorType;
-            vkwd.dstBinding = wd.dstBinding;
-            vkwd.pBufferInfo = &wd.pBufferInfo->getVulkanDescriptorBufferInfo();
+            for (int i = 0; i < wds->size(); ++i)
+            {
+                DynamicWriteDescriptorSet wd = (*wds)[i];
 
-            auto buffer1 = (*uniformBufferInfo)[0].getVulkanDescriptorBufferInfo();
+                auto bufferInfo = wd.pBufferInfo->getVulkanDescriptorBufferInfo();
+
+                VkWriteDescriptorSet vkwd{};
+                vkwd.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+                vkwd.dstSet = *descriptorSet;
+                vkwd.descriptorType = (VkDescriptorType)wd.descriptorType;
+                vkwd.descriptorCount = wd.descriptorCount;
+                vkwd.dstBinding = wd.dstBinding;
+                vkwd.pBufferInfo = &bufferInfo;
+
+                if (wd.pImageInfo != nullptr)
+                {
+                    VkDescriptorImageInfo vkdescriptorImageInfo{};
+                    vkdescriptorImageInfo.sampler = wd.pImageInfo->sampler.getVulkanSampler();
+                    vkdescriptorImageInfo.imageView = wd.pImageInfo->imageView.getVulkanImageView();
+                    vkdescriptorImageInfo.imageLayout = (VkImageLayout)wd.pImageInfo->imageLayout;
+                    vkwd.pImageInfo = &vkdescriptorImageInfo;
+                }
+
+                writeDescriptorSets.push_back(vkwd);
+            }
+
+            
+
+            /*auto buffer1 = (*uniformBufferInfo)[0].getVulkanDescriptorBufferInfo();
             VkWriteDescriptorSet writeDescriptorSet1{};
             writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
             writeDescriptorSet1.dstSet = *descriptorSet;
@@ -131,9 +152,9 @@ namespace DRHI
             writeDescriptorSet2.dstBinding = 1;
             writeDescriptorSet2.pBufferInfo = &buffer2;
             writeDescriptorSet2.descriptorCount = 1;
-            writeDescriptorSet2.pImageInfo = &imageInfo;
+            writeDescriptorSet2.pImageInfo = &imageInfo;*/
 
-            std::vector<VkWriteDescriptorSet> writeDescriptorSets{ writeDescriptorSet1, writeDescriptorSet2 };
+            //{ writeDescriptorSet1, writeDescriptorSet2 };
 
             vkUpdateDescriptorSets(*device, static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
         }

@@ -53,7 +53,7 @@ namespace DRHI
 
 		//descriptor funcions
 		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool) = 0;
-		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicDescriptorBufferInfo>* descriptor, DynamicImageView textureImageView, DynamicSampler textureSampler) = 0;
+		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicWriteDescriptorSet>* wds) = 0;
 		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index) = 0;
 		virtual void createDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout) = 0;
 

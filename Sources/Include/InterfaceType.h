@@ -538,7 +538,6 @@ namespace DRHI
 
 	typedef struct DynamicWriteDescriptorSet
 	{
-		DynamicDescriptorSet               dstSet;
 		uint32_t                           dstBinding;
 		uint32_t                           dstArrayElement;
 		uint32_t                           descriptorCount;
