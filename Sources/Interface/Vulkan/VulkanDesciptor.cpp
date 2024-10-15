@@ -40,27 +40,33 @@ namespace DRHI
         //-----------------------public function-----------------------
         //-------------------------------------------------------------
         //-------------------------------------------------------------
-        void createDescriptorSetLayout(VkDescriptorSetLayout* descriptorSetLayout, VkDevice* device)
+        void createDescriptorSetLayout(VkDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorSetLayoutBinding>* dsbs, VkDevice* device)
         {
-            VkDescriptorSetLayoutBinding uboLayoutBinding{};
-            uboLayoutBinding.binding = 0;
-            uboLayoutBinding.descriptorCount = 1;
-            uboLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            uboLayoutBinding.pImmutableSamplers = nullptr;
-            uboLayoutBinding.stageFlags = VK_SHADER_STAGE_VERTEX_BIT;
+            std::vector<VkDescriptorSetLayoutBinding> descriptorSetLayoutBinding;
 
-            VkDescriptorSetLayoutBinding samplerLayoutBinding{};
-            samplerLayoutBinding.binding = 1;
-            samplerLayoutBinding.descriptorCount = 1;
-            samplerLayoutBinding.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            samplerLayoutBinding.pImmutableSamplers = nullptr;
-            samplerLayoutBinding.stageFlags = VK_SHADER_STAGE_FRAGMENT_BIT;
-             
-            std::array<VkDescriptorSetLayoutBinding, 2> bindings = { uboLayoutBinding, samplerLayoutBinding };
+            for (int i = 0; i < dsbs->size(); ++i)
+            {
+                DynamicDescriptorSetLayoutBinding dsb = (*dsbs)[i];
+
+                VkDescriptorSetLayoutBinding vkdsb{};
+                vkdsb.binding = dsb.binding;
+                vkdsb.descriptorCount = dsb.descriptorCount;
+                vkdsb.descriptorType = (VkDescriptorType)dsb.descriptorType;
+                vkdsb.stageFlags = (VkShaderStageFlags)dsb.stageFlags;
+
+                if (dsb.pImmutableSamplers != nullptr)
+                {
+                    VkSampler vksampler = dsb.pImmutableSamplers->getVulkanSampler();
+                    vkdsb.pImmutableSamplers = &vksampler;
+                }
+
+                descriptorSetLayoutBinding.push_back(vkdsb);
+            }
+
             VkDescriptorSetLayoutCreateInfo layoutInfo{};
             layoutInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_LAYOUT_CREATE_INFO;
-            layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
-            layoutInfo.pBindings = bindings.data();
+            layoutInfo.bindingCount = static_cast<uint32_t>(descriptorSetLayoutBinding.size());
+            layoutInfo.pBindings = descriptorSetLayoutBinding.data();
 
             if (vkCreateDescriptorSetLayout(*device, &layoutInfo, nullptr, descriptorSetLayout) != VK_SUCCESS) 
             {
@@ -106,15 +112,18 @@ namespace DRHI
             {
                 DynamicWriteDescriptorSet wd = (*wds)[i];
 
-                auto bufferInfo = wd.pBufferInfo->getVulkanDescriptorBufferInfo();
-
                 VkWriteDescriptorSet vkwd{};
                 vkwd.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
                 vkwd.dstSet = *descriptorSet;
                 vkwd.descriptorType = (VkDescriptorType)wd.descriptorType;
                 vkwd.descriptorCount = wd.descriptorCount;
                 vkwd.dstBinding = wd.dstBinding;
-                vkwd.pBufferInfo = &bufferInfo;
+
+                if (wd.pBufferInfo != nullptr)
+                {
+                    auto bufferInfo = wd.pBufferInfo->getVulkanDescriptorBufferInfo();
+                    vkwd.pBufferInfo = &bufferInfo;
+                }
 
                 if (wd.pImageInfo != nullptr)
                 {
@@ -127,34 +136,6 @@ namespace DRHI
 
                 writeDescriptorSets.push_back(vkwd);
             }
-
-            
-
-            /*auto buffer1 = (*uniformBufferInfo)[0].getVulkanDescriptorBufferInfo();
-            VkWriteDescriptorSet writeDescriptorSet1{};
-            writeDescriptorSet1.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptorSet1.dstSet = *descriptorSet;
-            writeDescriptorSet1.descriptorType = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
-            writeDescriptorSet1.dstBinding = 0;
-            writeDescriptorSet1.pBufferInfo = &buffer1;
-            writeDescriptorSet1.descriptorCount = 1;
-
-            VkDescriptorImageInfo imageInfo{};
-            imageInfo.imageLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
-            imageInfo.imageView = *textureImageView;
-            imageInfo.sampler = *textureSampler;
-
-            auto buffer2 = (*uniformBufferInfo)[1].getVulkanDescriptorBufferInfo();
-            VkWriteDescriptorSet writeDescriptorSet2{};
-            writeDescriptorSet2.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-            writeDescriptorSet2.dstSet = *descriptorSet;
-            writeDescriptorSet2.descriptorType = VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER;
-            writeDescriptorSet2.dstBinding = 1;
-            writeDescriptorSet2.pBufferInfo = &buffer2;
-            writeDescriptorSet2.descriptorCount = 1;
-            writeDescriptorSet2.pImageInfo = &imageInfo;*/
-
-            //{ writeDescriptorSet1, writeDescriptorSet2 };
 
             vkUpdateDescriptorSets(*device, static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
         }

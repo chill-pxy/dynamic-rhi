@@ -251,11 +251,11 @@ namespace DRHI
         descriptorSet->internalID = vkDescriptorSet;
     }
 
-    void VulkanDRHI::createDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout)
+    void VulkanDRHI::createDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorSetLayoutBinding>* dsbs)
     {
         VkDescriptorSetLayout vkdescriptorSetLayout{};
 
-        VulkanDescriptor::createDescriptorSetLayout(&vkdescriptorSetLayout, &_device);
+        VulkanDescriptor::createDescriptorSetLayout(&vkdescriptorSetLayout, dsbs, &_device);
 
         descriptorSetLayout->internalID = vkdescriptorSetLayout;
     }
