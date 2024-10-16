@@ -120,7 +120,8 @@ namespace DRHI
 		virtual void createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo);
 
 		//pipeline functions
-		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicDescriptorSetLayout* descriptorSetLayout, PipelineCreateInfo info);
+		virtual void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo);
+		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info);
 		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
 		        VkPipelineRenderingCreateInfoKHR getPipelineRenderingCreateInfo();
 		//-------------------------------------------------------------------------------------------------------------------------- 

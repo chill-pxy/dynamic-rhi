@@ -8,8 +8,38 @@ namespace DRHI
 {
     namespace VulkanPipeline
     {
+        void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo, VkDevice* device)
+        {
+            VkPipelineLayout vkpipelineLayout{};
+
+            VkDescriptorSetLayout vkdescriptorSetLayout = createInfo->pSetLayouts->getVulkanDescriptorSetLayout();
+
+            VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+            pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+            pipelineLayoutInfo.setLayoutCount = createInfo->setLayoutCount;
+            pipelineLayoutInfo.pSetLayouts = &vkdescriptorSetLayout;
+
+            if (createInfo->pushConstantRangeCount > 0)
+            {
+                VkPushConstantRange push{};
+                push.offset = createInfo->pPushConstantRanges->offset;
+                push.size = createInfo->pPushConstantRanges->size;
+                push.stageFlags = (VkShaderStageFlagBits)createInfo->pPushConstantRanges->stageFlags;
+                pipelineLayoutInfo.pPushConstantRanges = &push;
+                pipelineLayoutInfo.pushConstantRangeCount = createInfo->pushConstantRangeCount;
+            }
+
+            if (vkCreatePipelineLayout(*device, &pipelineLayoutInfo, nullptr, &vkpipelineLayout) != VK_SUCCESS) 
+            {
+                throw std::runtime_error("failed to create pipeline layout!");
+            }
+
+            pipelineLayout->internalID = vkpipelineLayout;
+            createInfo->pSetLayouts->internalID = vkdescriptorSetLayout;
+        }
+
         void createGraphicsPipeline(VkPipeline* graphicsPipeline, VkPipelineLayout* pipelineLayout, VkPipelineCache* pipelineCache,
-            VulkanPipelineCreateInfo createInfo, VkDevice* device, VkDescriptorSetLayout* descriptorSetlayout, VkFormat* swapChainImageFormat,
+            VulkanPipelineCreateInfo createInfo, VkDevice* device, VkFormat* swapChainImageFormat,
             VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions)
         {
             //----------------------------------shader state----------------------------------
@@ -33,30 +63,6 @@ namespace DRHI
             //----------------------------------VertexInput---------------------------------
             VkPipelineVertexInputStateCreateInfo vertexInputInfo{};
             vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-
-            //auto bindingDescription = VulkanVertex::getBindingDescription();
-            //auto attributeDescriptions = VulkanVertex::getAttributeDescriptions();
-
-            /*VkVertexInputBindingDescription bindingDescription{};
-            bindingDescription.binding = 0;
-            bindingDescription.stride = sizeof(VulkanVertex);
-            bindingDescription.inputRate = VK_VERTEX_INPUT_RATE_VERTEX;
-
-            std::vector<VkVertexInputAttributeDescription> attributeDescriptions{};
-            attributeDescriptions[0].binding = 0;
-            attributeDescriptions[0].location = 0;
-            attributeDescriptions[0].format = VK_FORMAT_R32G32B32_SFLOAT;
-            attributeDescriptions[0].offset = offsetof(VulkanVertex, pos);
-
-            attributeDescriptions[1].binding = 0;
-            attributeDescriptions[1].location = 1;
-            attributeDescriptions[1].format = VK_FORMAT_R32G32B32_SFLOAT;
-            attributeDescriptions[1].offset = offsetof(VulkanVertex, color);
-
-            attributeDescriptions[2].binding = 0;
-            attributeDescriptions[2].location = 2;
-            attributeDescriptions[2].format = VK_FORMAT_R32G32_SFLOAT;
-            attributeDescriptions[2].offset = offsetof(VulkanVertex, texCoord);*/
 
             vertexInputInfo.vertexBindingDescriptionCount = 1;
             vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
@@ -123,14 +129,14 @@ namespace DRHI
             dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
             dynamicState.pDynamicStates = dynamicStates.data();
 
-            VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-            pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-            pipelineLayoutInfo.setLayoutCount = 1;
-            pipelineLayoutInfo.pSetLayouts = descriptorSetlayout;
+            //VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
+            //pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
+            //pipelineLayoutInfo.setLayoutCount = 1;
+            //pipelineLayoutInfo.pSetLayouts = descriptorSetlayout;
 
-            if (vkCreatePipelineLayout(*device, &pipelineLayoutInfo, nullptr, pipelineLayout) != VK_SUCCESS) {
-                throw std::runtime_error("failed to create pipeline layout!");
-            }
+            //if (vkCreatePipelineLayout(*device, &pipelineLayoutInfo, nullptr, pipelineLayout) != VK_SUCCESS) {
+            //    throw std::runtime_error("failed to create pipeline layout!");
+            //}
 
             VkPipelineRenderingCreateInfoKHR pipelineRenderingCreateInfo{};
             pipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;

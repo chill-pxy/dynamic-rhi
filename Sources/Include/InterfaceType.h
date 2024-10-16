@@ -628,7 +628,21 @@ namespace DRHI
 		DynamicSampler*   pImmutableSamplers;
 	}DynamicDescriptorSetLayoutBinding;
 
+	typedef struct DynamicPushConstantRange
+	{
+		uint32_t              stageFlags;
+		uint32_t              offset;
+		uint32_t              size;
+	}DynamicPushConstantRange;
 
+	typedef struct DynamicPipelineLayoutCreateInfo
+	{
+		const void*                     pNext;
+		uint32_t                        setLayoutCount;
+		DynamicDescriptorSetLayout*     pSetLayouts;
+		uint32_t                        pushConstantRangeCount;
+		DynamicPushConstantRange*       pPushConstantRanges;
+	}DynamicPipelineLayoutCreateInfo;
 }
 
 

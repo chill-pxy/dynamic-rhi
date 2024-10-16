@@ -178,11 +178,15 @@ namespace DRHI
 
 
     //------------------------------------pipeline functions----------------------------------
-    void VulkanDRHI::createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicDescriptorSetLayout* descriptorSetLayout, PipelineCreateInfo info)
+    void VulkanDRHI::createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo)
+    {
+        VulkanPipeline::createPipelineLayout(pipelineLayout, createInfo, &_device);
+    }
+
+    void VulkanDRHI::createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info)
     {
         VkPipeline vkpipeline;
-        VkPipelineLayout vkpipelineLayout;
-        VkDescriptorSetLayout vkdesscriptorSetLayout = descriptorSetLayout->getVulkanDescriptorSetLayout();
+        VkPipelineLayout vkpipelineLayout = pipelineLayout->getVulkanPipelineLayout();
 
         auto vertex = readFile(info.vertexShader);
         auto fragment = readFile(info.fragmentShader);
@@ -203,11 +207,9 @@ namespace DRHI
             vkVertexInputAttribute.emplace_back(info.vertexInputAttributes[i].getVulkanVertexInputAttributeDescription());
         }
 
-        VulkanPipeline::createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, &vkdesscriptorSetLayout, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
+        VulkanPipeline::createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
 
         pipeline->internalID = vkpipeline;
-        pipelineLayout->internalID = vkpipelineLayout;
-        descriptorSetLayout->internalID = vkdesscriptorSetLayout;
     }
 
     void VulkanDRHI::bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index)
