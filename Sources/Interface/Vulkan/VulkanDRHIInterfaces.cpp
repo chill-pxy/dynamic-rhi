@@ -4,27 +4,6 @@
 
 namespace DRHI
 {
-    //--------------------------------------clear functions-------------------------------------
-    void VulkanDRHI::clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory)
-    {
-        vkDestroyBuffer(_device, std::get<VkBuffer>(buffer->internalID), nullptr);
-        vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
-    }
-
-    void VulkanDRHI::clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory)
-    {
-        vkDestroySampler(_device, std::get<VkSampler>(sampler->internalID), nullptr);
-        vkDestroyImageView(_device, std::get<VkImageView>(imageView->internalID), nullptr);
-
-        vkDestroyImage(_device, std::get<VkImage>(image->internalID), nullptr);
-        vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
-    }
-    //------------------------------------------------------------------------------------------
-
-
-
-
-
     //-------------------------------------command functions------------------------------------
     void VulkanDRHI::beginCommandBuffer(uint32_t index)
     {
@@ -170,6 +149,28 @@ namespace DRHI
     {
         return _currentBuffer;
     }
+
+    void VulkanDRHI::clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory)
+    {
+        vkDestroyBuffer(_device, std::get<VkBuffer>(buffer->internalID), nullptr);
+        vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
+    }
+
+    void VulkanDRHI::flushBuffer(DynamicDeviceMemory* memory, uint32_t size, uint32_t offset = 0)
+    {
+        if (size == DynamicUnknown)
+        {
+            size = VK_WHOLE_SIZE;
+        }
+
+        auto vkmemory = memory->getVulkanDeviceMemory();
+        VkMappedMemoryRange mappedRange = {};
+        mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+        mappedRange.memory = vkmemory;
+        mappedRange.offset = offset;
+        mappedRange.size = size;
+        vkFlushMappedMemoryRanges(_device, 1, &mappedRange);
+    }
     //----------------------------------------------------------------------------------------
 
 
@@ -222,6 +223,29 @@ namespace DRHI
         return VulkanPipeline::getPipelineRenderingCreateInfo(&_swapChainImageFormat);
     }
     //----------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+    //------------------------------------memory functions------------------------------------
+    void VulkanDRHI::mapMemory(DynamicDeviceMemory* memory, uint32_t offset, uint32_t size, void* data)
+    {
+        auto vkmemory = memory->getVulkanDeviceMemory();
+        vkMapMemory(_device, vkmemory, offset, size, 0, &data);
+    }
+
+    void VulkanDRHI::unmapMemory(DynamicDeviceMemory* memory)
+    {
+        auto vkmemory = memory->getVulkanDeviceMemory();
+        vkUnmapMemory(_device, vkmemory);
+    }
+    //----------------------------------------------------------------------------------------
+
+
 
 
 
@@ -330,5 +354,14 @@ namespace DRHI
         VkSampler vksampler{};
         VulkanImage::createSampler(&vksampler, createInfo, &_physicalDevice, &_device);
         sampler->internalID = vksampler;
+    }
+
+    void VulkanDRHI::clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory)
+    {
+        vkDestroySampler(_device, std::get<VkSampler>(sampler->internalID), nullptr);
+        vkDestroyImageView(_device, std::get<VkImageView>(imageView->internalID), nullptr);
+
+        vkDestroyImage(_device, std::get<VkImage>(image->internalID), nullptr);
+        vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
     }
 }

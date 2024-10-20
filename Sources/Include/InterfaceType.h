@@ -18,6 +18,8 @@ const int MAX_FRAMES_IN_FLIGHT = 3;
 
 namespace DRHI
 {
+	static const uint32_t DynamicUnknown = 1217;
+
 	typedef enum API
 	{
 		VULKAN,

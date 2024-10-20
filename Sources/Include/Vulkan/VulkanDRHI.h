@@ -87,8 +87,6 @@ namespace DRHI
 
 		//clear functions
 		virtual void clean();
-		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
-		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory);
 
 		//command functions
 		virtual void beginCommandBuffer(uint32_t index);
@@ -101,7 +99,13 @@ namespace DRHI
 		virtual uint32_t getCurrentBuffer();
 		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage);
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
-		
+		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory);
+		virtual void flushBuffer(DynamicDeviceMemory* memory, uint32_t size, uint32_t offset);
+
+		//memory functions
+		virtual void mapMemory(DynamicDeviceMemory* memory, uint32_t offset, uint32_t size, void* data);
+		virtual void unmapMemory(DynamicDeviceMemory* memory);
+
 		//descriptor funcions
 		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool);
 		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicWriteDescriptorSet>* wds);
@@ -118,6 +122,7 @@ namespace DRHI
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory);
 		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, uint32_t width, uint32_t height);
 		virtual void createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo);
+		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
 
 		//pipeline functions
 		virtual void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo);
