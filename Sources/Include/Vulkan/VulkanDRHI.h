@@ -97,10 +97,11 @@ namespace DRHI
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index);
 		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index);
 		virtual uint32_t getCurrentBuffer();
-		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage);
+		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty);
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
+		//virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory, uint64_t bufferSize, uint32_t usage);
 		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory);
-		virtual void flushBuffer(DynamicDeviceMemory* memory, uint32_t size, uint32_t offset);
+		virtual void flushBuffer(DynamicDeviceMemory* memory, uint32_t size, uint32_t offset);	
 
 		//memory functions
 		virtual void mapMemory(DynamicDeviceMemory* memory, uint32_t offset, uint32_t size, void* data);
@@ -129,6 +130,10 @@ namespace DRHI
 		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info);
 		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
 		        VkPipelineRenderingCreateInfoKHR getPipelineRenderingCreateInfo();
+
+		//cmd functions
+		virtual void cmdPushConstants(uint32_t index, DynamicPipelineLayout* layout, uint32_t stage, uint32_t offset, uint32_t size, void* value);
+
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  
 		//--------------------------------------------------------------------------------------------------------------------------

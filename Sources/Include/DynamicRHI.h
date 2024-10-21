@@ -46,7 +46,7 @@ namespace DRHI
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index) = 0;
 		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index) = 0;
 		virtual uint32_t getCurrentBuffer() = 0;
-		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage) = 0;
+		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty) = 0;
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize) = 0;
 		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory) = 0;
 		virtual void flushBuffer(DynamicDeviceMemory* memory, uint32_t size, uint32_t offset) = 0;
@@ -77,5 +77,8 @@ namespace DRHI
 		virtual void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo) = 0;
 		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info) = 0;
 		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index) = 0;   
+		
+		//cmd functions
+		virtual void cmdPushConstants(uint32_t index, DynamicPipelineLayout* layout, uint32_t stage, uint32_t offset, uint32_t size, void* value) = 0;
 	};
 }

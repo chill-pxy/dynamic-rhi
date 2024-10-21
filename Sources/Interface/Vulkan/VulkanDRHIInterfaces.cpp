@@ -119,9 +119,9 @@ namespace DRHI
         vkCmdBindIndexBuffer(_commandBuffers[index], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
     }
 
-    void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage)
+    void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty)
     {
-        VulkanBuffer::createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue, usage);
+        VulkanBuffer::createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue, usage, memoryProperty);
     }
 
     void VulkanDRHI::createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize)
@@ -364,4 +364,18 @@ namespace DRHI
         vkDestroyImage(_device, std::get<VkImage>(image->internalID), nullptr);
         vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
     }
+    //-----------------------------------------------------------------------------------------------
+
+
+
+
+
+
+    //------------------------------------ cmd functions --------------------------------------------
+    void VulkanDRHI::cmdPushConstants(uint32_t index, DynamicPipelineLayout* layout, uint32_t stage, uint32_t offset, uint32_t size, void* value)
+    {
+        auto vklayout = layout->getVulkanPipelineLayout();
+        vkCmdPushConstants(_commandBuffers[index], vklayout, (VkShaderStageFlags)stage, offset, size, value);
+    }
+    //-----------------------------------------------------------------------------------------------
 }

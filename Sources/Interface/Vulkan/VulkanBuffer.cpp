@@ -58,7 +58,7 @@ namespace DRHI
             vkBindBufferMemory(*device, *buffer, *bufferMemory, 0);
         }
 
-        void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, VkDevice* device, VkPhysicalDevice* physicalDevice, VkCommandPool* commandPool, VkQueue* graphicsQueue, uint32_t usage)
+        void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, VkDevice* device, VkPhysicalDevice* physicalDevice, VkCommandPool* commandPool, VkQueue* graphicsQueue, uint32_t usage, uint32_t memoryProperty)
         {
             VkBuffer stagingBuffer;
             VkDeviceMemory stagingBufferMemory;
@@ -72,7 +72,7 @@ namespace DRHI
             VkBuffer inputBuffer;
             VkDeviceMemory inputMemory;
 
-            createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | (VkBufferUsageFlagBits)usage, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, &inputBuffer, &inputMemory);
+            createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | (VkBufferUsageFlagBits)usage, (VkMemoryPropertyFlags)memoryProperty, &inputBuffer, &inputMemory);
 
             copyBuffer(stagingBuffer, inputBuffer, bufferSize, commandPool, device, graphicsQueue);
 
@@ -82,5 +82,15 @@ namespace DRHI
             vkDestroyBuffer(*device, stagingBuffer, nullptr);
             vkFreeMemory(*device, stagingBufferMemory, nullptr);
         }
+
+        //void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory, uint64_t bufferSize, uint32_t usage, VkPhysicalDevice* physicalDevice, VkDevice* device)
+        //{
+        //    VkBuffer vkbuffer{};
+        //    VkDeviceMemory vkbufferMemory{};
+        //    createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | (VkBufferUsageFlagBits)usage, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT, &vkbuffer, &vkbufferMemory);
+
+        //    buffer->internalID = vkbuffer;
+        //    memory->internalID = vkbufferMemory;
+        //}
     }
 }
