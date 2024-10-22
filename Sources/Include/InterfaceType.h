@@ -18,8 +18,6 @@ const int MAX_FRAMES_IN_FLIGHT = 3;
 
 namespace DRHI
 {
-	static const uint32_t DynamicUnknown = 1217;
-
 	typedef enum API
 	{
 		VULKAN,
@@ -373,6 +371,35 @@ namespace DRHI
 			BORDER_COLOR_MAX_ENUM{ 0 };
 
 	}DynamicBorderColor;
+
+	typedef struct DynamicIndexType
+	{
+		DynamicIndexType(API api)
+		{
+			switch (api)
+			{
+			case VULKAN:
+				INDEX_TYPE_UINT16 = VK_INDEX_TYPE_UINT16;
+				INDEX_TYPE_UINT32 = VK_INDEX_TYPE_UINT32;
+				INDEX_TYPE_NONE_KHR = VK_INDEX_TYPE_NONE_KHR;
+				INDEX_TYPE_UINT8_EXT = VK_INDEX_TYPE_UINT8_EXT;
+				INDEX_TYPE_NONE_NV = VK_INDEX_TYPE_NONE_NV;
+				INDEX_TYPE_MAX_ENUM = VK_INDEX_TYPE_MAX_ENUM;
+				break;
+			case DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t
+			INDEX_TYPE_UINT16{ 0 },
+			INDEX_TYPE_UINT32{ 0 },
+			INDEX_TYPE_NONE_KHR{ 0 },
+			INDEX_TYPE_UINT8_EXT{ 0 },
+			INDEX_TYPE_NONE_NV{ 0 },
+			INDEX_TYPE_MAX_ENUM{ 0 };
+
+	}DynamicIndexType;
 
 	typedef struct DynamicExtent2D
 	{

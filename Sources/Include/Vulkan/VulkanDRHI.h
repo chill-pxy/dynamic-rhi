@@ -95,13 +95,14 @@ namespace DRHI
 
 		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index);
-		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index);
+		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index, uint32_t indexType);
 		virtual uint32_t getCurrentBuffer();
 		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty);
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		//virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory, uint64_t bufferSize, uint32_t usage);
 		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory);
 		virtual void flushBuffer(DynamicDeviceMemory* memory, uint32_t size, uint32_t offset);	
+		virtual void flushBuffer(DynamicDeviceMemory* memory, uint32_t offset);
 
 		//memory functions
 		virtual void mapMemory(DynamicDeviceMemory* memory, uint32_t offset, uint32_t size, void* data);

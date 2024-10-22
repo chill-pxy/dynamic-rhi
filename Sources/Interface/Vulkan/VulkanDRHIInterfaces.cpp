@@ -113,10 +113,10 @@ namespace DRHI
         vkCmdBindVertexBuffers(_commandBuffers[index], 0, 1, &vkVertexBuffer, offsets);
     }
 
-    void VulkanDRHI::bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index)
+    void VulkanDRHI::bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index, uint32_t indexType)
     {
         auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
-        vkCmdBindIndexBuffer(_commandBuffers[index], vkIndexBuffer, 0, VK_INDEX_TYPE_UINT32);
+        vkCmdBindIndexBuffer(_commandBuffers[index], vkIndexBuffer, 0, (VkIndexType)indexType);
     }
 
     void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty)
@@ -156,19 +156,25 @@ namespace DRHI
         vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
     }
 
-    void VulkanDRHI::flushBuffer(DynamicDeviceMemory* memory, uint32_t size, uint32_t offset = 0)
+    void VulkanDRHI::flushBuffer(DynamicDeviceMemory* memory, uint32_t size, uint32_t offset)
     {
-        if (size == DynamicUnknown)
-        {
-            size = VK_WHOLE_SIZE;
-        }
-
         auto vkmemory = memory->getVulkanDeviceMemory();
         VkMappedMemoryRange mappedRange = {};
         mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
         mappedRange.memory = vkmemory;
         mappedRange.offset = offset;
         mappedRange.size = size;
+        vkFlushMappedMemoryRanges(_device, 1, &mappedRange);
+    }
+
+    void VulkanDRHI::flushBuffer(DynamicDeviceMemory* memory, uint32_t offset)
+    {
+        auto vkmemory = memory->getVulkanDeviceMemory();
+        VkMappedMemoryRange mappedRange = {};
+        mappedRange.sType = VK_STRUCTURE_TYPE_MAPPED_MEMORY_RANGE;
+        mappedRange.memory = vkmemory;
+        mappedRange.offset = offset;
+        mappedRange.size = VK_WHOLE_SIZE;
         vkFlushMappedMemoryRanges(_device, 1, &mappedRange);
     }
     //----------------------------------------------------------------------------------------
