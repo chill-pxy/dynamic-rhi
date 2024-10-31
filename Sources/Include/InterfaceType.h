@@ -7,6 +7,7 @@
 #include<Windows.h>
 
 #include<variant>
+#include<vector>
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -720,6 +721,14 @@ namespace DRHI
 		uint32_t                        pushConstantRangeCount;
 		DynamicPushConstantRange*       pPushConstantRanges;
 	}DynamicPipelineLayoutCreateInfo;
+
+	typedef struct DynamicPipelineCreateInfo
+	{
+		const char* vertexShader;
+		const char* fragmentShader;
+		DynamicVertexInputBindingDescription vertexInputBinding;
+		std::vector<DynamicVertexInputAttributeDescription> vertexInputAttributes;
+	}DynamicPipelineCreateInfo;
 }
 
 

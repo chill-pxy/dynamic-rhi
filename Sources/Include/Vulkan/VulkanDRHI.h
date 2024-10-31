@@ -128,7 +128,7 @@ namespace DRHI
 
 		//pipeline functions
 		virtual void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo);
-		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info);
+		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicPipelineCreateInfo info);
 		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
 		        VkPipelineRenderingCreateInfoKHR getPipelineRenderingCreateInfo();
 

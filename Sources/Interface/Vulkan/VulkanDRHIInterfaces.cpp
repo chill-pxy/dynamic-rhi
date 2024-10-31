@@ -190,7 +190,7 @@ namespace DRHI
         VulkanPipeline::createPipelineLayout(pipelineLayout, createInfo, &_device);
     }
 
-    void VulkanDRHI::createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info)
+    void VulkanDRHI::createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicPipelineCreateInfo info)
     {
         VkPipeline vkpipeline;
         VkPipelineLayout vkpipelineLayout = pipelineLayout->getVulkanPipelineLayout();

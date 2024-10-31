@@ -8,14 +8,6 @@
 
 namespace DRHI
 {
-	struct PipelineCreateInfo
-	{
-		const char* vertexShader;
-		const char* fragmentShader;
-		DynamicVertexInputBindingDescription vertexInputBinding;
-		std::vector<DynamicVertexInputAttributeDescription> vertexInputAttributes;
-	};
-
 	class DynamicRHI
 	{
 	public:
@@ -76,7 +68,7 @@ namespace DRHI
 
 		//pipeline functions
 		virtual void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo) = 0;
-		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, PipelineCreateInfo info) = 0;
+		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicPipelineCreateInfo info) = 0;
 		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index) = 0;   
 		
 		//cmd functions
