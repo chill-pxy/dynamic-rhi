@@ -126,11 +126,11 @@ namespace DRHI
 
     void VulkanDRHI::createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize)
     {
-        uniformBuffers->resize(MAX_FRAMES_IN_FLIGHT);
-        uniformBuffersMemory->resize(MAX_FRAMES_IN_FLIGHT);
-        uniformBuffersMapped->resize(MAX_FRAMES_IN_FLIGHT);
+        uniformBuffers->resize(bufferSize);
+        uniformBuffersMemory->resize(bufferSize);
+        uniformBuffersMapped->resize(bufferSize);
 
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++)
+        for (size_t i = 0; i < bufferSize; i++)
         {
             VkBuffer vkUniformBuffer;
             VkDeviceMemory vkUniformBufferMemory;
