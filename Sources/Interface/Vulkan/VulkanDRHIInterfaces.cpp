@@ -130,18 +130,30 @@ namespace DRHI
         uniformBuffersMemory->resize(bufferSize);
         uniformBuffersMapped->resize(bufferSize);
 
-        VkBuffer vkUniformBuffer;
-        VkDeviceMemory vkUniformBufferMemory;
-
-        VulkanBuffer::createBuffer(&_device, &_physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vkUniformBuffer, &vkUniformBufferMemory);
-
         for (size_t i = 0; i < bufferSize; i++)
         {
+            VkBuffer vkUniformBuffer{};
+            VkDeviceMemory vkUniformBufferMemory{};
+
+            VulkanBuffer::createBuffer(&_device, &_physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vkUniformBuffer, &vkUniformBufferMemory);
+
             vkMapMemory(_device, vkUniformBufferMemory, 0, bufferSize, 0, &(*uniformBuffersMapped)[i]);
 
             (*uniformBuffers)[i].internalID = vkUniformBuffer;
             (*uniformBuffersMemory)[i].internalID = vkUniformBufferMemory;
         }
+    }
+    
+    void VulkanDRHI::createUniformBuffer(DynamicBuffer* uniformBuffer, DynamicDeviceMemory* uniformBufferMemory, void** uniformBufferMapped, uint32_t bufferSize)
+    {
+        VkBuffer vkUniformBuffer{};
+        VkDeviceMemory vkUniformBufferMemory{};
+        //void* bufferMapped{ nullptr };
+        VulkanBuffer::createBuffer(&_device, &_physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vkUniformBuffer, &vkUniformBufferMemory);
+        vkMapMemory(_device, vkUniformBufferMemory, 0, bufferSize, 0, uniformBufferMapped);
+        uniformBuffer->internalID = vkUniformBuffer;
+        uniformBufferMemory->internalID = vkUniformBufferMemory;
+        //uniformBufferMapped = bufferMapped;
     }
 
     uint32_t VulkanDRHI::getCurrentBuffer()

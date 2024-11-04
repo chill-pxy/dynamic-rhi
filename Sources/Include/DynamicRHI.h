@@ -40,6 +40,7 @@ namespace DRHI
 		virtual uint32_t getCurrentBuffer() = 0;
 		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty) = 0;
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize) = 0;
+		virtual void createUniformBuffer(DynamicBuffer* uniformBuffer, DynamicDeviceMemory* uniformBufferMemory, void** uniformBufferMapped, uint32_t bufferSize) = 0;
 		virtual void clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory) = 0;
 		virtual void flushBuffer(DynamicDeviceMemory* memory, uint32_t size, uint32_t offset) = 0;
 		virtual void flushBuffer(DynamicDeviceMemory* memory, uint32_t offset) = 0;
