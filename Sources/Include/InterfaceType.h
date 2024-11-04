@@ -729,6 +729,11 @@ namespace DRHI
 		DynamicVertexInputBindingDescription vertexInputBinding;
 		std::vector<DynamicVertexInputAttributeDescription> vertexInputAttributes;
 	}DynamicPipelineCreateInfo;
+
+	typedef struct DynamicDescriptorPoolSize {
+		uint32_t    type;
+		uint32_t    descriptorCount;
+	} DynamicDescriptorPoolSize;
 }
 
 

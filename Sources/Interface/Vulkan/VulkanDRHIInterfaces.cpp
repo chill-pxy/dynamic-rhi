@@ -130,14 +130,13 @@ namespace DRHI
         uniformBuffersMemory->resize(bufferSize);
         uniformBuffersMapped->resize(bufferSize);
 
+        VkBuffer vkUniformBuffer;
+        VkDeviceMemory vkUniformBufferMemory;
+
+        VulkanBuffer::createBuffer(&_device, &_physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vkUniformBuffer, &vkUniformBufferMemory);
+
         for (size_t i = 0; i < bufferSize; i++)
         {
-            VkBuffer vkUniformBuffer;
-            VkDeviceMemory vkUniformBufferMemory;
-            VkDescriptorBufferInfo vkdescriptorInfo{};
-
-            VulkanBuffer::createBuffer(&_device, &_physicalDevice, bufferSize, VK_BUFFER_USAGE_UNIFORM_BUFFER_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &vkUniformBuffer, &vkUniformBufferMemory);
-
             vkMapMemory(_device, vkUniformBufferMemory, 0, bufferSize, 0, &(*uniformBuffersMapped)[i]);
 
             (*uniformBuffers)[i].internalID = vkUniformBuffer;
@@ -259,6 +258,23 @@ namespace DRHI
 
 
     //-------------------------------------descriptor functions-------------------------------
+    void VulkanDRHI::createDescriptorPool(DynamicDescriptorPool* descriptorPool, std::vector<DynamicDescriptorPoolSize>* poolsizes)
+    {
+        std::vector<VkDescriptorPoolSize> vkpoolSizes{};
+
+        for (int i = 0; i < poolsizes->size(); ++i)
+        {
+            auto vkpoolsize = VkDescriptorPoolSize();
+            vkpoolsize.descriptorCount = (*poolsizes)[i].descriptorCount;
+            vkpoolsize.type = (VkDescriptorType)(*poolsizes)[i].type;
+            vkpoolSizes.push_back(vkpoolsize);
+        }
+
+        VkDescriptorPool vkdescriptorPool{};
+        VulkanDescriptor::createDescriptorPool(&vkdescriptorPool, &vkpoolSizes, &_device);
+        descriptorPool->internalID = vkdescriptorPool;
+    }
+
     void VulkanDRHI::createDescriptorPool(DynamicDescriptorPool* descriptorPool)
     {
         VkDescriptorPool vkdescriptorPool{};

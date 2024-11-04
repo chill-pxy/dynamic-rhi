@@ -109,6 +109,7 @@ namespace DRHI
 		virtual void unmapMemory(DynamicDeviceMemory* memory);
 
 		//descriptor funcions
+		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool, std::vector<DynamicDescriptorPoolSize>* poolsizes);
 		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool);
 		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicWriteDescriptorSet>* wds);
 		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index);
