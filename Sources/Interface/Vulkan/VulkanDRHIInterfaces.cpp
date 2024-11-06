@@ -349,10 +349,10 @@ namespace DRHI
 
 
     //-----------------------------------image functions----------------------------------------
-    void VulkanDRHI::createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat)
+    void VulkanDRHI::createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat, uint32_t imageAspect)
     {
         VkImage vkImage = image->getVulkanImage();
-        VkImageView vkTextureImageView = VulkanImage::createImageView(&_device, &vkImage, (VkFormat)imageFormat, VK_IMAGE_ASPECT_COLOR_BIT);
+        VkImageView vkTextureImageView = VulkanImage::createImageView(&_device, &vkImage, (VkFormat)imageFormat, (VkImageAspectFlags)imageAspect);
         imageView->internalID = vkTextureImageView;
     }
 
@@ -397,6 +397,78 @@ namespace DRHI
 
         vkDestroyImage(_device, std::get<VkImage>(image->internalID), nullptr);
         vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
+    }
+
+
+    void VulkanDRHI::createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys)
+    {
+        viewportImages->resize(_swapChainImages.size());
+        viewportImageMemorys->resize(_swapChainImages.size());
+
+        for (uint32_t i = 0; i < _swapChainImages.size(); i++)
+        {
+            // Create the linear tiled destination image to copy to and to read the memory from
+            VkImageCreateInfo imageCreateCI{};
+            imageCreateCI.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+            imageCreateCI.imageType = VK_IMAGE_TYPE_2D;
+            // Note that vkCmdBlitImage (if supported) will also do format conversions if the swapchain color format would differ
+            imageCreateCI.format = VK_FORMAT_R8G8B8A8_UNORM;
+            imageCreateCI.extent.width = _swapChainExtent.width;
+            imageCreateCI.extent.height = _swapChainExtent.height;
+            imageCreateCI.extent.depth = 1;
+            imageCreateCI.arrayLayers = 1;
+            imageCreateCI.mipLevels = 1;
+            imageCreateCI.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            imageCreateCI.samples = VK_SAMPLE_COUNT_1_BIT;
+            imageCreateCI.tiling = VK_IMAGE_TILING_LINEAR;
+            imageCreateCI.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+            // Create the image
+            // VkImage dstImage;
+            VkImage vkimage{};
+            vkCreateImage(_device, &imageCreateCI, nullptr, &vkimage);
+            // Create memory to back up the image
+            VkMemoryRequirements memRequirements;
+            VkMemoryAllocateInfo memAllocInfo{};
+            memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            // VkDeviceMemory dstImageMemory;
+            vkGetImageMemoryRequirements(_device, vkimage, &memRequirements);
+            memAllocInfo.allocationSize = memRequirements.size;
+            // Memory must be host visible to copy from
+            VkDeviceMemory vkmemory{};
+            memAllocInfo.memoryTypeIndex = VulkanBuffer::findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &_physicalDevice);
+            vkAllocateMemory(_device, &memAllocInfo, nullptr, &vkmemory);
+            vkBindImageMemory(_device, vkimage, vkmemory, 0);
+
+
+            VkCommandBuffer copyCmd = beginSingleTimeCommands(&_commandPool, &_device);
+
+            insertImageMemoryBarrier(
+                copyCmd,
+                vkimage,
+                VK_ACCESS_TRANSFER_READ_BIT,
+                VK_ACCESS_MEMORY_READ_BIT,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VK_PIPELINE_STAGE_TRANSFER_BIT,
+                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+
+            endSingleTimeCommands(copyCmd, &_graphicQueue, &_commandPool, &_device);
+
+            (*viewportImages)[i].internalID = vkimage;
+            (*viewportImageMemorys)[i].internalID = vkmemory;
+        }
+    }
+
+    void VulkanDRHI::createViewportImageViews(std::vector<DynamicImageView>* viewportImageViews, std::vector<DynamicImage>* viewportImages)
+    {
+        viewportImageViews->resize(viewportImages->size());
+
+        for (uint32_t i = 0; i < viewportImages->size(); i++)
+        {
+            VkImage scImages = (*viewportImages)[i].getVulkanImage();
+            (*viewportImageViews)[i].internalID = VulkanImage::createImageView(&_device, &scImages, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+        }
     }
     //-----------------------------------------------------------------------------------------------
 

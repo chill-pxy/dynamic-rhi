@@ -38,7 +38,7 @@ namespace DRHI
 		VkSwapchainKHR               _swapChain{ VK_NULL_HANDLE };
 		VkFormat                     _depthFormat{ VK_FORMAT_D32_SFLOAT_S8_UINT };
 		DepthStencil                 _depthStencil{};
-		VkFormat                     _swapChainImageFormat{ VK_FORMAT_B8G8R8A8_UNORM };
+		VkFormat                     _swapChainImageFormat{ VK_FORMAT_R8G8B8A8_UNORM };
 		VkExtent2D                   _swapChainExtent{ 0 };
 		std::vector<VkImage>         _swapChainImages;
 		std::vector<VkImageView>     _swapChainImageViews;
@@ -121,12 +121,14 @@ namespace DRHI
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
 
 		//image functions
-		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat);
+		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat, uint32_t imageAspect);
 		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory);
 		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, uint32_t width, uint32_t height);
 		virtual void createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo);
 		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
+		virtual void createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys);
+		virtual void createViewportImageViews(std::vector<DynamicImageView>* viewportImageViews, std::vector<DynamicImage>* viewportImages);
 
 		//pipeline functions
 		virtual void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo);

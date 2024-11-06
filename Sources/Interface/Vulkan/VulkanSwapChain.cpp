@@ -75,8 +75,8 @@ namespace DRHI
 
         *swapChainImageFormat = surfaceFormat.format;
         *swapChainExtent = extent;
-        *viewPortWidth = extent.width;
-        *viewPortHeight = extent.height;
+        viewPortWidth = &extent.width;
+        viewPortHeight = &extent.height;
     }
 
     void createImageViews(VkDevice* device, std::vector<VkImageView>* swapChainImageViews, std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat)
