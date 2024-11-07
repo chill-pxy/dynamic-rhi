@@ -412,7 +412,7 @@ namespace DRHI
             imageCreateCI.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageCreateCI.imageType = VK_IMAGE_TYPE_2D;
             // Note that vkCmdBlitImage (if supported) will also do format conversions if the swapchain color format would differ
-            imageCreateCI.format = VK_FORMAT_R8G8B8A8_UNORM;
+            imageCreateCI.format = VK_FORMAT_B8G8R8A8_SRGB;
             imageCreateCI.extent.width = _swapChainExtent.width;
             imageCreateCI.extent.height = _swapChainExtent.height;
             imageCreateCI.extent.depth = 1;
@@ -420,25 +420,33 @@ namespace DRHI
             imageCreateCI.mipLevels = 1;
             imageCreateCI.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
             imageCreateCI.samples = VK_SAMPLE_COUNT_1_BIT;
-            imageCreateCI.tiling = VK_IMAGE_TILING_LINEAR;
+            imageCreateCI.tiling = VK_IMAGE_TILING_OPTIMAL;
             imageCreateCI.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
             // Create the image
-            // VkImage dstImage;
             VkImage vkimage{};
-            vkCreateImage(_device, &imageCreateCI, nullptr, &vkimage);
-            // Create memory to back up the image
-            VkMemoryRequirements memRequirements;
-            VkMemoryAllocateInfo memAllocInfo{};
-            memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
-            // VkDeviceMemory dstImageMemory;
-            vkGetImageMemoryRequirements(_device, vkimage, &memRequirements);
-            memAllocInfo.allocationSize = memRequirements.size;
-            // Memory must be host visible to copy from
-            VkDeviceMemory vkmemory{};
-            memAllocInfo.memoryTypeIndex = VulkanBuffer::findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &_physicalDevice);
-            vkAllocateMemory(_device, &memAllocInfo, nullptr, &vkmemory);
-            vkBindImageMemory(_device, vkimage, vkmemory, 0);
+            if ((vkCreateImage(_device, &imageCreateCI, nullptr, &vkimage)) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create image");
+            }
+            VkMemoryRequirements memReqs{};
+            vkGetImageMemoryRequirements(_device, vkimage, &memReqs);
 
+            VkMemoryAllocateInfo memAllloc{};
+            memAllloc.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            memAllloc.allocationSize = memReqs.size;
+            memAllloc.memoryTypeIndex = getMemoryType(&_physicalDevice, memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+            VkDeviceMemory vkmemory{};
+
+            if (vkAllocateMemory(_device, &memAllloc, nullptr, &vkmemory) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to allocate memory");
+            }
+
+            if (vkBindImageMemory(_device, vkimage, vkmemory, 0) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to allocate memory");
+            }
 
             VkCommandBuffer copyCmd = beginSingleTimeCommands(&_commandPool, &_device);
 
@@ -467,7 +475,7 @@ namespace DRHI
         for (uint32_t i = 0; i < viewportImages->size(); i++)
         {
             VkImage scImages = (*viewportImages)[i].getVulkanImage();
-            (*viewportImageViews)[i].internalID = VulkanImage::createImageView(&_device, &scImages, VK_FORMAT_R8G8B8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
+            (*viewportImageViews)[i].internalID = VulkanImage::createImageView(&_device, &scImages, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
         }
     }
     //-----------------------------------------------------------------------------------------------

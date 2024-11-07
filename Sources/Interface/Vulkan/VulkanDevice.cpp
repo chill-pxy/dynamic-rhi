@@ -76,5 +76,7 @@ namespace DRHI
         vkGetDeviceQueue(*device, indices.presentFamily.value(), 0, presentQueue);
 
         *queueFamilyIndices = indices;
+
+        volkLoadDevice(*device);
     }
 }
