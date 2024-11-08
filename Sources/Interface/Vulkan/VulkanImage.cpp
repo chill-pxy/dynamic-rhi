@@ -84,7 +84,7 @@ namespace DRHI
 
         void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device) 
         {
-            VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool, device);
+            VkCommandBuffer commandBuffer = VulkanCommand::beginSingleTimeCommands(commandPool, device);
 
             VkImageMemoryBarrier barrier{};
             barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -129,12 +129,12 @@ namespace DRHI
                 1, &barrier
             );
 
-            endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
+            VulkanCommand::endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
         }
 
         void copyBufferToImage(VkBuffer* buffer, VkImage* image, uint32_t width, uint32_t height, VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device)
         {
-            VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool, device);
+            VkCommandBuffer commandBuffer = VulkanCommand::beginSingleTimeCommands(commandPool, device);
 
             VkBufferImageCopy region{};
             region.bufferOffset = 0;
@@ -153,7 +153,7 @@ namespace DRHI
 
             vkCmdCopyBufferToImage(commandBuffer, *buffer, *image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-            endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
+            VulkanCommand::endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
         }
 
         VkImageView createImageView(VkDevice* device, VkImage* image, VkFormat format, VkImageAspectFlags aspectFlags)

@@ -22,13 +22,13 @@ namespace DRHI
 
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size, VkCommandPool* commandPool, VkDevice* device, VkQueue* graphicsQueue)
         {
-            VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool, device);
+            VkCommandBuffer commandBuffer = VulkanCommand::beginSingleTimeCommands(commandPool, device);
 
             VkBufferCopy copyRegion{};
             copyRegion.size = size;
             vkCmdCopyBuffer(commandBuffer, srcBuffer, dstBuffer, 1, &copyRegion);
 
-            endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
+            VulkanCommand::endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
         }
 
         void createBuffer(VkDevice* device, VkPhysicalDevice* physicalDevice, VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer* buffer, VkDeviceMemory* bufferMemory)

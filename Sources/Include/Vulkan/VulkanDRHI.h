@@ -89,6 +89,8 @@ namespace DRHI
 		virtual void clean();
 
 		//command functions
+		virtual void createCommandPool(DynamicCommandPool* commandPool);
+		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
 		virtual void beginCommandBuffer(uint32_t index);
 		virtual void endCommandBuffer(uint32_t index);
 		virtual uint32_t getCommandBufferSize();

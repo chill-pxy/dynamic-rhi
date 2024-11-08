@@ -25,6 +25,16 @@ namespace DRHI
 		DIRECT3D12
 	}API;
 
+	class DynamicCommandBuffer
+	{
+	public:
+		std::variant<VkCommandBuffer> internalID;
+
+		inline VkCommandBuffer getVulkanCommandBuffer() { return std::get<VkCommandBuffer>(internalID); }
+
+		inline bool vaild() const { return(std::holds_alternative<VkCommandBuffer>(internalID)); }
+	};
+
 	class DynamicCommandPool
 	{
 	public:

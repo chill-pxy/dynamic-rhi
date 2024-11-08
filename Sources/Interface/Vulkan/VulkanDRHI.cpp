@@ -58,8 +58,8 @@ namespace DRHI
 		createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
         createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
 
-        createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
-        createCommandBuffers(&_commandBuffers, &_commandPool, &_device); 
+        VulkanCommand::createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
+        VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, &_device); 
 
         VulkanPipeline::createPipelineCache(&_pipelineCache, &_device);
 
@@ -182,7 +182,7 @@ namespace DRHI
         createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
 
         vkFreeCommandBuffers(_device, _commandPool, _commandBuffers.size(), _commandBuffers.data());
-        createCommandBuffers(&_commandBuffers, &_commandPool, &_device);
+        VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, &_device);
 
         recreatefunc();
 

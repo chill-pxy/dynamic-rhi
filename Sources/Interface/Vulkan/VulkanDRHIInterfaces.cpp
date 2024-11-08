@@ -5,6 +5,27 @@
 namespace DRHI
 {
     //-------------------------------------command functions------------------------------------
+    void VulkanDRHI::createCommandPool(DynamicCommandPool* commandPool)
+    {
+        VkCommandPool vkcommandPool{};
+        VulkanCommand::createCommandPool(&vkcommandPool, &_device, _queueFamilyIndices);
+        commandPool->internalID = vkcommandPool;
+    }
+    
+    void VulkanDRHI::createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool)
+    {
+        std::vector<VkCommandBuffer> vkcommandbuffers{};
+        auto vkcommandPool = commandPool->getVulkanCommandPool();
+        VulkanCommand::createCommandBuffers(&vkcommandbuffers, &vkcommandPool, &_device);
+        commandPool->internalID = vkcommandPool;
+
+        commandBuffers->resize(vkcommandbuffers.size());
+        for (uint32_t i = 0; i < vkcommandbuffers.size(); ++i)
+        {
+            (*commandBuffers)[i].internalID = vkcommandbuffers[i];
+        }
+    }
+    
     void VulkanDRHI::beginCommandBuffer(uint32_t index)
     {
         VkCommandBufferBeginInfo cmdBufferBeginInfo{};
@@ -448,7 +469,7 @@ namespace DRHI
                 throw std::runtime_error("failed to allocate memory");
             }
 
-            VkCommandBuffer copyCmd = beginSingleTimeCommands(&_commandPool, &_device);
+            VkCommandBuffer copyCmd = VulkanCommand::beginSingleTimeCommands(&_commandPool, &_device);
 
             insertImageMemoryBarrier(
                 copyCmd,
@@ -461,7 +482,7 @@ namespace DRHI
                 VK_PIPELINE_STAGE_TRANSFER_BIT,
                 VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
 
-            endSingleTimeCommands(copyCmd, &_graphicQueue, &_commandPool, &_device);
+            VulkanCommand::endSingleTimeCommands(copyCmd, &_graphicQueue, &_commandPool, &_device);
 
             (*viewportImages)[i].internalID = vkimage;
             (*viewportImageMemorys)[i].internalID = vkmemory;
