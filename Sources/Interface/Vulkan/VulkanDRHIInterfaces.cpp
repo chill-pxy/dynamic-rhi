@@ -312,6 +312,32 @@ namespace DRHI
     {
         VkDescriptorPool vkdescriptorPool{};
         VulkanDescriptor::createDescriptorPool(&vkdescriptorPool, &_device);
+       
+    }
+
+    void VulkanDRHI::createDescriptorPool(DynamicDescriptorPool* descriptorPool, DynamicDescriptorPoolCreateInfo* ci)
+    {
+        VkDescriptorPool vkdescriptorPool{};
+        VkDescriptorPoolCreateInfo vci{};
+        vci.flags = ci->flags;
+        vci.maxSets = ci->maxSets;
+        
+
+        std::vector<VkDescriptorPoolSize> vkpoolSizes{};
+
+        for (int i = 0; i < ci->pPoolSizes->size(); ++i)
+        {
+            auto vkpoolsize = VkDescriptorPoolSize();
+            vkpoolsize.descriptorCount = (*ci->pPoolSizes)[i].descriptorCount;
+            vkpoolsize.type = (VkDescriptorType)(*ci->pPoolSizes)[i].type;
+            vkpoolSizes.push_back(vkpoolsize);
+        }
+
+        vci.poolSizeCount = static_cast<uint32_t>(vkpoolSizes.size());
+        vci.pPoolSizes = vkpoolSizes.data();
+
+        VulkanDescriptor::createDescriptorPool(&vkdescriptorPool, &vci, &_device);
+
         descriptorPool->internalID = vkdescriptorPool;
     }
     

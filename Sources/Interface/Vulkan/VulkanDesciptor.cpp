@@ -108,6 +108,21 @@ namespace DRHI
             }
         }
 
+        void createDescriptorPool(VkDescriptorPool* descriptorPool, VkDescriptorPoolCreateInfo* ci, VkDevice* device)
+        {
+            VkDescriptorPoolCreateInfo poolInfo{};
+            poolInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+            poolInfo.flags = ci->flags;
+            poolInfo.poolSizeCount = ci->poolSizeCount;
+            poolInfo.pPoolSizes = ci->pPoolSizes;
+            poolInfo.maxSets = ci->maxSets;
+
+            if (vkCreateDescriptorPool(*device, &poolInfo, nullptr, descriptorPool) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create descriptor pool!");
+            }
+        }
+
         void createDescriptorSet(VkDescriptorSet* descriptorSet, VkDescriptorPool* descriptorPool, VkDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicWriteDescriptorSet>* wds, VkDevice* device)
         {
             VkDescriptorSetAllocateInfo descriptorSetAllocateInfo{};
