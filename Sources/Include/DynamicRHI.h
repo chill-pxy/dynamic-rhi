@@ -18,7 +18,7 @@ namespace DRHI
 		virtual void initialize() = 0;
 
 		//tick function
-		virtual void frameOnTick(std::function<void()> recreatefunc) = 0;
+		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer> commandBuffers) = 0;
 
 		//draw function
 		virtual void drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance) = 0;
@@ -30,10 +30,13 @@ namespace DRHI
 		virtual void clean() = 0;
 
 		//command functions
+		virtual void submitCommandBuffersLists(std::vector<std::vector<DynamicCommandBuffer>> commandBuffersLists) = 0;
 		virtual void createCommandPool(DynamicCommandPool* commandPool) = 0;
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
 		virtual void beginCommandBuffer(uint32_t index) = 0;
+		virtual void beginCommandBuffer(uint32_t index, std::vector<DynamicCommandBuffer>* commandBuffer) = 0;
 		virtual void endCommandBuffer(uint32_t index) = 0;
+		virtual void endCommandBuffer(uint32_t index, std::vector<DynamicCommandBuffer>* commandBuffer) = 0;
 		virtual uint32_t getCommandBufferSize() = 0;
 
 		//buffer functions

@@ -30,11 +30,14 @@ namespace DRHI
 	public:
 		VkInstance                   _instance{ VK_NULL_HANDLE };
 		VkSurfaceKHR                 _surface{ VK_NULL_HANDLE };
+
 		VkPhysicalDevice             _physicalDevice{ VK_NULL_HANDLE };
 		VkDevice                     _device{ VK_NULL_HANDLE };
+
 		QueueFamilyIndices           _queueFamilyIndices;
 		VkQueue                      _graphicQueue{ VK_NULL_HANDLE };
 		VkQueue                      _presentQueue{ VK_NULL_HANDLE };
+
 		VkSwapchainKHR               _swapChain{ VK_NULL_HANDLE };
 		VkFormat                     _depthFormat{ VK_FORMAT_D32_SFLOAT_S8_UINT };
 		DepthStencil                 _depthStencil{};
@@ -43,12 +46,17 @@ namespace DRHI
 		std::vector<VkImage>         _swapChainImages;
 		std::vector<VkImageView>     _swapChainImageViews;
 		std::vector<VkFramebuffer>   _swapChainFramebuffers;
-		std::vector<VkCommandBuffer> _commandBuffers;
-		VkCommandPool                _commandPool{ VK_NULL_HANDLE };
+
+		std::vector<std::vector<VkCommandBuffer>> _commandBuffersLists;
+		std::vector<VkCommandBuffer>              _commandBuffers;
+		VkCommandPool                             _commandPool{ VK_NULL_HANDLE };
+
 		VkPipelineCache              _pipelineCache{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
+
 		Semaphores                   _semaphores{ VK_NULL_HANDLE, VK_NULL_HANDLE };
 		VkPipelineStageFlags         _submitPipelineStages{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
+		
 		uint32_t                     _viewPortWidth{ 0 };
 		uint32_t                     _viewPortHeight{ 0 };
 		std::vector<VkFence>         _waitFences;
@@ -77,7 +85,7 @@ namespace DRHI
 		virtual void initialize();
 
 		//tick function
-		virtual void frameOnTick(std::function<void()> recreatefunc);
+		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer> commandBuffers);
 
 		//draw function
 		virtual void drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance);
@@ -89,10 +97,13 @@ namespace DRHI
 		virtual void clean();
 
 		//command functions
+		virtual void submitCommandBuffersLists(std::vector<std::vector<DynamicCommandBuffer>> commandBuffersLists);
 		virtual void createCommandPool(DynamicCommandPool* commandPool);
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
 		virtual void beginCommandBuffer(uint32_t index);
+		virtual void beginCommandBuffer(uint32_t index, std::vector<DynamicCommandBuffer>* commandBuffer);
 		virtual void endCommandBuffer(uint32_t index);
+		virtual void endCommandBuffer(uint32_t index, std::vector<DynamicCommandBuffer>* commandBuffer);
 		virtual uint32_t getCommandBufferSize();
 
 		//buffer functions
@@ -160,10 +171,10 @@ namespace DRHI
 			VkPipelineStageFlags dstStageMask,
 			VkImageSubresourceRange subresourceRange);
 
-		void prepareFrame(std::function<void()> recreatefunc);
-		void submitFrame(std::function<void()> recreatefunc);
+		void prepareFrame(std::vector<std::function<void()>> recreatefuncs);
+		void submitFrame(std::vector<std::function<void()>> recreatefuncs);
 
 		//recreate functions
-		void recreate(std::function<void()> recreatefunc);
+		void recreate(std::vector<std::function<void()>> recreatefuncs);
 	};
 }

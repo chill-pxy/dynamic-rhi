@@ -81,16 +81,26 @@ namespace DRHI
 
 	}
 
-    void VulkanDRHI::frameOnTick(std::function<void()> recreatefunc)
+    void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer> commandBuffers)
     {
-        prepareFrame(recreatefunc);
-        _submitInfo.commandBufferCount = 1;
-        _submitInfo.pCommandBuffers = &_commandBuffers[_currentBuffer];
+        prepareFrame(recreatefuncs);
+
+        std::vector<VkCommandBuffer> vkcommandBuffers{};
+        vkcommandBuffers.resize(commandBuffers.size() + 1);
+        
+        for (uint32_t i = 0; i < commandBuffers.size(); ++i)
+        {
+            vkcommandBuffers[i] = (commandBuffers[i].getVulkanCommandBuffer());
+        }
+        vkcommandBuffers[commandBuffers.size()] = (_commandBuffers[_currentBuffer]);
+
+        _submitInfo.commandBufferCount = vkcommandBuffers.size();
+        _submitInfo.pCommandBuffers = vkcommandBuffers.data();
         if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit queue");
         }
-        submitFrame(recreatefunc);
+        submitFrame(recreatefuncs);
     }
 
     void VulkanDRHI::drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance)
@@ -159,7 +169,7 @@ namespace DRHI
             1, &imageMemoryBarrier);
     }
 
-    void VulkanDRHI::recreate(std::function<void()> recreatefunc)
+    void VulkanDRHI::recreate(std::vector<std::function<void()>> recreatefuncs)
     {
         if (!_prepare) return;
 
@@ -184,7 +194,10 @@ namespace DRHI
         vkFreeCommandBuffers(_device, _commandPool, _commandBuffers.size(), _commandBuffers.data());
         VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, &_device);
 
-        recreatefunc();
+        for (auto f : recreatefuncs)
+        {
+            f();
+        }
 
         for (auto& fence : _waitFences)
         {
@@ -198,12 +211,12 @@ namespace DRHI
         _prepare = true;
     }
 
-    void VulkanDRHI::prepareFrame(std::function<void()> recreatefunc)
+    void VulkanDRHI::prepareFrame(std::vector<std::function<void()>> recreatefuncs)
     {
         auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentBuffer);
         if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
             if (result == VK_ERROR_OUT_OF_DATE_KHR) {
-                recreate(recreatefunc);
+                recreate(recreatefuncs);
             }
             return;
         }
@@ -215,12 +228,12 @@ namespace DRHI
         }
     }
 
-    void VulkanDRHI::submitFrame(std::function<void()> recreatefunc)
+    void VulkanDRHI::submitFrame(std::vector<std::function<void()>> recreatefuncs)
     {
         auto result = queuePresent(&_graphicQueue, &_swapChain, &_currentBuffer, &_semaphores.renderComplete);
         // Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
         if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
-            recreate(recreatefunc);
+            recreate(recreatefuncs);
             if (result == VK_ERROR_OUT_OF_DATE_KHR) {
                 return;
             }
