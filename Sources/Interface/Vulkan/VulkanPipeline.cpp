@@ -75,8 +75,6 @@ namespace DRHI
             inputAssembly.primitiveRestartEnable = VK_FALSE;
             //----------------------------------------------------------------------------------
 
-
-
             VkPipelineViewportStateCreateInfo viewportState{};
             viewportState.sType = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
             viewportState.viewportCount = 1;
@@ -128,15 +126,6 @@ namespace DRHI
             dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
             dynamicState.dynamicStateCount = static_cast<uint32_t>(dynamicStates.size());
             dynamicState.pDynamicStates = dynamicStates.data();
-
-            //VkPipelineLayoutCreateInfo pipelineLayoutInfo{};
-            //pipelineLayoutInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-            //pipelineLayoutInfo.setLayoutCount = 1;
-            //pipelineLayoutInfo.pSetLayouts = descriptorSetlayout;
-
-            //if (vkCreatePipelineLayout(*device, &pipelineLayoutInfo, nullptr, pipelineLayout) != VK_SUCCESS) {
-            //    throw std::runtime_error("failed to create pipeline layout!");
-            //}
 
             VkPipelineRenderingCreateInfoKHR pipelineRenderingCreateInfo{};
             pipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;

@@ -19,6 +19,7 @@ namespace DRHI
 
 		//tick function
 		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer> commandBuffers) = 0;
+		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs) = 0;
 
 		//draw function
 		virtual void drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance) = 0;

@@ -103,6 +103,19 @@ namespace DRHI
         submitFrame(recreatefuncs);
     }
 
+    void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs)
+    {
+        prepareFrame(recreatefuncs);
+
+        _submitInfo.commandBufferCount = 1;
+        _submitInfo.pCommandBuffers = &_commandBuffers[_currentBuffer];
+        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to submit queue");
+        }
+        submitFrame(recreatefuncs);
+    }
+
     void VulkanDRHI::drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance)
     {
         vkCmdDrawIndexed(_commandBuffers[index], indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
