@@ -87,16 +87,18 @@ namespace DRHI
 
         std::vector<VkCommandBuffer> vkcommandBuffers{};
         vkcommandBuffers.resize(commandBuffers.size() + 1);
-        
-        for (uint32_t i = 0; i < commandBuffers.size(); ++i)
+
+        vkcommandBuffers[0] = (_commandBuffers[_currentBuffer]);
+       // vkcommandBuffers[0] = (commandBuffers[0].getVulkanCommandBuffer());
+
+        for (uint32_t i = 1; i < vkcommandBuffers.size(); ++i)
         {
-            vkcommandBuffers[i] = (commandBuffers[i].getVulkanCommandBuffer());
+            vkcommandBuffers[i] = (commandBuffers[i - 1].getVulkanCommandBuffer());
         }
-        vkcommandBuffers[commandBuffers.size()] = (_commandBuffers[_currentBuffer]);
 
         _submitInfo.commandBufferCount = vkcommandBuffers.size();
         _submitInfo.pCommandBuffers = vkcommandBuffers.data();
-        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
+        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentBuffer]) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit queue");
         }
@@ -109,7 +111,7 @@ namespace DRHI
 
         _submitInfo.commandBufferCount = 1;
         _submitInfo.pCommandBuffers = &_commandBuffers[_currentBuffer];
-        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE) != VK_SUCCESS)
+        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentBuffer]) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit queue");
         }
@@ -226,6 +228,7 @@ namespace DRHI
 
     void VulkanDRHI::prepareFrame(std::vector<std::function<void()>> recreatefuncs)
     {
+        vkWaitForFences(_device, 1, &_waitFences[_currentBuffer], VK_TRUE, UINT64_MAX);
         auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentBuffer);
         if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
             if (result == VK_ERROR_OUT_OF_DATE_KHR) {
@@ -239,6 +242,7 @@ namespace DRHI
                 throw std::runtime_error("failed to acquire next image");
             }
         }
+        vkResetFences(_device, 1, &_waitFences[_currentBuffer]);
     }
 
     void VulkanDRHI::submitFrame(std::vector<std::function<void()>> recreatefuncs)
