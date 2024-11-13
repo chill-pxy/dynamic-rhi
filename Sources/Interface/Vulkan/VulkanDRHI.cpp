@@ -89,7 +89,7 @@ namespace DRHI
         vkcommandBuffers.resize(commandBuffers.size() + 1);
 
         vkcommandBuffers[0] = (_commandBuffers[_currentBuffer]);
-       // vkcommandBuffers[0] = (commandBuffers[0].getVulkanCommandBuffer());
+        //vkcommandBuffers[0] = (commandBuffers[0].getVulkanCommandBuffer());
 
         for (uint32_t i = 1; i < vkcommandBuffers.size(); ++i)
         {
