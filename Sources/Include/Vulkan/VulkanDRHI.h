@@ -50,6 +50,8 @@ namespace DRHI
 		std::vector<std::vector<VkCommandBuffer>> _commandBuffersLists;
 		std::vector<VkCommandBuffer>              _commandBuffers;
 		VkCommandPool                             _commandPool{ VK_NULL_HANDLE };
+		std::vector<VkCommandBuffer>              _excommandBuffers;
+		VkCommandPool                             _excommandPool{ VK_NULL_HANDLE };
 
 		VkPipelineCache              _pipelineCache{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
@@ -102,9 +104,13 @@ namespace DRHI
 		virtual void createCommandPool(DynamicCommandPool* commandPool);
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
 		virtual void beginCommandBuffer(uint32_t index);
-		virtual void beginCommandBuffer(uint32_t index, std::vector<DynamicCommandBuffer>* commandBuffer);
+		virtual void beginCommandBuffer(DynamicCommandBuffer commandBuffer);
+		virtual void beginRendering(uint32_t index, DynamicCommandBuffer commandBuffer);
+		virtual void beginRendering(uint32_t index);
 		virtual void endCommandBuffer(uint32_t index);
-		virtual void endCommandBuffer(uint32_t index, std::vector<DynamicCommandBuffer>* commandBuffer);
+		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer);
+		virtual void endRendering(DynamicCommandBuffer commandBuffer);
+		virtual void endRendering(uint32_t index);
 		virtual uint32_t getCommandBufferSize();
 
 		//buffer functions
@@ -122,6 +128,10 @@ namespace DRHI
 		//memory functions
 		virtual void mapMemory(DynamicDeviceMemory* memory, uint32_t offset, uint32_t size, void* data);
 		virtual void unmapMemory(DynamicDeviceMemory* memory);
+		virtual void beginInsertMemoryBarrier(uint32_t index, DynamicCommandBuffer commandBuffer);
+		virtual void endInsterMemoryBarrier(uint32_t index, DynamicCommandBuffer commandBuffer);
+		virtual void beginInsertMemoryBarrier(uint32_t index);
+		virtual void endInsterMemoryBarrier(uint32_t index);
 
 		//descriptor funcions
 		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool, std::vector<DynamicDescriptorPoolSize>* poolsizes);
@@ -161,17 +171,6 @@ namespace DRHI
 		//--------------------------------------------------------------------------------------------------------------------------  
 		 
 	private:
-		void insertImageMemoryBarrier(
-			VkCommandBuffer cmdbuffer,
-			VkImage image,
-			VkAccessFlags srcAccessMask,
-			VkAccessFlags dstAccessMask,
-			VkImageLayout oldImageLayout,
-			VkImageLayout newImageLayout,
-			VkPipelineStageFlags srcStageMask,
-			VkPipelineStageFlags dstStageMask,
-			VkImageSubresourceRange subresourceRange);
-
 		void prepareFrame(std::vector<std::function<void()>> recreatefuncs);
 		void submitFrame(std::vector<std::function<void()>> recreatefuncs);
 

@@ -35,9 +35,13 @@ namespace DRHI
 		virtual void createCommandPool(DynamicCommandPool* commandPool) = 0;
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
 		virtual void beginCommandBuffer(uint32_t index) = 0;
-		virtual void beginCommandBuffer(uint32_t index, std::vector<DynamicCommandBuffer>* commandBuffer) = 0;
+		virtual void beginCommandBuffer(DynamicCommandBuffer commandBuffer) = 0;
+		virtual void beginRendering(uint32_t index, DynamicCommandBuffer commandBuffer) = 0;
+		virtual void beginRendering(uint32_t index) = 0;
 		virtual void endCommandBuffer(uint32_t index) = 0;
-		virtual void endCommandBuffer(uint32_t index, std::vector<DynamicCommandBuffer>* commandBuffer) = 0;
+		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer) = 0;
+		virtual void endRendering(DynamicCommandBuffer commandBuffer) = 0;
+		virtual void endRendering(uint32_t index) = 0;
 		virtual uint32_t getCommandBufferSize() = 0;
 
 		//buffer functions
@@ -54,6 +58,10 @@ namespace DRHI
 		//memory functions
 		virtual void mapMemory(DynamicDeviceMemory* memory, uint32_t offset, uint32_t size, void* data) = 0;
 		virtual void unmapMemory(DynamicDeviceMemory* memory) = 0;
+		virtual void beginInsertMemoryBarrier(uint32_t index, DynamicCommandBuffer commandBuffer) = 0;
+		virtual void endInsterMemoryBarrier(uint32_t index, DynamicCommandBuffer commandBuffer) = 0;
+		virtual void beginInsertMemoryBarrier(uint32_t index) = 0;
+		virtual void endInsterMemoryBarrier(uint32_t index) = 0;
 
 		//descriptor funcions
 		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool, std::vector<DynamicDescriptorPoolSize>* poolsizes) = 0;

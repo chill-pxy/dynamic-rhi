@@ -59,7 +59,10 @@ namespace DRHI
         createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
 
         VulkanCommand::createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
-        VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, &_device); 
+        VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, &_device);
+
+        VulkanCommand::createCommandPool(&_excommandPool, &_device, _queueFamilyIndices);
+        VulkanCommand::createCommandBuffers(&_excommandBuffers, &_excommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, &_device);
 
         VulkanPipeline::createPipelineCache(&_pipelineCache, &_device);
 
@@ -89,8 +92,6 @@ namespace DRHI
         vkcommandBuffers.resize(commandBuffers.size() + 1);
 
         vkcommandBuffers[0] = (_commandBuffers[_currentBuffer]);
-        //vkcommandBuffers[0] = (commandBuffers[0].getVulkanCommandBuffer());
-
         for (uint32_t i = 1; i < vkcommandBuffers.size(); ++i)
         {
             vkcommandBuffers[i] = (commandBuffers[i - 1].getVulkanCommandBuffer());
@@ -151,39 +152,6 @@ namespace DRHI
     //------------------------------------------------------//
     //------------------------------------------------------//
 
-    //https://github.com/SaschaWillems/Vulkan/blob/master/examples/dynamicrendering/dynamicrendering.cpp#L81
-    void VulkanDRHI::insertImageMemoryBarrier(
-        VkCommandBuffer cmdbuffer,
-        VkImage image,
-        VkAccessFlags srcAccessMask,
-        VkAccessFlags dstAccessMask,
-        VkImageLayout oldImageLayout,
-        VkImageLayout newImageLayout,
-        VkPipelineStageFlags srcStageMask,
-        VkPipelineStageFlags dstStageMask,
-        VkImageSubresourceRange subresourceRange)
-    {
-        VkImageMemoryBarrier imageMemoryBarrier{};
-        imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        imageMemoryBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
-        imageMemoryBarrier.srcAccessMask = srcAccessMask;
-        imageMemoryBarrier.dstAccessMask = dstAccessMask;
-        imageMemoryBarrier.oldLayout = oldImageLayout;
-        imageMemoryBarrier.newLayout = newImageLayout;
-        imageMemoryBarrier.image = image;
-        imageMemoryBarrier.subresourceRange = subresourceRange;
-
-        vkCmdPipelineBarrier(
-            cmdbuffer,
-            srcStageMask,
-            dstStageMask,
-            0,
-            0, nullptr,
-            0, nullptr,
-            1, &imageMemoryBarrier);
-    }
-
     void VulkanDRHI::recreate(std::vector<std::function<void()>> recreatefuncs)
     {
         if (!_prepare) return;
@@ -207,7 +175,7 @@ namespace DRHI
         createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
 
         vkFreeCommandBuffers(_device, _commandPool, _commandBuffers.size(), _commandBuffers.data());
-        VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, &_device);
+        VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, VK_COMMAND_BUFFER_LEVEL_SECONDARY,&_device);
 
         for (auto f : recreatefuncs)
         {
