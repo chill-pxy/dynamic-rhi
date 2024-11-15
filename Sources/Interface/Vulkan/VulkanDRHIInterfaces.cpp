@@ -62,12 +62,12 @@ namespace DRHI
     void VulkanDRHI::beginRendering(uint32_t index, DynamicCommandBuffer commandBuffer)
     {
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
-        VulkanCommand::beginRendering(vkCommandBuffer, _swapChainImages[index], _depthStencil.image, _swapChainImageViews[index], _depthStencil.view, _viewPortWidth, _viewPortHeight, false);
+        VulkanCommand::beginRendering(vkCommandBuffer, _swapChainImages[_currentBuffer], _depthStencil.image, _swapChainImageViews[_currentBuffer], _depthStencil.view, _viewPortWidth, _viewPortHeight, false);
     }
 
     void VulkanDRHI::beginRendering(uint32_t index)
     {
-        VulkanCommand::beginRendering(_commandBuffers[index], _swapChainImages[index], _depthStencil.image, _swapChainImageViews[index], _depthStencil.view, _viewPortWidth, _viewPortHeight, true);
+        VulkanCommand::beginRendering(_commandBuffers[index], _swapChainImages[_currentBuffer], _depthStencil.image, _swapChainImageViews[_currentBuffer], _depthStencil.view, _viewPortWidth, _viewPortHeight, true);
     }
 
     uint32_t VulkanDRHI::getCommandBufferSize()
