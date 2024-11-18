@@ -35,21 +35,21 @@ namespace DRHI
         vkBeginCommandBuffer(vkCommandBuffer, &cmdBufferBeginInfo);
     }
 
-    void VulkanDRHI::beginRendering(DynamicCommandBuffer* commandBuffer, bool isClear)
+    void VulkanDRHI::beginRendering(DynamicCommandBuffer commandBuffer, bool isClear)
     {
-        VkCommandBuffer vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
+        VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
         VulkanCommand::beginRendering(vkCommandBuffer, &_swapChainImages[_currentFrame], &_depthStencil.image, &_swapChainImageViews[_currentFrame], &_depthStencil.view, _viewPortWidth, _viewPortHeight, isClear);
     }
 
-    void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer* commandBuffer)
+    void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer commandBuffer)
     {
-        VkCommandBuffer vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
+        VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
         vkEndCommandBuffer(vkCommandBuffer);
     }
 
-    void VulkanDRHI::endRendering(DynamicCommandBuffer* commandBuffer)
+    void VulkanDRHI::endRendering(DynamicCommandBuffer commandBuffer)
     {
-        VkCommandBuffer vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
+        VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
         vkCmdEndRendering(vkCommandBuffer);
     }
 

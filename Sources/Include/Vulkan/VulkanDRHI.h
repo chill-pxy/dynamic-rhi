@@ -99,9 +99,9 @@ namespace DRHI
 		virtual void createCommandPool(DynamicCommandPool* commandPool);
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
 		virtual void beginCommandBuffer(DynamicCommandBuffer commandBuffer);
-		virtual void beginRendering(DynamicCommandBuffer* commandBuffer, bool isClear);
-		virtual void endCommandBuffer(DynamicCommandBuffer* commandBuffer);
-		virtual void endRendering(DynamicCommandBuffer* commandBuffer);
+		virtual void beginRendering(DynamicCommandBuffer commandBuffer, bool isClear);
+		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer);
+		virtual void endRendering(DynamicCommandBuffer commandBuffer);
 		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
 
 		//buffer functions
