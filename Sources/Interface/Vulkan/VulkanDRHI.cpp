@@ -92,7 +92,7 @@ namespace DRHI
 
         _submitInfo.commandBufferCount = vkcommandBuffers.size();
         _submitInfo.pCommandBuffers = vkcommandBuffers.data();
-        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentBuffer]) != VK_SUCCESS)
+        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentFrame]) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit queue");
         }
@@ -125,6 +125,10 @@ namespace DRHI
         vkCmdSetScissor(vkcommandBuffer, firstScissor, scissorCount, &vkrect);
     }
 
+    uint32_t VulkanDRHI::getCurrentFrame()
+    {
+        return _currentFrame;
+    }
 
 
 
@@ -179,8 +183,8 @@ namespace DRHI
 
     void VulkanDRHI::prepareFrame(std::vector<std::function<void()>> recreatefuncs)
     {
-        vkWaitForFences(_device, 1, &_waitFences[_currentBuffer], VK_TRUE, UINT64_MAX);
-        auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentBuffer);
+        vkWaitForFences(_device, 1, &_waitFences[_currentFrame], VK_TRUE, UINT64_MAX);
+        auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentFrame);
         if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
             if (result == VK_ERROR_OUT_OF_DATE_KHR) {
                 recreate(recreatefuncs);
@@ -193,12 +197,12 @@ namespace DRHI
                 throw std::runtime_error("failed to acquire next image");
             }
         }
-        vkResetFences(_device, 1, &_waitFences[_currentBuffer]);
+        vkResetFences(_device, 1, &_waitFences[_currentFrame]);
     }
 
     void VulkanDRHI::submitFrame(std::vector<std::function<void()>> recreatefuncs)
     {
-        auto result = queuePresent(&_presentQueue, &_swapChain, &_currentBuffer, &_semaphores.renderComplete);
+        auto result = queuePresent(&_presentQueue, &_swapChain, &_currentFrame, &_semaphores.renderComplete);
         // Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
         if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
             recreate(recreatefuncs);

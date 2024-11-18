@@ -59,8 +59,8 @@ namespace DRHI
 
 		bool _prepare{ false };
 
-		// Active frame buffer index
-		uint32_t _currentBuffer = 0;
+		// Active frame index
+		uint32_t _currentFrame = 0;
 		// Contains command buffers and semaphores to be presented to the queue
 		VkSubmitInfo _submitInfo{};
 
@@ -92,6 +92,9 @@ namespace DRHI
 		//clear functions
 		virtual void clean();
 
+		//get frame
+		virtual uint32_t getCurrentFrame();
+
 		//command functions
 		virtual void createCommandPool(DynamicCommandPool* commandPool);
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
@@ -103,7 +106,6 @@ namespace DRHI
 		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, DynamicCommandBuffer* commandBuffer);
 		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, DynamicCommandBuffer* commandBuffer, uint32_t indexType);
-		virtual uint32_t getCurrentBuffer();
 		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, DynamicCommandPool* commandPool, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty);
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		virtual void createUniformBuffer(DynamicBuffer* uniformBuffer, DynamicDeviceMemory* uniformBufferMemory, void** uniformBufferMapped, uint32_t bufferSize);

@@ -29,6 +29,9 @@ namespace DRHI
 		//clear functions
 		virtual void clean() = 0;
 
+		//get frame
+		virtual uint32_t getCurrentFrame() = 0;
+
 		//command functions
 		virtual void createCommandPool(DynamicCommandPool* commandPool) = 0;
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
@@ -40,7 +43,6 @@ namespace DRHI
 		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, DynamicCommandBuffer* commandBuffer) = 0;
 		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, DynamicCommandBuffer* commandBuffer, uint32_t indexType) = 0;
-		virtual uint32_t getCurrentBuffer() = 0;
 		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, DynamicCommandPool* commandPool, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty) = 0;
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize) = 0;
 		virtual void createUniformBuffer(DynamicBuffer* uniformBuffer, DynamicDeviceMemory* uniformBufferMemory, void** uniformBufferMapped, uint32_t bufferSize) = 0;

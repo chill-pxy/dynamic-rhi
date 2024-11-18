@@ -38,7 +38,7 @@ namespace DRHI
     void VulkanDRHI::beginRendering(DynamicCommandBuffer* commandBuffer, bool isClear)
     {
         VkCommandBuffer vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
-        VulkanCommand::beginRendering(vkCommandBuffer, &_swapChainImages[_currentBuffer], &_depthStencil.image, &_swapChainImageViews[_currentBuffer], &_depthStencil.view, _viewPortWidth, _viewPortHeight, isClear);
+        VulkanCommand::beginRendering(vkCommandBuffer, &_swapChainImages[_currentFrame], &_depthStencil.image, &_swapChainImageViews[_currentFrame], &_depthStencil.view, _viewPortWidth, _viewPortHeight, isClear);
     }
 
     void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer* commandBuffer)
@@ -110,11 +110,6 @@ namespace DRHI
         uniformBuffer->internalID = vkUniformBuffer;
         uniformBufferMemory->internalID = vkUniformBufferMemory;
         //uniformBufferMapped = bufferMapped;
-    }
-
-    uint32_t VulkanDRHI::getCurrentBuffer()
-    {
-        return _currentBuffer;
     }
 
     void VulkanDRHI::clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory)
@@ -222,7 +217,7 @@ namespace DRHI
     void VulkanDRHI::beginInsertMemoryBarrier(DynamicCommandBuffer commandBuffer)
     {
         auto vkcommandBuffer = commandBuffer.getVulkanCommandBuffer();
-        VulkanCommand::insertImageMemoryBarrier(vkcommandBuffer, _swapChainImages[_currentBuffer], 0,
+        VulkanCommand::insertImageMemoryBarrier(vkcommandBuffer, _swapChainImages[_currentFrame], 0,
             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
@@ -242,7 +237,7 @@ namespace DRHI
     void VulkanDRHI::endInsterMemoryBarrier(DynamicCommandBuffer commandBuffer)
     {
         auto vkcommandBuffer = commandBuffer.getVulkanCommandBuffer();
-        VulkanCommand::insertImageMemoryBarrier(vkcommandBuffer, _swapChainImages[_currentBuffer],
+        VulkanCommand::insertImageMemoryBarrier(vkcommandBuffer, _swapChainImages[_currentFrame],
             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             0,
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
