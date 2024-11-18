@@ -47,12 +47,6 @@ namespace DRHI
 		std::vector<VkImageView>     _swapChainImageViews;
 		std::vector<VkFramebuffer>   _swapChainFramebuffers;
 
-		std::vector<std::vector<VkCommandBuffer>> _commandBuffersLists;
-		std::vector<VkCommandBuffer>              _commandBuffers;
-		VkCommandPool                             _commandPool{ VK_NULL_HANDLE };
-		std::vector<VkCommandBuffer>              _excommandBuffers;
-		VkCommandPool                             _excommandPool{ VK_NULL_HANDLE };
-
 		VkPipelineCache              _pipelineCache{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
 
@@ -88,36 +82,29 @@ namespace DRHI
 
 		//tick function
 		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer> commandBuffers);
-		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs);
 
 		//draw function
-		virtual void drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance);
+		virtual void drawIndexed(DynamicCommandBuffer* commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance);
 
 		//scissor
-		virtual void setScissor(uint32_t index, uint32_t firstScissor, uint32_t scissorCount, DynamicRect2D rect);
+		virtual void setScissor(DynamicCommandBuffer* commandBuffer, uint32_t firstScissor, uint32_t scissorCount, DynamicRect2D rect);
 
 		//clear functions
 		virtual void clean();
 
 		//command functions
-		virtual void submitCommandBuffersLists(std::vector<std::vector<DynamicCommandBuffer>> commandBuffersLists);
 		virtual void createCommandPool(DynamicCommandPool* commandPool);
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
-		virtual void beginCommandBuffer(uint32_t index);
 		virtual void beginCommandBuffer(DynamicCommandBuffer commandBuffer);
-		virtual void beginRendering(uint32_t index, DynamicCommandBuffer commandBuffer);
-		virtual void beginRendering(uint32_t index);
-		virtual void endCommandBuffer(uint32_t index);
-		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer);
-		virtual void endRendering(DynamicCommandBuffer commandBuffer);
-		virtual void endRendering(uint32_t index);
-		virtual uint32_t getCommandBufferSize();
+		virtual void beginRendering(DynamicCommandBuffer* commandBuffer, bool isClear);
+		virtual void endCommandBuffer(DynamicCommandBuffer* commandBuffer);
+		virtual void endRendering(DynamicCommandBuffer* commandBuffer);
 
 		//buffer functions
-		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index);
-		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index, uint32_t indexType);
+		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, DynamicCommandBuffer* commandBuffer);
+		virtual void bindIndexBuffer(DynamicBuffer* indexBuffer, DynamicCommandBuffer* commandBuffer, uint32_t indexType);
 		virtual uint32_t getCurrentBuffer();
-		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty);
+		virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, DynamicCommandPool* commandPool, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty);
 		virtual void createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize);
 		virtual void createUniformBuffer(DynamicBuffer* uniformBuffer, DynamicDeviceMemory* uniformBufferMemory, void** uniformBufferMapped, uint32_t bufferSize);
 		//virtual void createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory, uint64_t bufferSize, uint32_t usage);
@@ -128,41 +115,39 @@ namespace DRHI
 		//memory functions
 		virtual void mapMemory(DynamicDeviceMemory* memory, uint32_t offset, uint32_t size, void* data);
 		virtual void unmapMemory(DynamicDeviceMemory* memory);
-		virtual void beginInsertMemoryBarrier(uint32_t index, DynamicCommandBuffer commandBuffer);
-		virtual void endInsterMemoryBarrier(uint32_t index, DynamicCommandBuffer commandBuffer);
-		virtual void beginInsertMemoryBarrier(uint32_t index);
-		virtual void endInsterMemoryBarrier(uint32_t index);
+		virtual void beginInsertMemoryBarrier(DynamicCommandBuffer commandBuffer);
+		virtual void endInsterMemoryBarrier(DynamicCommandBuffer commandBuffer);
 
 		//descriptor funcions
 		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool, std::vector<DynamicDescriptorPoolSize>* poolsizes);
 		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool);
 		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool, DynamicDescriptorPoolCreateInfo* ci);
 		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicWriteDescriptorSet>* wds);
-		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index);
+		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, DynamicCommandBuffer* commandBuffer, uint32_t bindPoint);
 		virtual void createDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorSetLayoutBinding>* dsbs);
 
 		//texture funcitons
-		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels);
+		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, DynamicCommandPool* commandPool, int texWidth, int texHeight, int texChannels, stbi_uc* pixels);
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
 
 		//image functions
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat, uint32_t imageAspect);
 		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory);
-		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, uint32_t width, uint32_t height);
+		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, DynamicCommandPool* commandPool, uint32_t width, uint32_t height);
 		virtual void createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo);
 		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
-		virtual void createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys);
+		virtual void createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys, DynamicCommandPool* commandPool);
 		virtual void createViewportImageViews(std::vector<DynamicImageView>* viewportImageViews, std::vector<DynamicImage>* viewportImages);
 
 		//pipeline functions
 		virtual void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo);
 		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicPipelineCreateInfo info);
-		virtual void bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index);
+		virtual void bindPipeline(DynamicPipeline pipeline, DynamicCommandBuffer* commandBuffer, uint32_t bindPoint);
 		        VkPipelineRenderingCreateInfoKHR getPipelineRenderingCreateInfo();
 
 		//cmd functions
-		virtual void cmdPushConstants(uint32_t index, DynamicPipelineLayout* layout, uint32_t stage, uint32_t offset, uint32_t size, void* value);
+		virtual void cmdPushConstants(DynamicPipelineLayout* layout, DynamicCommandBuffer* commandBuffer, uint32_t stage, uint32_t offset, uint32_t size, void* value);
 
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  

@@ -30,7 +30,7 @@ namespace DRHI
             vkDestroyFence(device, inFlightFences[i], nullptr);
         }*/
 
-        vkDestroyCommandPool(_device, _commandPool, nullptr);
+        //vkDestroyCommandPool(_device, _commandPool, nullptr);
 
         vkDestroySemaphore(_device, _semaphores.presentComplete, nullptr);
         vkDestroySemaphore(_device, _semaphores.renderComplete, nullptr);
@@ -58,17 +58,11 @@ namespace DRHI
 		createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
         createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
 
-        VulkanCommand::createCommandPool(&_commandPool, &_device, _queueFamilyIndices);
-        VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, &_device);
-
-        VulkanCommand::createCommandPool(&_excommandPool, &_device, _queueFamilyIndices);
-        VulkanCommand::createCommandBuffers(&_excommandBuffers, &_excommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, &_device);
-
         VulkanPipeline::createPipelineCache(&_pipelineCache, &_device);
 
         createSemaphore(&_semaphores, &_device);
 
-        createSynchronizationPrimitives(&_waitFences, _commandBuffers.size(), &_device);
+        createSynchronizationPrimitives(&_waitFences, MAX_FRAMES_IN_FLIGHT, &_device);
 
         //initialize submit info
         /** @brief Pipeline stages used to wait at for graphics queue submissions */
@@ -89,12 +83,11 @@ namespace DRHI
         prepareFrame(recreatefuncs);
 
         std::vector<VkCommandBuffer> vkcommandBuffers{};
-        vkcommandBuffers.resize(commandBuffers.size() + 1);
+        vkcommandBuffers.resize(commandBuffers.size());
 
-        vkcommandBuffers[0] = (_commandBuffers[_currentBuffer]);
-        for (uint32_t i = 1; i < vkcommandBuffers.size(); ++i)
+        for (uint32_t i = 0; i < vkcommandBuffers.size(); ++i)
         {
-            vkcommandBuffers[i] = (commandBuffers[i - 1].getVulkanCommandBuffer());
+            vkcommandBuffers[i] = (commandBuffers[i].getVulkanCommandBuffer());
         }
 
         _submitInfo.commandBufferCount = vkcommandBuffers.size();
@@ -106,26 +99,16 @@ namespace DRHI
         submitFrame(recreatefuncs);
     }
 
-    void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs)
+    void VulkanDRHI::drawIndexed(DynamicCommandBuffer* commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance)
     {
-        prepareFrame(recreatefuncs);
-
-        _submitInfo.commandBufferCount = 1;
-        _submitInfo.pCommandBuffers = &_commandBuffers[_currentBuffer];
-        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentBuffer]) != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to submit queue");
-        }
-        submitFrame(recreatefuncs);
+        auto vkcommandBuffer = commandBuffer->getVulkanCommandBuffer();
+        vkCmdDrawIndexed(vkcommandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
     }
 
-    void VulkanDRHI::drawIndexed(uint32_t index, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance)
+    void VulkanDRHI::setScissor(DynamicCommandBuffer* commandBuffer, uint32_t firstScissor, uint32_t scissorCount,DynamicRect2D rect)
     {
-        vkCmdDrawIndexed(_commandBuffers[index], indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
-    }
+        auto vkcommandBuffer = commandBuffer->getVulkanCommandBuffer();
 
-    void VulkanDRHI::setScissor(uint32_t index, uint32_t firstScissor, uint32_t scissorCount,DynamicRect2D rect)
-    {
         VkRect2D vkrect{};
         VkExtent2D vkextent{};
         VkOffset2D vkoffset{};
@@ -139,7 +122,7 @@ namespace DRHI
         vkrect.extent = vkextent;
         vkrect.offset = vkoffset;
 
-        vkCmdSetScissor(_commandBuffers[index], firstScissor, scissorCount, &vkrect);
+        vkCmdSetScissor(vkcommandBuffer, firstScissor, scissorCount, &vkrect);
     }
 
 
@@ -174,8 +157,8 @@ namespace DRHI
 
         createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
 
-        vkFreeCommandBuffers(_device, _commandPool, _commandBuffers.size(), _commandBuffers.data());
-        VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, VK_COMMAND_BUFFER_LEVEL_SECONDARY,&_device);
+        //vkFreeCommandBuffers(_device, _commandPool, _commandBuffers.size(), _commandBuffers.data());
+        //VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, VK_COMMAND_BUFFER_LEVEL_SECONDARY,&_device);
 
         for (auto f : recreatefuncs)
         {
@@ -187,7 +170,7 @@ namespace DRHI
             vkDestroyFence(_device, fence, nullptr);
         }
 
-        createSynchronizationPrimitives(&_waitFences, _commandBuffers.size(), &_device);
+        createSynchronizationPrimitives(&_waitFences, MAX_FRAMES_IN_FLIGHT, &_device);
 
         vkDeviceWaitIdle(_device);
 

@@ -5,20 +5,6 @@
 namespace DRHI
 {
     //-------------------------------------command functions------------------------------------
-    void VulkanDRHI::submitCommandBuffersLists(std::vector<std::vector<DynamicCommandBuffer>> commandBuffersLists)
-    {
-        for (uint32_t i = 0; i < commandBuffersLists.size(); ++i)
-        {
-            std::vector<VkCommandBuffer> vkcommandBuffers{};
-            for (uint32_t j = 0; i < commandBuffersLists[i].size(); ++j)
-            {
-                vkcommandBuffers.push_back(commandBuffersLists[i][j].getVulkanCommandBuffer());
-            }
-
-            _commandBuffersLists.push_back(vkcommandBuffers);
-        }
-    }
-    
     void VulkanDRHI::createCommandPool(DynamicCommandPool* commandPool)
     {
         VkCommandPool vkcommandPool{};
@@ -39,15 +25,6 @@ namespace DRHI
             (*commandBuffers)[i].internalID = vkcommandbuffers[i];
         }
     }
-    
-    void VulkanDRHI::beginCommandBuffer(uint32_t index)
-    {
-        VkCommandBufferBeginInfo cmdBufferBeginInfo{};
-        cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        //cmdBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
-
-        vkBeginCommandBuffer(_commandBuffers[index], &cmdBufferBeginInfo);
-    }
 
     void VulkanDRHI::beginCommandBuffer(DynamicCommandBuffer commandBuffer)
     {
@@ -55,46 +32,25 @@ namespace DRHI
 
         VkCommandBufferBeginInfo cmdBufferBeginInfo{};
         cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        cmdBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
         vkBeginCommandBuffer(vkCommandBuffer, &cmdBufferBeginInfo);
     }
 
-    void VulkanDRHI::beginRendering(uint32_t index, DynamicCommandBuffer commandBuffer)
+    void VulkanDRHI::beginRendering(DynamicCommandBuffer* commandBuffer, bool isClear)
     {
-        VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
-        VulkanCommand::beginRendering(vkCommandBuffer, _swapChainImages[_currentBuffer], _depthStencil.image, _swapChainImageViews[_currentBuffer], _depthStencil.view, _viewPortWidth, _viewPortHeight, false);
+        VkCommandBuffer vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
+        VulkanCommand::beginRendering(vkCommandBuffer, &_swapChainImages[_currentBuffer], &_depthStencil.image, &_swapChainImageViews[_currentBuffer], &_depthStencil.view, _viewPortWidth, _viewPortHeight, isClear);
     }
 
-    void VulkanDRHI::beginRendering(uint32_t index)
+    void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer* commandBuffer)
     {
-        VulkanCommand::beginRendering(_commandBuffers[index], _swapChainImages[_currentBuffer], _depthStencil.image, _swapChainImageViews[_currentBuffer], _depthStencil.view, _viewPortWidth, _viewPortHeight, true);
-    }
-
-    uint32_t VulkanDRHI::getCommandBufferSize()
-    {
-        return _commandBuffers.size();
-    }
-
-    void VulkanDRHI::endCommandBuffer(uint32_t index)
-    {
-        vkEndCommandBuffer(_commandBuffers[index]);
-    }
-
-    void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer commandBuffer)
-    {
-        VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
+        VkCommandBuffer vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
         vkEndCommandBuffer(vkCommandBuffer);
     }
 
-    void VulkanDRHI::endRendering(DynamicCommandBuffer commandBuffer)
+    void VulkanDRHI::endRendering(DynamicCommandBuffer* commandBuffer)
     {
-        VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
+        VkCommandBuffer vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
         vkCmdEndRendering(vkCommandBuffer);
-    }
-
-    void VulkanDRHI::endRendering(uint32_t index)
-    {
-        vkCmdEndRendering(_commandBuffers[index]);
     }
     //----------------------------------------------------------------------------------------
 
@@ -103,22 +59,25 @@ namespace DRHI
 
 
     //-------------------------------------buffer functions-----------------------------------
-    void VulkanDRHI::bindVertexBuffers(DynamicBuffer* vertexBuffer, uint32_t index)
+    void VulkanDRHI::bindVertexBuffers(DynamicBuffer* vertexBuffer, DynamicCommandBuffer* commandBuffer)
     {
         auto vkVertexBuffer = vertexBuffer->getVulkanBuffer();
+        auto vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
         const VkDeviceSize offsets[1] = { 0 };
-        vkCmdBindVertexBuffers(_commandBuffers[index], 0, 1, &vkVertexBuffer, offsets);
+        vkCmdBindVertexBuffers(vkCommandBuffer, 0, 1, &vkVertexBuffer, offsets);
     }
 
-    void VulkanDRHI::bindIndexBuffer(DynamicBuffer* indexBuffer, uint32_t index, uint32_t indexType)
+    void VulkanDRHI::bindIndexBuffer(DynamicBuffer* indexBuffer, DynamicCommandBuffer* commandBuffer, uint32_t indexType)
     {
         auto vkIndexBuffer = indexBuffer->getVulkanBuffer();
-        vkCmdBindIndexBuffer(_commandBuffers[index], vkIndexBuffer, 0, (VkIndexType)indexType);
+        auto vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
+        vkCmdBindIndexBuffer(vkCommandBuffer, vkIndexBuffer, 0, (VkIndexType)indexType);
     }
 
-    void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty)
+    void VulkanDRHI::createDynamicBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* deviceMemory, DynamicCommandPool* commandPool, uint64_t bufferSize, void* bufferData, uint32_t usage, uint32_t memoryProperty)
     {
-        VulkanBuffer::createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &_commandPool, &_graphicQueue, usage, memoryProperty);
+        auto vkCommandPool = commandPool->getVulkanCommandPool();
+        VulkanBuffer::createDynamicBuffer(buffer, deviceMemory, bufferSize, bufferData, &_device, &_physicalDevice, &vkCommandPool, &_graphicQueue, usage, memoryProperty);
     }
 
     void VulkanDRHI::createUniformBuffer(std::vector<DynamicBuffer>* uniformBuffers, std::vector<DynamicDeviceMemory>* uniformBuffersMemory, std::vector<void*>* uniformBuffersMapped, uint32_t bufferSize)
@@ -227,9 +186,11 @@ namespace DRHI
         pipeline->internalID = vkpipeline;
     }
 
-    void VulkanDRHI::bindPipeline(DynamicPipeline pipeline, uint32_t bindPoint, uint32_t index)
+    void VulkanDRHI::bindPipeline(DynamicPipeline pipeline, DynamicCommandBuffer* commandBuffer ,uint32_t bindPoint)
     {
-        vkCmdBindPipeline(_commandBuffers[index], (VkPipelineBindPoint)bindPoint, pipeline.getVulkanPipeline());
+        auto vkcommandBuffer = commandBuffer->getVulkanCommandBuffer();
+        vkCmdBindPipeline(vkcommandBuffer, (VkPipelineBindPoint)bindPoint, pipeline.getVulkanPipeline());
+        commandBuffer->internalID = vkcommandBuffer;
     }
 
     VkPipelineRenderingCreateInfoKHR VulkanDRHI::getPipelineRenderingCreateInfo()
@@ -258,10 +219,10 @@ namespace DRHI
         vkUnmapMemory(_device, vkmemory);
     }
 
-    void VulkanDRHI::beginInsertMemoryBarrier(uint32_t index, DynamicCommandBuffer commandBuffer)
+    void VulkanDRHI::beginInsertMemoryBarrier(DynamicCommandBuffer commandBuffer)
     {
         auto vkcommandBuffer = commandBuffer.getVulkanCommandBuffer();
-        VulkanCommand::insertImageMemoryBarrier(vkcommandBuffer, _swapChainImages[index], 0,
+        VulkanCommand::insertImageMemoryBarrier(vkcommandBuffer, _swapChainImages[_currentBuffer], 0,
             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
@@ -278,41 +239,10 @@ namespace DRHI
             VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
     }
 
-    void VulkanDRHI::endInsterMemoryBarrier(uint32_t index, DynamicCommandBuffer commandBuffer)
+    void VulkanDRHI::endInsterMemoryBarrier(DynamicCommandBuffer commandBuffer)
     {
         auto vkcommandBuffer = commandBuffer.getVulkanCommandBuffer();
-        VulkanCommand::insertImageMemoryBarrier(vkcommandBuffer, _swapChainImages[index],
-            VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-            0,
-            VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-            VK_IMAGE_LAYOUT_PRESENT_SRC_KHR,
-            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-            VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-            VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
-    }
-
-    void VulkanDRHI::beginInsertMemoryBarrier(uint32_t index)
-    {
-        VulkanCommand::insertImageMemoryBarrier(_commandBuffers[index], _swapChainImages[index], 0,
-            VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-            VK_IMAGE_LAYOUT_UNDEFINED,
-            VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-            VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
-
-        VulkanCommand::insertImageMemoryBarrier(_commandBuffers[index], _depthStencil.image, 0,
-            VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
-            VK_IMAGE_LAYOUT_UNDEFINED,
-            VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-            VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
-    }
-
-    void VulkanDRHI::endInsterMemoryBarrier(uint32_t index)
-    {
-        VulkanCommand::insertImageMemoryBarrier(_commandBuffers[index], _swapChainImages[index],
+        VulkanCommand::insertImageMemoryBarrier(vkcommandBuffer, _swapChainImages[_currentBuffer],
             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             0,
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
@@ -391,10 +321,11 @@ namespace DRHI
         descriptorSetLayout->internalID = vkdescriptorSetLayout;
     }
 
-    void VulkanDRHI::bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, uint32_t bindPoint, uint32_t index)
+    void VulkanDRHI::bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, DynamicCommandBuffer* commandBuffer ,uint32_t bindPoint)
     {
         auto vkDescriptorSet = descriptorSet->getVulkanDescriptorSet();
-        vkCmdBindDescriptorSets(_commandBuffers[index], (VkPipelineBindPoint)bindPoint, pipelineLayout.getVulkanPipelineLayout(), 0, 1, &vkDescriptorSet, 0, nullptr);
+        auto vkcommandBuffer = commandBuffer->getVulkanCommandBuffer();
+        vkCmdBindDescriptorSets(vkcommandBuffer, (VkPipelineBindPoint)bindPoint, pipelineLayout.getVulkanPipelineLayout(), 0, 1, &vkDescriptorSet, 0, nullptr);
         descriptorSet->internalID = vkDescriptorSet;
     }
 
@@ -414,11 +345,12 @@ namespace DRHI
 
 
     //------------------------------------texture functions-------------------------------------
-    void VulkanDRHI::createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, int texWidth, int texHeight, int texChannels, stbi_uc* pixels)
+    void VulkanDRHI::createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, DynamicCommandPool* commandPool, int texWidth, int texHeight, int texChannels, stbi_uc* pixels)
     {
+        auto vkCommandPool = commandPool->getVulkanCommandPool();
         VkImage vkImage;
         VkDeviceMemory vkMemory;
-        VulkanImage::createTextureImage(&vkImage, &vkMemory, texWidth, texHeight, texChannels, pixels, &_device, &_physicalDevice, &_graphicQueue, &_commandPool);
+        VulkanImage::createTextureImage(&vkImage, &vkMemory, texWidth, texHeight, texChannels, pixels, &_device, &_physicalDevice, &_graphicQueue, &vkCommandPool);
         textureImage->internalID = vkImage;
         textureMemory->internalID = vkMemory;
     }
@@ -459,12 +391,13 @@ namespace DRHI
         imageMemory->internalID = vkmemory;
     }
 
-    void VulkanDRHI::copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, uint32_t width, uint32_t height)
+    void VulkanDRHI::copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, DynamicCommandPool* commandPool, uint32_t width, uint32_t height)
     {
         VkBuffer vkbuffer = buffer->getVulkanBuffer();
         VkImage vkimage = image->getVulkanImage();
+        auto vkcommandPool = commandPool->getVulkanCommandPool();
         
-        VulkanImage::copyBufferToImage(&vkbuffer, &vkimage, width, height, &_graphicQueue, &_commandPool, &_device);
+        VulkanImage::copyBufferToImage(&vkbuffer, &vkimage, width, height, &_graphicQueue, &vkcommandPool, &_device);
         
         buffer->internalID = vkbuffer;
         image->internalID = vkimage;
@@ -487,8 +420,9 @@ namespace DRHI
     }
 
 
-    void VulkanDRHI::createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys)
+    void VulkanDRHI::createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys, DynamicCommandPool* commandPool)
     {
+        auto vkcommandPool = commandPool->getVulkanCommandPool();
         viewportImages->resize(_swapChainImages.size());
         viewportImageMemorys->resize(_swapChainImages.size());
 
@@ -535,7 +469,7 @@ namespace DRHI
                 throw std::runtime_error("failed to allocate memory");
             }
 
-            VkCommandBuffer copyCmd = VulkanCommand::beginSingleTimeCommands(&_commandPool, &_device);
+            VkCommandBuffer copyCmd = VulkanCommand::beginSingleTimeCommands(&vkcommandPool, &_device);
 
             VulkanCommand::insertImageMemoryBarrier(
                 copyCmd,
@@ -548,7 +482,7 @@ namespace DRHI
                 VK_PIPELINE_STAGE_TRANSFER_BIT,
                 VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
 
-            VulkanCommand::endSingleTimeCommands(copyCmd, &_graphicQueue, &_commandPool, &_device);
+            VulkanCommand::endSingleTimeCommands(copyCmd, &_graphicQueue, &vkcommandPool, &_device);
 
             (*viewportImages)[i].internalID = vkimage;
             (*viewportImageMemorys)[i].internalID = vkmemory;
@@ -573,10 +507,11 @@ namespace DRHI
 
 
     //------------------------------------ cmd functions --------------------------------------------
-    void VulkanDRHI::cmdPushConstants(uint32_t index, DynamicPipelineLayout* layout, uint32_t stage, uint32_t offset, uint32_t size, void* value)
+    void VulkanDRHI::cmdPushConstants(DynamicPipelineLayout* layout, DynamicCommandBuffer* commandBuffer,uint32_t stage, uint32_t offset, uint32_t size, void* value)
     {
         auto vklayout = layout->getVulkanPipelineLayout();
-        vkCmdPushConstants(_commandBuffers[index], vklayout, (VkShaderStageFlags)stage, offset, size, value);
+        auto vkcommandBuffer = commandBuffer->getVulkanCommandBuffer();
+        vkCmdPushConstants(vkcommandBuffer, vklayout, (VkShaderStageFlags)stage, offset, size, value);
     }
     //-----------------------------------------------------------------------------------------------
 }

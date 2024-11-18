@@ -83,13 +83,13 @@ namespace DRHI
 			}
 		}
 
-		void beginRendering(VkCommandBuffer commandBuffer, VkImage swapchainImage, VkImage depthImage, VkImageView swapchainImageView, VkImageView depthImageView,
+		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImage* depthImage, VkImageView* swapchainImageView, VkImageView* depthImageView,
 			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear)
 		{
 			// New structures are used to define the attachments used in dynamic rendering
 			VkRenderingAttachmentInfoKHR colorAttachment{};
 			colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-			colorAttachment.imageView = swapchainImageView;
+			colorAttachment.imageView = *swapchainImageView;
 			colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 			if (isClear)
 			{
@@ -102,32 +102,33 @@ namespace DRHI
 			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 			colorAttachment.clearValue.color = { 0.52f, 0.52f, 0.52f,0.0f };
 
-			// A single depth stencil attachment info can be used, but they can also be specified separately.
-			// When both are specified separately, the only requirement is that the image view is identical.			
-			VkRenderingAttachmentInfoKHR depthStencilAttachment{};
-			depthStencilAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-			depthStencilAttachment.imageView = depthImageView;
-			depthStencilAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
-			if (isClear)
-			{
-				depthStencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
-			}
-			else
-			{
-				depthStencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
-			}
-			depthStencilAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-			depthStencilAttachment.clearValue.depthStencil = { 1.0f,  0 };
-
 			VkRenderingInfoKHR renderingInfo{};
 			renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
 			renderingInfo.renderArea = { 0, 0, viewPortWidth, viewPortHeight };
 			renderingInfo.layerCount = 1;
 			renderingInfo.colorAttachmentCount = 1;
 			renderingInfo.pColorAttachments = &colorAttachment;
-			renderingInfo.pDepthAttachment = &depthStencilAttachment;
-			renderingInfo.pStencilAttachment = &depthStencilAttachment;
-
+			if (isClear)
+			{
+				// A single depth stencil attachment info can be used, but they can also be specified separately.
+				// When both are specified separately, the only requirement is that the image view is identical.			
+				VkRenderingAttachmentInfoKHR depthStencilAttachment{};
+				depthStencilAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
+				depthStencilAttachment.imageView = *depthImageView;
+				depthStencilAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+				if (isClear)
+				{
+					depthStencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+				}
+				else
+				{
+					depthStencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+				}
+				depthStencilAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+				depthStencilAttachment.clearValue.depthStencil = { 1.0f,  0 };
+				renderingInfo.pDepthAttachment = &depthStencilAttachment;
+				renderingInfo.pStencilAttachment = &depthStencilAttachment;
+			}
 			//Begin dynamic rendering
 			vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);
 
