@@ -39,6 +39,7 @@ namespace DRHI
 		virtual void beginRendering(DynamicCommandBuffer* commandBuffer, bool isClear) = 0;
 		virtual void endCommandBuffer(DynamicCommandBuffer* commandBuffer) = 0;
 		virtual void endRendering(DynamicCommandBuffer* commandBuffer) = 0;
+		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
 
 		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, DynamicCommandBuffer* commandBuffer) = 0;

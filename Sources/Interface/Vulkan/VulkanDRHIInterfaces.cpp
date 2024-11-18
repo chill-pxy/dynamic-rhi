@@ -52,6 +52,21 @@ namespace DRHI
         VkCommandBuffer vkCommandBuffer = commandBuffer->getVulkanCommandBuffer();
         vkCmdEndRendering(vkCommandBuffer);
     }
+
+    void VulkanDRHI::freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool)
+    {
+        auto vkcommandPool = commandPool->getVulkanCommandPool();
+
+        std::vector<VkCommandBuffer> vkcommandBuffers{};
+        for (uint32_t i = 0; i < commandBuffers->size(); ++i)
+        {
+            vkcommandBuffers.push_back((*commandBuffers)[i].getVulkanCommandBuffer());
+        }
+
+        vkFreeCommandBuffers(_device, vkcommandPool, commandBuffers->size(), vkcommandBuffers.data());
+
+        commandBuffers->clear();
+    }
     //----------------------------------------------------------------------------------------
 
 

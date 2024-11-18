@@ -151,18 +151,15 @@ namespace DRHI
             vkDestroyImageView(_device, imageView, nullptr);
         }
 
+        vkDestroySwapchainKHR(_device, _swapChain, nullptr);
         createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, &_viewPortWidth, &_viewPortHeight);
         createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
-        //vkDestroySwapchainKHR(_device, _swapChain, nullptr);
 
         vkDestroyImageView(_device, _depthStencil.view, nullptr);
         vkDestroyImage(_device, _depthStencil.image, nullptr);
         vkFreeMemory(_device, _depthStencil.memory, nullptr);
 
         createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
-
-        //vkFreeCommandBuffers(_device, _commandPool, _commandBuffers.size(), _commandBuffers.data());
-        //VulkanCommand::createCommandBuffers(&_commandBuffers, &_commandPool, VK_COMMAND_BUFFER_LEVEL_SECONDARY,&_device);
 
         for (auto f : recreatefuncs)
         {
