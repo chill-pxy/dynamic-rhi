@@ -78,16 +78,16 @@ namespace DRHI
 
 	}
 
-    void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer> commandBuffers)
+    void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* commandBuffers)
     {
         prepareFrame(recreatefuncs);
 
         std::vector<VkCommandBuffer> vkcommandBuffers{};
-        vkcommandBuffers.resize(commandBuffers.size());
+        vkcommandBuffers.resize(commandBuffers->size());
 
         for (uint32_t i = 0; i < vkcommandBuffers.size(); ++i)
         {
-            vkcommandBuffers[i] = (commandBuffers[i].getVulkanCommandBuffer());
+            vkcommandBuffers[i] = (*commandBuffers)[i].getVulkanCommandBuffer();
         }
 
         _submitInfo.commandBufferCount = vkcommandBuffers.size();

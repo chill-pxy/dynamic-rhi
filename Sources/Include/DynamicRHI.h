@@ -18,7 +18,7 @@ namespace DRHI
 		virtual void initialize() = 0;
 
 		//tick function
-		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer> commandBuffers) = 0;
+		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* commandBuffers) = 0;
 
 		//draw function
 		virtual void drawIndexed(DynamicCommandBuffer* commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance) = 0;
@@ -36,9 +36,9 @@ namespace DRHI
 		virtual void createCommandPool(DynamicCommandPool* commandPool) = 0;
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
 		virtual void beginCommandBuffer(DynamicCommandBuffer commandBuffer) = 0;
-		virtual void beginRendering(DynamicCommandBuffer commandBuffer, bool isClear) = 0;
+		virtual void beginRendering(DynamicCommandBuffer commandBuffer, uint32_t index, bool isClear) = 0;
 		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer) = 0;
-		virtual void endRendering(DynamicCommandBuffer commandBuffer) = 0;
+		virtual void endRendering(DynamicCommandBuffer commandBuffer, uint32_t index) = 0;
 		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
 
 		//buffer functions
@@ -55,8 +55,6 @@ namespace DRHI
 		//memory functions
 		virtual void mapMemory(DynamicDeviceMemory* memory, uint32_t offset, uint32_t size, void* data) = 0;
 		virtual void unmapMemory(DynamicDeviceMemory* memory) = 0;
-		virtual void beginInsertMemoryBarrier(DynamicCommandBuffer commandBuffer) = 0;
-		virtual void endInsterMemoryBarrier(DynamicCommandBuffer commandBuffer) = 0;
 
 		//descriptor funcions
 		virtual void createDescriptorPool(DynamicDescriptorPool* descriptorPool, std::vector<DynamicDescriptorPoolSize>* poolsizes) = 0;
