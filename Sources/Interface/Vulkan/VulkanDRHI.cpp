@@ -96,6 +96,7 @@ namespace DRHI
         {
             throw std::runtime_error("failed to submit queue");
         }
+
         submitFrame(recreatefuncs);
     }
 
@@ -103,9 +104,10 @@ namespace DRHI
     {
         auto vkcommandBuffer = commandBuffer->getVulkanCommandBuffer();
         vkCmdDrawIndexed(vkcommandBuffer, indexCount, instanceCount, firstIndex, vertexOffset, firstInstance);
+        commandBuffer->internalID = vkcommandBuffer;
     }
 
-    void VulkanDRHI::setScissor(DynamicCommandBuffer* commandBuffer, uint32_t firstScissor, uint32_t scissorCount,DynamicRect2D rect)
+    void VulkanDRHI::setScissor(DynamicCommandBuffer* commandBuffer, uint32_t firstScissor, uint32_t scissorCount, DynamicRect2D rect)
     {
         auto vkcommandBuffer = commandBuffer->getVulkanCommandBuffer();
 
@@ -123,6 +125,8 @@ namespace DRHI
         vkrect.offset = vkoffset;
 
         vkCmdSetScissor(vkcommandBuffer, firstScissor, scissorCount, &vkrect);
+
+        commandBuffer->internalID = vkcommandBuffer;
     }
 
     uint32_t VulkanDRHI::getCurrentFrame()
@@ -181,14 +185,17 @@ namespace DRHI
     void VulkanDRHI::prepareFrame(std::vector<std::function<void()>> recreatefuncs)
     {
         vkWaitForFences(_device, 1, &_waitFences[_currentFrame], VK_TRUE, UINT64_MAX);
-        auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, (VkFence)nullptr, &_currentFrame);
-        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
-            if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+        auto result = vkAcquireNextImageKHR(_device, _swapChain, UINT64_MAX, _semaphores.presentComplete, nullptr, &_currentFrame);
+        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) 
+        {
+            if (result == VK_ERROR_OUT_OF_DATE_KHR) 
+            {
                 recreate(recreatefuncs);
             }
             return;
         }
-        else {
+        else 
+        {
             if (result != VK_SUCCESS)
             {
                 throw std::runtime_error("failed to acquire next image");
@@ -201,13 +208,16 @@ namespace DRHI
     {
         auto result = queuePresent(&_presentQueue, &_swapChain, &_currentFrame, &_semaphores.renderComplete);
         // Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
-        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) {
+        if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) 
+        {
             recreate(recreatefuncs);
-            if (result == VK_ERROR_OUT_OF_DATE_KHR) {
+            if (result == VK_ERROR_OUT_OF_DATE_KHR) 
+            {
                 return;
             }
         }
-        else {
+        else 
+        {
             if (result != VK_SUCCESS)
             {
                 throw std::runtime_error("failed to submit frame");
