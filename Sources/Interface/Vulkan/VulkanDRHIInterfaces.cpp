@@ -39,15 +39,17 @@ namespace DRHI
     {
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
 
-        VulkanCommand::insertImageMemoryBarrier(vkCommandBuffer, _swapChainImages[index], 0,
+        VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &_swapChainImages[index], 
+            0,
             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
 
-        VulkanCommand::insertImageMemoryBarrier(vkCommandBuffer, _depthStencil.image, 0,
+        VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &_depthStencil.image, 
+            0,
             VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
             VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
@@ -62,15 +64,17 @@ namespace DRHI
     {
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
 
-        VulkanCommand::insertImageMemoryBarrier(vkCommandBuffer, _swapChainImages[_currentFrame], 0,
+        VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &_swapChainImages[_currentFrame], 
+            0,
             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
-            VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+            VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
 
-        VulkanCommand::insertImageMemoryBarrier(vkCommandBuffer, _depthStencil.image, 0,
+        VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &_depthStencil.image, 
+            0,
             VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
             VK_IMAGE_LAYOUT_UNDEFINED,
             VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
@@ -79,6 +83,8 @@ namespace DRHI
             VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
 
         VulkanCommand::beginRendering(vkCommandBuffer, &_swapChainImages[_currentFrame], &_depthStencil.image, &_swapChainImageViews[_currentFrame], &_depthStencil.view, _viewPortWidth, _viewPortHeight, isClear);
+    
+        commandBuffer.internalID = vkCommandBuffer;
     }
 
     void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer commandBuffer)
@@ -92,7 +98,7 @@ namespace DRHI
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
         vkCmdEndRendering(vkCommandBuffer);
 
-        VulkanCommand::insertImageMemoryBarrier(vkCommandBuffer, _swapChainImages[index],
+        VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &_swapChainImages[index],
             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             0,
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
@@ -100,6 +106,8 @@ namespace DRHI
             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
             VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+
+        commandBuffer.internalID = vkCommandBuffer;
     }
 
     void VulkanDRHI::endRendering(DynamicCommandBuffer commandBuffer)
@@ -107,7 +115,7 @@ namespace DRHI
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
         vkCmdEndRendering(vkCommandBuffer);
 
-        VulkanCommand::insertImageMemoryBarrier(vkCommandBuffer, _swapChainImages[_currentFrame],
+        VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &_swapChainImages[_currentFrame],
             VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
             0,
             VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL,
@@ -115,6 +123,8 @@ namespace DRHI
             VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
             VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
             VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+
+        commandBuffer.internalID = vkCommandBuffer;
     }
 
     void VulkanDRHI::freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool)
@@ -513,8 +523,8 @@ namespace DRHI
             VkCommandBuffer copyCmd = VulkanCommand::beginSingleTimeCommands(&vkcommandPool, &_device);
 
             VulkanCommand::insertImageMemoryBarrier(
-                copyCmd,
-                vkimage,
+                &copyCmd,
+                &vkimage,
                 VK_ACCESS_TRANSFER_READ_BIT,
                 VK_ACCESS_MEMORY_READ_BIT,
                 VK_IMAGE_LAYOUT_UNDEFINED,

@@ -41,7 +41,7 @@ namespace DRHI
 		VkSwapchainKHR               _swapChain{ VK_NULL_HANDLE };
 		VkFormat                     _depthFormat{ VK_FORMAT_D32_SFLOAT_S8_UINT };
 		DepthStencil                 _depthStencil{};
-		VkFormat                     _swapChainImageFormat{ VK_FORMAT_R8G8B8A8_SRGB };
+		VkFormat                     _swapChainImageFormat{ VK_FORMAT_B8G8R8A8_UNORM };
 		VkExtent2D                   _swapChainExtent{ 0 };
 		std::vector<VkImage>         _swapChainImages;
 		std::vector<VkImageView>     _swapChainImageViews;

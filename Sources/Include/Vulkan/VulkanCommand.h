@@ -10,8 +10,8 @@ namespace DRHI
 	namespace VulkanCommand
 	{
 		void insertImageMemoryBarrier(
-			VkCommandBuffer cmdbuffer,
-			VkImage image,
+			VkCommandBuffer* cmdbuffer,
+			VkImage* image,
 			VkAccessFlags srcAccessMask,
 			VkAccessFlags dstAccessMask,
 			VkImageLayout oldImageLayout,

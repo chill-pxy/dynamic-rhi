@@ -8,8 +8,8 @@ namespace DRHI
 	{
 		//https://github.com/SaschaWillems/Vulkan/blob/master/examples/dynamicrendering/dynamicrendering.cpp#L81
 		void insertImageMemoryBarrier(
-			VkCommandBuffer cmdbuffer,
-			VkImage image,
+			VkCommandBuffer* cmdbuffer,
+			VkImage* image,
 			VkAccessFlags srcAccessMask,
 			VkAccessFlags dstAccessMask,
 			VkImageLayout oldImageLayout,
@@ -26,11 +26,11 @@ namespace DRHI
 			imageMemoryBarrier.dstAccessMask = dstAccessMask;
 			imageMemoryBarrier.oldLayout = oldImageLayout;
 			imageMemoryBarrier.newLayout = newImageLayout;
-			imageMemoryBarrier.image = image;
+			imageMemoryBarrier.image = *image;
 			imageMemoryBarrier.subresourceRange = subresourceRange;
 
 			vkCmdPipelineBarrier(
-				cmdbuffer,
+				*cmdbuffer,
 				srcStageMask,
 				dstStageMask,
 				0,
