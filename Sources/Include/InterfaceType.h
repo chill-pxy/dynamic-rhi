@@ -840,6 +840,16 @@ namespace DRHI
 		uint32_t                       maxSets;
 		std::vector<DynamicDescriptorPoolSize>* pPoolSizes;
 	}DynamicDescriptorPoolCreateInfo;
+
+	typedef struct DynamicRenderingInfo
+	{
+		bool              isRenderOnSwapChain;
+		uint32_t          swapChainIndex;
+		bool              isClearEveryFrame;
+		//if not render on swap chain, using target iamge and iamge view
+		DynamicImage*     targetImage;
+		DynamicImageView* targetImageView;
+	}DynamicRenderingInfo;
 }
 
 
