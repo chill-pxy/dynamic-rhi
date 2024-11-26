@@ -58,6 +58,7 @@ namespace DRHI
 		std::vector<VkFence>         _waitFences;
 
 		bool _prepare{ false };
+		bool _waitForRendering{ false };
 
 		// Active frame index
 		uint32_t _currentFrame = 0;

@@ -82,6 +82,8 @@ namespace DRHI
     {
         if (_swapChain == VK_NULL_HANDLE) return;
 
+        if (_waitForRendering) return;
+
         prepareFrame(recreatefuncs);
 
         std::vector<VkCommandBuffer> vkcommandBuffers{};
@@ -149,6 +151,12 @@ namespace DRHI
     {
         if (!_prepare) return;
 
+        if ((_viewPortWidth <= 0) || (_viewPortHeight <= 0))
+        {
+            _waitForRendering = true;
+            return;
+        }
+
         _prepare = false;
 
         vkDeviceWaitIdle(_device);
@@ -181,6 +189,7 @@ namespace DRHI
         vkDeviceWaitIdle(_device);
 
         _prepare = true;
+        _waitForRendering = false;
     }
 
     void VulkanDRHI::prepareFrame(std::vector<std::function<void()>> recreatefuncs)
