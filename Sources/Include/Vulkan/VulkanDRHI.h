@@ -103,6 +103,7 @@ namespace DRHI
 		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer);
 		virtual void endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri);
 		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
+		virtual void destroyCommandPool(DynamicCommandPool* commandPool);
 
 		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, DynamicCommandBuffer* commandBuffer);
@@ -126,6 +127,9 @@ namespace DRHI
 		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicWriteDescriptorSet>* wds);
 		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, DynamicCommandBuffer* commandBuffer, uint32_t bindPoint);
 		virtual void createDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorSetLayoutBinding>* dsbs);
+		virtual void clearDescriptorPool(DynamicDescriptorPool* descriptorPool);
+		virtual void clearDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout);
+		virtual void freeDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicDescriptorPool* descriptorPool);
 
 		//texture funcitons
 		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, DynamicCommandPool* commandPool, int texWidth, int texHeight, int texChannels, stbi_uc* pixels);
@@ -137,7 +141,8 @@ namespace DRHI
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory);
 		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, DynamicCommandPool* commandPool, uint32_t width, uint32_t height);
 		virtual void createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo);
-		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
+		virtual void clearImage(DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
+		virtual void clearSampler(DynamicSampler* sampler);
 		virtual void createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys, DynamicCommandPool* commandPool);
 		virtual void createViewportImageViews(std::vector<DynamicImageView>* viewportImageViews, std::vector<DynamicImage>* viewportImages);
 

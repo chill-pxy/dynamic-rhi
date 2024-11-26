@@ -152,8 +152,13 @@ namespace DRHI
         }
 
         vkFreeCommandBuffers(_device, vkcommandPool, commandBuffers->size(), vkcommandBuffers.data());
+    }
 
-        commandBuffers->clear();
+    void VulkanDRHI::destroyCommandPool(DynamicCommandPool* commandPool)
+    {
+        auto vkcommandPool = commandPool->getVulkanCommandPool();
+        vkDestroyCommandPool(_device, vkcommandPool, nullptr);
+        commandPool->internalID = nullptr;
     }
     //----------------------------------------------------------------------------------------
 
@@ -402,6 +407,22 @@ namespace DRHI
 
         descriptorSetLayout->internalID = vkdescriptorSetLayout;
     }
+
+    void VulkanDRHI::clearDescriptorPool(DynamicDescriptorPool* descriptorPool)
+    {
+        vkDestroyDescriptorPool(_device, descriptorPool->getVulkanDescriptorPool(), nullptr);
+    }
+
+    void VulkanDRHI::clearDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout)
+    {
+        vkDestroyDescriptorSetLayout(_device, descriptorSetLayout->getVulkanDescriptorSetLayout(), nullptr);
+    }
+
+    void VulkanDRHI::freeDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicDescriptorPool* descriptorPool)
+    {
+        auto vkdesciptorSet = descriptorSet->getVulkanDescriptorSet();
+        vkFreeDescriptorSets(_device, descriptorPool->getVulkanDescriptorPool(), 1, &vkdesciptorSet);
+    }
     //-----------------------------------------------------------------------------------------
 
 
@@ -475,13 +496,16 @@ namespace DRHI
         sampler->internalID = vksampler;
     }
 
-    void VulkanDRHI::clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory)
+    void VulkanDRHI::clearImage(DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory)
     {
-        vkDestroySampler(_device, std::get<VkSampler>(sampler->internalID), nullptr);
         vkDestroyImageView(_device, std::get<VkImageView>(imageView->internalID), nullptr);
-
         vkDestroyImage(_device, std::get<VkImage>(image->internalID), nullptr);
         vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
+    }
+
+    void VulkanDRHI::clearSampler(DynamicSampler* sampler)
+    {
+        vkDestroySampler(_device, std::get<VkSampler>(sampler->internalID), nullptr);
     }
 
 

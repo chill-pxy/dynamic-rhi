@@ -40,6 +40,7 @@ namespace DRHI
 		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer) = 0;
 		virtual void endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri) = 0;
 		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
+		virtual void destroyCommandPool(DynamicCommandPool* commandPool) = 0;
 
 		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, DynamicCommandBuffer* commandBuffer) = 0;
@@ -63,6 +64,9 @@ namespace DRHI
 		virtual void createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicWriteDescriptorSet>* wds) = 0;
 		virtual void bindDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicPipelineLayout pipelineLayout, DynamicCommandBuffer* commandBuffer, uint32_t bindPoint) = 0;
 		virtual void createDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout, std::vector<DynamicDescriptorSetLayoutBinding>* dsbs) = 0;
+		virtual void clearDescriptorPool(DynamicDescriptorPool* descriptorPool) = 0;
+		virtual void clearDescriptorSetLayout(DynamicDescriptorSetLayout* descriptorSetLayout) = 0;
+		virtual void freeDescriptorSets(DynamicDescriptorSet* descriptorSet, DynamicDescriptorPool* descriptorPool) = 0;
 
 		//texture funcitons
 		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, DynamicCommandPool* commandPool, int texWidth, int texHeight, int texChannels, stbi_uc* pixels) = 0;
@@ -74,7 +78,8 @@ namespace DRHI
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory) = 0;
 		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, DynamicCommandPool* commandPool, uint32_t width, uint32_t height) = 0;
 		virtual void createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo) = 0;
-		virtual void clearImage(DynamicSampler* sampler, DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory) = 0;
+		virtual void clearImage(DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory) = 0;
+		virtual void clearSampler(DynamicSampler* sampler) = 0;
 		virtual void createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys, DynamicCommandPool* commandPool) = 0;
 		virtual void createViewportImageViews(std::vector<DynamicImageView>* viewportImageViews, std::vector<DynamicImage>* viewportImages) = 0;
 

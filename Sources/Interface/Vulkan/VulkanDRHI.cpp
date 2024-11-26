@@ -24,14 +24,6 @@ namespace DRHI
         //vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
         //vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
 
-        /*for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
-            vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
-            vkDestroySemaphore(device, imageAvailableSemaphores[i], nullptr);
-            vkDestroyFence(device, inFlightFences[i], nullptr);
-        }*/
-
-        //vkDestroyCommandPool(_device, _commandPool, nullptr);
-
         vkDestroySemaphore(_device, _semaphores.presentComplete, nullptr);
         vkDestroySemaphore(_device, _semaphores.renderComplete, nullptr);
 
@@ -80,6 +72,8 @@ namespace DRHI
 
     void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* commandBuffers)
     {
+        if (_swapChain == VK_NULL_HANDLE) return;
+
         prepareFrame(recreatefuncs);
 
         std::vector<VkCommandBuffer> vkcommandBuffers{};
