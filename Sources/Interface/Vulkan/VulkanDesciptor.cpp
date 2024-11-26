@@ -81,6 +81,7 @@ namespace DRHI
             poolInfo.poolSizeCount = static_cast<uint32_t>(poolSizes->size());
             poolInfo.pPoolSizes = poolSizes->data();
             poolInfo.maxSets = static_cast<uint32_t>(MAX_FRAMES_IN_FLIGHT);
+            poolInfo.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
 
             if (vkCreateDescriptorPool(*device, &poolInfo, nullptr, descriptorPool) != VK_SUCCESS)
             {

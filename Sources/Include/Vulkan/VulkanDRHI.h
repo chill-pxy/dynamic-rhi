@@ -151,7 +151,8 @@ namespace DRHI
 		virtual void createPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout, DynamicPipelineCreateInfo info);
 		virtual void bindPipeline(DynamicPipeline pipeline, DynamicCommandBuffer* commandBuffer, uint32_t bindPoint);
 		        VkPipelineRenderingCreateInfoKHR getPipelineRenderingCreateInfo();
-
+		virtual void clearPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout);
+		
 		//cmd functions
 		virtual void cmdPushConstants(DynamicPipelineLayout* layout, DynamicCommandBuffer* commandBuffer, uint32_t stage, uint32_t offset, uint32_t size, void* value);
 

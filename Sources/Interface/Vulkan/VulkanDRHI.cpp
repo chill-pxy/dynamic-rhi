@@ -21,11 +21,19 @@ namespace DRHI
 	{
         cleanSwapChain(&_device, &_swapChainFramebuffers, &_swapChainImageViews, &_swapChain);
 
-        //vkDestroyPipeline(_device, _graphicsPipeline, nullptr);
-        //vkDestroyPipelineLayout(_device, _pipelineLayout, nullptr);
+        vkDestroyImage(_device, _depthStencil.image, nullptr);
+        vkDestroyImageView(_device, _depthStencil.view, nullptr);
+        vkFreeMemory(_device, _depthStencil.memory, nullptr);
+
+        vkDestroyPipelineCache(_device, _pipelineCache, nullptr);
 
         vkDestroySemaphore(_device, _semaphores.presentComplete, nullptr);
         vkDestroySemaphore(_device, _semaphores.renderComplete, nullptr);
+
+        for (auto f : _waitFences)
+        {
+            vkDestroyFence(_device, f, nullptr);
+        }
 
         vkDestroyDevice(_device, nullptr);
 

@@ -296,6 +296,12 @@ namespace DRHI
         commandBuffer->internalID = vkcommandBuffer;
     }
 
+    void VulkanDRHI::clearPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout)
+    {
+        vkDestroyPipelineLayout(_device, pipelineLayout->getVulkanPipelineLayout(), nullptr);
+        vkDestroyPipeline(_device, pipeline->getVulkanPipeline(), nullptr);
+    }
+
     VkPipelineRenderingCreateInfoKHR VulkanDRHI::getPipelineRenderingCreateInfo()
     {
         return VulkanPipeline::getPipelineRenderingCreateInfo(&_swapChainImageFormat);

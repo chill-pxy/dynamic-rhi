@@ -92,7 +92,7 @@ namespace DRHI
 			colorAttachment.imageView = *swapchainImageView;
 			colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
-			colorAttachment.clearValue.color = { 0.52f, 0.52f, 0.52f,0.0f };
+			colorAttachment.clearValue.color = { 0.0f, 0.0f, 0.0f,1.0f };
 
 			// A single depth stencil attachment info can be used, but they can also be specified separately.
 				// When both are specified separately, the only requirement is that the image view is identical.			
