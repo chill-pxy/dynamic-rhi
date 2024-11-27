@@ -75,7 +75,6 @@ namespace DRHI
         _submitInfo.pSignalSemaphores = &_semaphores.renderComplete;
 
         _prepare = true;
-
 	}
 
     void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* commandBuffers)

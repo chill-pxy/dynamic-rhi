@@ -77,7 +77,7 @@ namespace DRHI
             VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
             VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
 
-        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &_depthStencil.image, &vkImageView, &_depthStencil.view, _viewPortWidth, _viewPortHeight, bri.isClearEveryFrame);
+        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &_depthStencil.image, &vkImageView, &_depthStencil.view, _swapChainExtent.width, _swapChainExtent.height, bri.isClearEveryFrame);
     
         if (bri.isRenderOnSwapChain)
         {
