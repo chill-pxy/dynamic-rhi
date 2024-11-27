@@ -80,10 +80,21 @@ namespace DRHI
 
     void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* commandBuffers)
     {
-        if (_swapChain == VK_NULL_HANDLE) return;
+        // if need to stop rendering
+        if ((_viewPortWidth <= 0) || (_viewPortHeight <= 0))
+        {
+            _waitForRendering = true;
+            _lastWaitingState = _waitForRendering;
+            return;
+        }
 
-        if (_waitForRendering) return;
+        if (_lastWaitingState != _waitForRendering)
+        {
+            recreate(recreatefuncs);
+            _lastWaitingState = _waitForRendering;
+        }
 
+        // prepare frame
         prepareFrame(recreatefuncs);
 
         std::vector<VkCommandBuffer> vkcommandBuffers{};
@@ -151,12 +162,6 @@ namespace DRHI
     {
         if (!_prepare) return;
 
-        if ((_viewPortWidth <= 0) || (_viewPortHeight <= 0))
-        {
-            _waitForRendering = true;
-            return;
-        }
-
         _prepare = false;
 
         vkDeviceWaitIdle(_device);
@@ -164,6 +169,8 @@ namespace DRHI
         for (auto imageView : _swapChainImageViews) {
             vkDestroyImageView(_device, imageView, nullptr);
         }
+
+        vkDestroySwapchainKHR(_device, _swapChain, nullptr);
 
         createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, &_viewPortWidth, &_viewPortHeight);
         createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
@@ -188,8 +195,7 @@ namespace DRHI
 
         vkDeviceWaitIdle(_device);
 
-        _prepare = true;
-        _waitForRendering = false;
+        _prepare = true;  
     }
 
     void VulkanDRHI::prepareFrame(std::vector<std::function<void()>> recreatefuncs)
