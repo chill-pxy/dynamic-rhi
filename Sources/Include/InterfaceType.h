@@ -850,6 +850,19 @@ namespace DRHI
 		DynamicImage*     targetImage;
 		DynamicImageView* targetImageView;
 	}DynamicRenderingInfo;
+
+	typedef struct RenderingInfo
+	{
+		VkImage     colorImage;
+		VkImageView colorImageView;
+		uint32_t    colorWidth;
+		uint32_t    colorHeight;
+		VkImage     depthImage;
+		VkImageView depthImageView;
+		uint32_t    depthWidth;
+		uint32_t    depthHeight;
+		bool        isClearEveryFrame;
+	}RenderingInfo;
 }
 
 

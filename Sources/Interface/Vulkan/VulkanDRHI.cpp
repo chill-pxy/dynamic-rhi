@@ -54,9 +54,9 @@ namespace DRHI
 		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
 		createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices);
 		
-        createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, &_viewPortWidth, &_viewPortHeight, true);
+        createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, true);
 		createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
-        createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
+        createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, &_device, &_physicalDevice);
 
         VulkanPipeline::createPipelineCache(&_pipelineCache, &_device);
 
@@ -171,14 +171,14 @@ namespace DRHI
 
         vkDestroySwapchainKHR(_device, _swapChain, nullptr);
 
-        createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, &_viewPortWidth, &_viewPortHeight, false);
+        createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, false);
         createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
 
         vkDestroyImageView(_device, _depthStencil.view, nullptr);
         vkDestroyImage(_device, _depthStencil.image, nullptr);
         vkFreeMemory(_device, _depthStencil.memory, nullptr);
 
-        createDepthStencil(&_depthStencil, _depthFormat, _viewPortWidth, _viewPortHeight, &_device, &_physicalDevice);
+        createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, &_device, &_physicalDevice);
 
         for (auto f : recreatefuncs)
         {

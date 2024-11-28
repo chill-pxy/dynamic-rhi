@@ -8,7 +8,7 @@
 namespace DRHI
 {
     void createSwapChain(VkSwapchainKHR* swapChain, VkPhysicalDevice* physicalDevice, VkDevice* device, VkSurfaceKHR* surface, HWND window,
-        std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat, VkExtent2D* swapChainExtent, uint32_t* viewPortWidth, uint32_t* viewPortHeight, bool firstCreate)
+        std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat, VkExtent2D* swapChainExtent, bool firstCreate)
     {
         //VkSwapchainKHR oldSwapChain = *swapChain;
 
@@ -23,8 +23,7 @@ namespace DRHI
         }
         else
         {
-            extent.width = *viewPortWidth;
-            extent.height = *viewPortHeight;
+            extent = *swapChainExtent;
         }
 
         uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
@@ -75,8 +74,6 @@ namespace DRHI
 
         *swapChainImageFormat = surfaceFormat.format;
         *swapChainExtent = extent;
-        viewPortWidth = &extent.width;
-        viewPortHeight = &extent.height;
     }
 
     void createImageViews(VkDevice* device, std::vector<VkImageView>* swapChainImageViews, std::vector<VkImage>* swapChainImages, VkFormat* swapChainImageFormat)

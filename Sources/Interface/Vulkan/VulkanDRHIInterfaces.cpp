@@ -40,6 +40,8 @@ namespace DRHI
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
         VkImage vkImage{};
         VkImageView vkImageView{};
+
+        uint32_t width = 0, height = 0;
         
         if (bri.isRenderOnSwapChain)
         {
@@ -53,6 +55,9 @@ namespace DRHI
                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+
+            width = _swapChainExtent.width;
+            height = _swapChainExtent.height;
         }
         else
         {
@@ -66,6 +71,9 @@ namespace DRHI
                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+
+            width = _swapChainExtent.width;
+            height = _swapChainExtent.height;
         }   
 
         VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &_depthStencil.image,
@@ -77,7 +85,7 @@ namespace DRHI
             VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
             VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
 
-        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &_depthStencil.image, &vkImageView, &_depthStencil.view, _swapChainExtent.width, _swapChainExtent.height, bri.isClearEveryFrame);
+        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &_depthStencil.image, &vkImageView, &_depthStencil.view, width, height, bri.isClearEveryFrame);
     
         if (bri.isRenderOnSwapChain)
         {

@@ -143,6 +143,53 @@ namespace DRHI
 			vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 		}
 
+		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImageView* swapchainImageView,
+			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear)
+		{
+			// New structures are used to define the attachments used in dynamic rendering
+			VkRenderingAttachmentInfoKHR colorAttachment{};
+			colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
+			colorAttachment.imageView = *swapchainImageView;
+			colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			colorAttachment.clearValue.color = { 0.0f, 0.0f, 0.0f,1.0f };
+
+			if (isClear)
+			{
+				colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+			}
+			else
+			{
+				colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+			}
+
+			VkRenderingInfoKHR renderingInfo{};
+			renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
+			renderingInfo.renderArea = { 0, 0, viewPortWidth, viewPortHeight };
+			renderingInfo.layerCount = 1;
+			renderingInfo.colorAttachmentCount = 1;
+			renderingInfo.pColorAttachments = &colorAttachment;
+
+			//Begin dynamic rendering
+			vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);
+
+			VkViewport viewport{};
+			viewport.width = viewPortWidth;
+			viewport.height = viewPortHeight;
+			viewport.minDepth = 0.0f;
+			viewport.maxDepth = 1.0f;
+
+			vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+			VkRect2D scissor{};
+			scissor.extent.width = viewPortWidth;
+			scissor.extent.height = viewPortHeight;
+			scissor.offset.x = 0;
+			scissor.offset.y = 0;
+
+			vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+		}
+
 		VkCommandBuffer beginSingleTimeCommands(VkCommandPool* commandPool, VkDevice* device)
 		{
 			VkCommandBufferAllocateInfo allocInfo{};

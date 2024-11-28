@@ -29,6 +29,9 @@ namespace DRHI
 		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImage* depthImage, VkImageView* swapchainImageView, VkImageView* depthImageView,
 			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear);
 
+		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImageView* swapchainImageView,
+			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear);
+
 		VkCommandBuffer beginSingleTimeCommands(VkCommandPool* commandPool, VkDevice* device);
 
 		void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device);
