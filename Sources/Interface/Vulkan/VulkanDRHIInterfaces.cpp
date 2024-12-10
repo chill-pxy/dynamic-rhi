@@ -230,6 +230,7 @@ namespace DRHI
 
     void VulkanDRHI::clearBuffer(DynamicBuffer* buffer, DynamicDeviceMemory* memory)
     {
+        if (!buffer->valid() || !memory->valid()) return;
         vkDestroyBuffer(_device, std::get<VkBuffer>(buffer->internalID), nullptr);
         vkFreeMemory(_device, std::get<VkDeviceMemory>(memory->internalID), nullptr);
     }
@@ -306,6 +307,7 @@ namespace DRHI
 
     void VulkanDRHI::clearPipeline(DynamicPipeline* pipeline, DynamicPipelineLayout* pipelineLayout)
     {
+        if (!pipeline->valid() || !pipelineLayout->valid()) return;
         vkDestroyPipelineLayout(_device, pipelineLayout->getVulkanPipelineLayout(), nullptr);
         vkDestroyPipeline(_device, pipeline->getVulkanPipeline(), nullptr);
     }
