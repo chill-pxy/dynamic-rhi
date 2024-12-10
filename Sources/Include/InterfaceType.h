@@ -32,7 +32,7 @@ namespace DRHI
 
 		inline VkCommandBuffer getVulkanCommandBuffer() { return std::get<VkCommandBuffer>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkCommandBuffer>(internalID))
 			{
@@ -53,7 +53,7 @@ namespace DRHI
 
 		inline VkCommandPool getVulkanCommandPool() { return std::get<VkCommandPool>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkCommandPool>(internalID))
 			{
@@ -74,7 +74,7 @@ namespace DRHI
 
 		inline VkBuffer getVulkanBuffer() { return std::get<VkBuffer>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkBuffer>(internalID))
 			{
@@ -95,7 +95,7 @@ namespace DRHI
 
 		inline VkDeviceMemory getVulkanDeviceMemory() { return std::get<VkDeviceMemory>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkDeviceMemory>(internalID))
 			{
@@ -116,7 +116,7 @@ namespace DRHI
 
 		inline VkImage getVulkanImage() { return std::get<VkImage>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkImage>(internalID))
 			{
@@ -137,7 +137,7 @@ namespace DRHI
 
 		inline VkImageView getVulkanImageView() { return std::get<VkImageView>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkImageView>(internalID))
 			{
@@ -158,7 +158,7 @@ namespace DRHI
 
 		inline VkSampler getVulkanSampler() { return std::get<VkSampler>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkSampler>(internalID))
 			{
@@ -179,7 +179,7 @@ namespace DRHI
 
 		inline VkPipeline getVulkanPipeline() { return std::get<VkPipeline>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkPipeline>(internalID))
 			{
@@ -200,7 +200,7 @@ namespace DRHI
 
 		inline VkPipelineLayout getVulkanPipelineLayout() { return std::get<VkPipelineLayout>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkPipelineLayout>(internalID))
 			{
@@ -221,7 +221,7 @@ namespace DRHI
 
 		inline VkDescriptorPool getVulkanDescriptorPool() { return std::get<VkDescriptorPool>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkDescriptorPool>(internalID))
 			{
@@ -242,7 +242,7 @@ namespace DRHI
 
 		inline VkDescriptorSet getVulkanDescriptorSet() { return std::get<VkDescriptorSet>(internalID); }
 
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkDescriptorSet>(internalID))
 			{
@@ -263,7 +263,7 @@ namespace DRHI
 
 		inline VkDescriptorSetLayout getVulkanDescriptorSetLayout() { return std::get<VkDescriptorSetLayout>(internalID); }
 	
-		bool vaild()
+		bool valid()
 		{
 			if (std::holds_alternative<VkDescriptorSetLayout>(internalID))
 			{
