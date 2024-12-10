@@ -32,7 +32,18 @@ namespace DRHI
 
 		inline VkCommandBuffer getVulkanCommandBuffer() { return std::get<VkCommandBuffer>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkCommandBuffer>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkCommandBuffer>(internalID))
+			{
+				if (std::get<VkCommandBuffer>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicCommandPool
@@ -42,7 +53,18 @@ namespace DRHI
 
 		inline VkCommandPool getVulkanCommandPool() { return std::get<VkCommandPool>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkCommandPool>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkCommandPool>(internalID))
+			{
+				if (std::get<VkCommandPool>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicBuffer
@@ -52,7 +74,18 @@ namespace DRHI
 
 		inline VkBuffer getVulkanBuffer() { return std::get<VkBuffer>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkBuffer>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkBuffer>(internalID))
+			{
+				if (std::get<VkBuffer>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicDeviceMemory
@@ -62,7 +95,18 @@ namespace DRHI
 
 		inline VkDeviceMemory getVulkanDeviceMemory() { return std::get<VkDeviceMemory>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkDeviceMemory>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkDeviceMemory>(internalID))
+			{
+				if (std::get<VkDeviceMemory>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicImage
@@ -72,7 +116,18 @@ namespace DRHI
 
 		inline VkImage getVulkanImage() { return std::get<VkImage>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkImage>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkImage>(internalID))
+			{
+				if (std::get<VkImage>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicImageView
@@ -82,7 +137,18 @@ namespace DRHI
 
 		inline VkImageView getVulkanImageView() { return std::get<VkImageView>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkImageView>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkImageView>(internalID))
+			{
+				if (std::get<VkImageView>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicSampler
@@ -92,7 +158,18 @@ namespace DRHI
 
 		inline VkSampler getVulkanSampler() { return std::get<VkSampler>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkSampler>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkSampler>(internalID))
+			{
+				if (std::get<VkSampler>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicPipeline
@@ -102,7 +179,18 @@ namespace DRHI
 
 		inline VkPipeline getVulkanPipeline() { return std::get<VkPipeline>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkPipeline>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkPipeline>(internalID))
+			{
+				if (std::get<VkPipeline>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicPipelineLayout
@@ -112,7 +200,18 @@ namespace DRHI
 
 		inline VkPipelineLayout getVulkanPipelineLayout() { return std::get<VkPipelineLayout>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkPipelineLayout>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkPipelineLayout>(internalID))
+			{
+				if (std::get<VkPipelineLayout>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicDescriptorPool
@@ -122,7 +221,18 @@ namespace DRHI
 
 		inline VkDescriptorPool getVulkanDescriptorPool() { return std::get<VkDescriptorPool>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkDescriptorPool>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkDescriptorPool>(internalID))
+			{
+				if (std::get<VkDescriptorPool>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicDescriptorSet
@@ -132,7 +242,18 @@ namespace DRHI
 
 		inline VkDescriptorSet getVulkanDescriptorSet() { return std::get<VkDescriptorSet>(internalID); }
 
-		inline bool vaild() const { return(std::holds_alternative<VkDescriptorSet>(internalID)); }
+		bool vaild()
+		{
+			if (std::holds_alternative<VkDescriptorSet>(internalID))
+			{
+				if (std::get<VkDescriptorSet>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicDescriptorSetLayout
@@ -141,8 +262,19 @@ namespace DRHI
 		std::variant<VkDescriptorSetLayout> internalID;
 
 		inline VkDescriptorSetLayout getVulkanDescriptorSetLayout() { return std::get<VkDescriptorSetLayout>(internalID); }
-
-		inline bool vaild() const { return(std::holds_alternative<VkDescriptorSetLayout>(internalID)); }
+	
+		bool vaild()
+		{
+			if (std::holds_alternative<VkDescriptorSetLayout>(internalID))
+			{
+				if (std::get<VkDescriptorSetLayout>(internalID) == nullptr) return false;
+				else return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 	};
 
 	class DynamicDescriptorBufferInfo
@@ -169,8 +301,6 @@ namespace DRHI
 
 		}
 		inline VkDescriptorBufferInfo getVulkanDescriptorBufferInfo() { return std::get<VkDescriptorBufferInfo>(internalID); }
-
-		inline bool vaild() const { return(std::holds_alternative<VkDescriptorBufferInfo>(internalID)); }
 	};
 
 	class DynamicVertexInputBindingDescription
@@ -198,8 +328,6 @@ namespace DRHI
 		}
 
 		inline VkVertexInputBindingDescription getVulkanVertexInputBindingDescription() { return std::get<VkVertexInputBindingDescription>(internalID); }
-	
-		inline bool vaild() const { return(std::holds_alternative<VkVertexInputBindingDescription>(internalID)); }
 	};
 
 	class DynamicVertexInputAttributeDescription
@@ -227,8 +355,6 @@ namespace DRHI
 		}
 
 		inline VkVertexInputAttributeDescription getVulkanVertexInputAttributeDescription() { return std::get<VkVertexInputAttributeDescription>(internalID); }
-	
-		inline bool vaild() const { return(std::holds_alternative<VkVertexInputAttributeDescription>(internalID)); }
 	};
 
 	typedef struct DynamicFormat
