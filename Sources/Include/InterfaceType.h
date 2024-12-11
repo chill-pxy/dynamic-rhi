@@ -277,6 +277,14 @@ namespace DRHI
 		}
 	};
 
+	class DynamicFilter
+	{
+	public:
+		std::variant<VkFilter> internalID;
+
+		inline VkFilter getVulkanFilter() { return std::get<VkFilter>(internalID); }
+	};
+
 	class DynamicDescriptorBufferInfo
 	{
 	public:
@@ -368,13 +376,19 @@ namespace DRHI
 				FORMAT_R32G32_SFLOAT = VK_FORMAT_R32G32_SFLOAT;
 				FORMAT_R8G8B8A8_UNORM = VK_FORMAT_R8G8B8A8_UNORM;
 				FORMAT_R8G8B8A8_SRGB = VK_FORMAT_R8G8B8A8_SRGB;
+				FORMAT_D16_UNORM = VK_FORMAT_D16_UNORM;
 				break;
 			case DRHI::DIRECT3D12:
 				break;
 			}
 		}
 
-		uint32_t FORMAT_R32G32B32_SFLOAT{ 0 }, FORMAT_R32G32_SFLOAT{ 0 }, FORMAT_R8G8B8A8_UNORM{ 0 }, FORMAT_R8G8B8A8_SRGB{ 0 };
+		uint32_t
+			FORMAT_R32G32B32_SFLOAT{ 0 },
+			FORMAT_R32G32_SFLOAT{ 0 },
+			FORMAT_R8G8B8A8_UNORM{ 0 },
+			FORMAT_R8G8B8A8_SRGB{ 0 },
+			FORMAT_D16_UNORM{ 0 };
 
 	}DynamicFormat;
 
@@ -410,13 +424,17 @@ namespace DRHI
 			case DRHI::VULKAN:
 				IMAGE_USAGE_SAMPLED_BIT = VK_IMAGE_USAGE_SAMPLED_BIT;
 				IMAGE_USAGE_TRANSFER_DST_BIT = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+				IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 				break;
 			case DRHI::DIRECT3D12:
 				break;
 			}
 		}
 
-		uint32_t IMAGE_USAGE_SAMPLED_BIT{ 0 }, IMAGE_USAGE_TRANSFER_DST_BIT{ 0 };
+		uint32_t
+			IMAGE_USAGE_SAMPLED_BIT{ 0 },
+			IMAGE_USAGE_TRANSFER_DST_BIT{ 0 },
+			IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT{ 0 };
 	}DynamicImageUsageFlagBits;
 
 	typedef struct DynamicImageAspectFlagBits
