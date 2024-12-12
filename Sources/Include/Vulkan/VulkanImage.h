@@ -26,6 +26,6 @@ namespace DRHI
    
         void createTextureSampler(VkSampler* textureSampler, VkPhysicalDevice* physicalDevice, VkDevice* device);
     
-        void createSampler(VkSampler* sampler, DynamicSmplerCreateInfo createInfo, VkPhysicalDevice* physicalDevice, VkDevice* device);
+        void createSampler(VkSampler* sampler, DynamicSamplerCreateInfo createInfo, VkPhysicalDevice* physicalDevice, VkDevice* device);
     }
 }

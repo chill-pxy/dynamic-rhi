@@ -505,7 +505,7 @@ namespace DRHI
         image->internalID = vkimage;
     }
 
-    void VulkanDRHI::createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo)
+    void VulkanDRHI::createSampler(DynamicSampler* sampler, DynamicSamplerCreateInfo createInfo)
     {
         VkSampler vksampler{};
         VulkanImage::createSampler(&vksampler, createInfo, &_physicalDevice, &_device);

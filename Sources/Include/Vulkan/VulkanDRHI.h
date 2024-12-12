@@ -142,7 +142,7 @@ namespace DRHI
 		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory);
 		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, DynamicCommandPool* commandPool, uint32_t width, uint32_t height);
-		virtual void createSampler(DynamicSampler* sampler, DynamicSmplerCreateInfo createInfo);
+		virtual void createSampler(DynamicSampler* sampler, DynamicSamplerCreateInfo createInfo);
 		virtual void clearImage(DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
 		virtual void clearSampler(DynamicSampler* sampler);
 		virtual void createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys, DynamicCommandPool* commandPool);

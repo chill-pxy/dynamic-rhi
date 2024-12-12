@@ -635,11 +635,11 @@ namespace DRHI
 		DynamicOffset2D offset;
 	}DynamicRect2D;
 
-	typedef struct DynamicSmplerCreateInfo
+	typedef struct DynamicSamplerCreateInfo
 	{
 		uint32_t sampleraAddressMode;
 		uint32_t borderColor;
-	}DynamicSmplerCreateInfo;
+	}DynamicSamplerCreateInfo;
 
 	typedef struct DynamicDescriptorType
 	{
