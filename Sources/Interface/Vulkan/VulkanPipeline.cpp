@@ -55,7 +55,15 @@ namespace DRHI
             fragShaderStageInfo.module = createInfo.fragmentShader;
             fragShaderStageInfo.pName = "main";
 
-            VkPipelineShaderStageCreateInfo shaderStages[] = { vertShaderStageInfo,fragShaderStageInfo };
+            std::vector<VkPipelineShaderStageCreateInfo> shaderStages{};
+            if (createInfo.vertexShader)
+            {
+                shaderStages.push_back(vertShaderStageInfo);
+            }
+            if (createInfo.fragmentShader)
+            {
+                shaderStages.push_back(fragShaderStageInfo);
+            }
             //-------------------------------------------------------------------------------
 
 
@@ -141,8 +149,8 @@ namespace DRHI
             VkGraphicsPipelineCreateInfo pipelineInfo{};
             pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
             pipelineInfo.pNext = &pipelineRenderingCreateInfo;
-            pipelineInfo.stageCount = 2;
-            pipelineInfo.pStages = shaderStages;
+            pipelineInfo.stageCount = createInfo.shaderCount;
+            pipelineInfo.pStages = shaderStages.data();
             pipelineInfo.pVertexInputState = &vertexInputInfo;
             pipelineInfo.pInputAssemblyState = &inputAssembly;
             pipelineInfo.pViewportState = &viewportState;

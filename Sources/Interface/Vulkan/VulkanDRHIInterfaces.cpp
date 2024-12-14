@@ -273,20 +273,33 @@ namespace DRHI
     {
         VkPipeline vkpipeline;
         VkPipelineLayout vkpipelineLayout = pipelineLayout->getVulkanPipelineLayout();
-
-        auto vertex = readFile(info.vertexShader);
-        auto fragment = readFile(info.fragmentShader);
-
-        auto vulkanVertex = createShaderModule(vertex, &_device);
-        auto vulkanFragment = createShaderModule(fragment, &_device);
-
+        
         VulkanPipeline::VulkanPipelineCreateInfo pci{};
-        pci.vertexShader = vulkanVertex;
-        pci.fragmentShader = vulkanFragment;
+
+        VkShaderModule vulkanVertex{}, vulkanFragment{};
+        uint32_t shaderCount = 0;
+
+        if (info.vertexShader)
+        {
+            auto vertex = readFile(info.vertexShader);
+            vulkanVertex = createShaderModule(vertex, &_device);
+            pci.vertexShader = vulkanVertex;
+            shaderCount++;
+        }
+
+        if (info.fragmentShader)
+        {
+            auto fragment = readFile(info.fragmentShader);
+            vulkanFragment = createShaderModule(fragment, &_device);
+            pci.fragmentShader = vulkanFragment;
+            shaderCount++;
+        }
+
+        pci.shaderCount = shaderCount;
 
         auto vkVertexInputBinding = info.vertexInputBinding.getVulkanVertexInputBindingDescription();
 
-        std::vector<VkVertexInputAttributeDescription> vkVertexInputAttribute;
+        std::vector<VkVertexInputAttributeDescription> vkVertexInputAttribute{};
 
         for (int i = 0; i < info.vertexInputAttributes.size(); ++i)
         {
