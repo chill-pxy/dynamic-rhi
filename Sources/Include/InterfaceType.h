@@ -991,8 +991,9 @@ namespace DRHI
 		uint32_t          swapChainIndex;
 		bool              isClearEveryFrame;
 		//if not render on swap chain, using target iamge and iamge view
-		DynamicImage*     targetImage;
-		DynamicImageView* targetImageView;
+		DynamicImage*      targetImage;
+		DynamicImageView*  targetImageView;
+		uint32_t           aspectFlag;
 	}DynamicRenderingInfo;
 
 	typedef struct RenderingInfo

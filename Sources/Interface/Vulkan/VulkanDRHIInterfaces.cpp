@@ -70,7 +70,7 @@ namespace DRHI
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+                VkImageSubresourceRange{ bri.aspectFlag, 0, 1, 0, 1 });
 
             width = _swapChainExtent.width;
             height = _swapChainExtent.height;
@@ -134,7 +134,7 @@ namespace DRHI
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
+                VkImageSubresourceRange{ bri.aspectFlag, 0, 1, 0, 1 });
         }
 
         commandBuffer.internalID = vkCommandBuffer;
