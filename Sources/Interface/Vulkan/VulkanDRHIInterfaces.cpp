@@ -4,6 +4,17 @@
 
 namespace DRHI
 {
+    //-------------------------------------   swap chain    ------------------------------------
+    uint32_t VulkanDRHI::getSwapChainExtentWidth()
+    {
+        return _swapChainExtent.width;
+    }
+
+    uint32_t VulkanDRHI::getSwapChainExtentHeight()
+    {
+        return _swapChainExtent.height;
+    }
+
     //-------------------------------------command functions------------------------------------
     void VulkanDRHI::createCommandPool(DynamicCommandPool* commandPool)
     {

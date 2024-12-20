@@ -32,6 +32,10 @@ namespace DRHI
 		//get frame
 		virtual uint32_t getCurrentFrame() = 0;
 
+		//swap chain
+		virtual uint32_t getSwapChainExtentWidth() = 0;
+		virtual uint32_t getSwapChainExtentHeight() = 0;
+
 		//command functions
 		virtual void createCommandPool(DynamicCommandPool* commandPool) = 0;
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
