@@ -151,6 +151,7 @@ namespace DRHI
 		virtual void clearSampler(DynamicSampler* sampler);
 		virtual void createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys, DynamicCommandPool* commandPool);
 		virtual void createViewportImageViews(std::vector<DynamicImageView>* viewportImageViews, std::vector<DynamicImage>* viewportImages);
+		virtual void transitionImageLayout(DynamicImage* image, DynamicCommandPool* commandPool, uint32_t format, uint32_t oldLayout, uint32_t newLayout);
 
 		//pipeline functions
 		virtual void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo);

@@ -102,7 +102,7 @@ namespace DRHI
             VkPipelineStageFlags sourceStage;
             VkPipelineStageFlags destinationStage;
 
-            if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
+           if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL) {
                 barrier.srcAccessMask = 0;
                 barrier.dstAccessMask = VK_ACCESS_TRANSFER_WRITE_BIT;
 
@@ -115,6 +115,14 @@ namespace DRHI
 
                 sourceStage = VK_PIPELINE_STAGE_TRANSFER_BIT;
                 destinationStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+            }
+            else if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_DEPTH_STENCIL_READ_ONLY_OPTIMAL) {
+               barrier.srcAccessMask = VK_ACCESS_SHADER_READ_BIT;
+               barrier.dstAccessMask = VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+               barrier.subresourceRange.aspectMask = VK_IMAGE_ASPECT_DEPTH_BIT;
+
+               sourceStage = VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT;
+               destinationStage = VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
             }
             else {
                 throw std::invalid_argument("unsupported layout transition!");

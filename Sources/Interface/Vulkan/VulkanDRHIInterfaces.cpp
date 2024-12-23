@@ -106,7 +106,7 @@ namespace DRHI
 
                 VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkDepthImage,
                     0,
-                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
                     VK_IMAGE_LAYOUT_UNDEFINED,
                     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
                     VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
@@ -120,16 +120,25 @@ namespace DRHI
 
         VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &vkDepthImage, &vkImageView, &vkDepthImageView, width, height, bri.isClearEveryFrame);
     
-        //if (bri.isRenderOnSwapChain)
-        //{
-        //   _swapChainImages[bri.swapChainIndex] = vkImage;
-        //   _swapChainImageViews[bri.swapChainIndex] = vkImageView;
-        //}
-        //else
-        //{
-        //    bri.targetImage->internalID = vkImage;
-        //    bri.targetImageView->internalID = vkImageView;
-        //}
+        if (bri.isRenderOnSwapChain)
+        {
+           _swapChainImages[bri.swapChainIndex] = vkImage;
+           _swapChainImageViews[bri.swapChainIndex] = vkImageView;
+        }
+        else
+        {
+            if (bri.targetImage->valid() && bri.targetImageView->valid())
+            {
+                bri.targetImage->internalID = vkImage;
+                bri.targetImageView->internalID = vkImageView;
+            }
+            
+            if (bri.targetDepthImage->valid() && bri.targetDepthImageView->valid())
+            {
+                bri.targetDepthImage->internalID = vkDepthImage;
+                bri.targetDepthImageView->internalID = vkDepthImageView;
+            }
+        }
     }
 
     void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer commandBuffer)
@@ -173,7 +182,7 @@ namespace DRHI
                     VkImageSubresourceRange{ (VkImageAspectFlags)bri.colorAspectFlag, 0, 1, 0, 1 });
             }
 
-            if (bri.targetDepthImage->valid())
+           /* if (bri.targetDepthImage->valid())
             {
                 vkdepthImage = bri.targetDepthImage->getVulkanImage();
                 VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkdepthImage,
@@ -181,22 +190,25 @@ namespace DRHI
                     0,
                     VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL,
                     VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL,
-                    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                    VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                    VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                    VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
                     VkImageSubresourceRange{ (VkImageAspectFlags)bri.depthAspectFlag, 0, 1, 0, 1 });
-            }
+            }*/
         }
 
         commandBuffer.internalID = vkCommandBuffer;
 
-        //if (bri.isRenderOnSwapChain)
-        //{
-        //    _swapChainImages[bri.swapChainIndex] = vkImage;
-        //}
-        //else
-        //{
-        //    bri.targetImage->internalID = vkImage;
-        //}
+        if (bri.isRenderOnSwapChain)
+        {
+            _swapChainImages[bri.swapChainIndex] = vkImage;
+        }
+        else
+        {
+            if (bri.targetImage->valid())
+            {
+                bri.targetImage->internalID = vkImage;
+            }
+        }
     }
 
     void VulkanDRHI::freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool)
@@ -666,6 +678,14 @@ namespace DRHI
             VkImage scImages = (*viewportImages)[i].getVulkanImage();
             (*viewportImageViews)[i].internalID = VulkanImage::createImageView(&_device, &scImages, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
         }
+    }
+
+    void VulkanDRHI::transitionImageLayout(DynamicImage* image, DynamicCommandPool* commandPool, uint32_t format, uint32_t oldLayout, uint32_t newLayout)
+    {
+        auto vkimage = image->getVulkanImage();
+        auto vkcommandPool = commandPool->getVulkanCommandPool();
+        VulkanImage::transitionImageLayout(vkimage, (VkFormat)format, (VkImageLayout)oldLayout, (VkImageLayout)newLayout, &_graphicQueue, &vkcommandPool, &_device);
+        image->internalID = vkimage;
     }
     //-----------------------------------------------------------------------------------------------
 
