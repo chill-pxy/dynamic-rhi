@@ -71,49 +71,65 @@ namespace DRHI
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 });
 
+            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkDepthImage,
+                0,
+                VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
+
             width = _swapChainExtent.width;
             height = _swapChainExtent.height;
         }
         else
         {
-            vkImage = bri.targetImage->getVulkanImage();
-            vkImageView = bri.targetImageView->getVulkanImageView();
-            vkDepthImage = bri.targetDepthImage->getVulkanImage();
-            vkDepthImageView = bri.targetDepthImageView->getVulkanImageView();
-            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
-                0,
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                VK_IMAGE_LAYOUT_UNDEFINED,
-                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VkImageSubresourceRange{ bri.aspectFlag, 0, 1, 0, 1 });
+            if (bri.targetImage->valid() && bri.targetImageView->valid())
+            {
+                vkImage = bri.targetImage->getVulkanImage();
+                vkImageView = bri.targetImageView->getVulkanImageView();
+                VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
+                    0,
+                    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                    VK_IMAGE_LAYOUT_UNDEFINED,
+                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                    VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                    VkImageSubresourceRange{ bri.aspectFlag, 0, 1, 0, 1 });
+            }
+          
+            if (bri.targetDepthImage->valid() && bri.targetDepthImageView->valid())
+            {
+                vkDepthImage = bri.targetDepthImage->getVulkanImage();
+                vkDepthImageView = bri.targetDepthImageView->getVulkanImageView();
+
+                VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkDepthImage,
+                    0,
+                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                    VK_IMAGE_LAYOUT_UNDEFINED,
+                    VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
+                    VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                    VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                    VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
+            } 
 
             width = _swapChainExtent.width;
             height = _swapChainExtent.height;
         }   
 
-        VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkDepthImage,
-            0,
-            VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
-            VK_IMAGE_LAYOUT_UNDEFINED,
-            VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
-            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-            VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-            VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
-
         VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &vkDepthImage, &vkImageView, &vkDepthImageView, width, height, bri.isClearEveryFrame);
     
-        if (bri.isRenderOnSwapChain)
-        {
-           _swapChainImages[bri.swapChainIndex] = vkImage;
-           _swapChainImageViews[bri.swapChainIndex] = vkImageView;
-        }
-        else
-        {
-            bri.targetImage->internalID = vkImage;
-            bri.targetImageView->internalID = vkImageView;
-        }
+        //if (bri.isRenderOnSwapChain)
+        //{
+        //   _swapChainImages[bri.swapChainIndex] = vkImage;
+        //   _swapChainImageViews[bri.swapChainIndex] = vkImageView;
+        //}
+        //else
+        //{
+        //    bri.targetImage->internalID = vkImage;
+        //    bri.targetImageView->internalID = vkImageView;
+        //}
     }
 
     void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer commandBuffer)
@@ -143,27 +159,30 @@ namespace DRHI
         }
         else
         {
-            vkImage = bri.targetImage->getVulkanImage();
-            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
-                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
-                0,
-                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
-                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                VkImageSubresourceRange{ bri.aspectFlag, 0, 1, 0, 1 });
+            if (bri.targetImage->valid())
+            {
+                vkImage = bri.targetImage->getVulkanImage();
+                VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
+                    VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                    0,
+                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                    VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                    VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                    VkImageSubresourceRange{ bri.aspectFlag, 0, 1, 0, 1 });
+            }
         }
 
         commandBuffer.internalID = vkCommandBuffer;
 
-        if (bri.isRenderOnSwapChain)
-        {
-            _swapChainImages[bri.swapChainIndex] = vkImage;
-        }
-        else
-        {
-            bri.targetImage->internalID = vkImage;
-        }
+        //if (bri.isRenderOnSwapChain)
+        //{
+        //    _swapChainImages[bri.swapChainIndex] = vkImage;
+        //}
+        //else
+        //{
+        //    bri.targetImage->internalID = vkImage;
+        //}
     }
 
     void VulkanDRHI::freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool)

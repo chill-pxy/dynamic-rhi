@@ -118,15 +118,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkImage>(internalID))
+			if (this)
 			{
-				if (std::get<VkImage>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkImage>(internalID))
+				{
+					if (std::get<VkImage>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -139,15 +140,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkImageView>(internalID))
+			if (this)
 			{
-				if (std::get<VkImageView>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkImageView>(internalID))
+				{
+					if (std::get<VkImageView>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
