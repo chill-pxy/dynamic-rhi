@@ -993,6 +993,8 @@ namespace DRHI
 		//if not render on swap chain, using target iamge and iamge view
 		DynamicImage*      targetImage;
 		DynamicImageView*  targetImageView;
+		DynamicImage*      targetDepthImage;
+		DynamicImageView*  targetDepthImageView;
 		uint32_t           aspectFlag;
 	}DynamicRenderingInfo;
 

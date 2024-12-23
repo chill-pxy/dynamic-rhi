@@ -51,6 +51,8 @@ namespace DRHI
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
         VkImage vkImage{};
         VkImageView vkImageView{};
+        VkImage vkDepthImage{};
+        VkImageView vkDepthImageView{};
 
         uint32_t width = 0, height = 0;
         
@@ -58,6 +60,8 @@ namespace DRHI
         {
             vkImage = _swapChainImages[bri.swapChainIndex];
             vkImageView = _swapChainImageViews[bri.swapChainIndex];
+            vkDepthImage = _depthStencil.image;
+            vkDepthImageView = _depthStencil.view;
             VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
                 0,
                 VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
@@ -74,6 +78,8 @@ namespace DRHI
         {
             vkImage = bri.targetImage->getVulkanImage();
             vkImageView = bri.targetImageView->getVulkanImageView();
+            vkDepthImage = bri.targetDepthImage->getVulkanImage();
+            vkDepthImageView = bri.targetDepthImageView->getVulkanImageView();
             VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
                 0,
                 VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
@@ -87,7 +93,7 @@ namespace DRHI
             height = _swapChainExtent.height;
         }   
 
-        VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &_depthStencil.image,
+        VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkDepthImage,
             0,
             VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
             VK_IMAGE_LAYOUT_UNDEFINED,
@@ -96,7 +102,7 @@ namespace DRHI
             VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
             VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
 
-        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &_depthStencil.image, &vkImageView, &_depthStencil.view, width, height, bri.isClearEveryFrame);
+        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &vkDepthImage, &vkImageView, &vkDepthImageView, width, height, bri.isClearEveryFrame);
     
         if (bri.isRenderOnSwapChain)
         {
