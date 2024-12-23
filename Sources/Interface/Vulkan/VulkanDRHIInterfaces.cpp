@@ -96,7 +96,7 @@ namespace DRHI
                     VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                     VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                     VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                    VkImageSubresourceRange{ bri.aspectFlag, 0, 1, 0, 1 });
+                    VkImageSubresourceRange{ (VkImageAspectFlags)bri.colorAspectFlag, 0, 1, 0, 1 });
             }
           
             if (bri.targetDepthImage->valid() && bri.targetDepthImageView->valid())
@@ -111,7 +111,7 @@ namespace DRHI
                     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
                     VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
                     VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-                    VkImageSubresourceRange{ VK_IMAGE_ASPECT_DEPTH_BIT | VK_IMAGE_ASPECT_STENCIL_BIT, 0, 1, 0, 1 });
+                    VkImageSubresourceRange{ (VkImageAspectFlags)bri.depthAspectFlag, 0, 1, 0, 1 });
             } 
 
             width = _swapChainExtent.width;
@@ -144,6 +144,7 @@ namespace DRHI
         vkCmdEndRendering(vkCommandBuffer);
 
         VkImage vkImage{};
+        VkImage vkdepthImage{};
 
         if (bri.isRenderOnSwapChain)
         {
@@ -169,7 +170,20 @@ namespace DRHI
                     VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                     VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                     VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                    VkImageSubresourceRange{ bri.aspectFlag, 0, 1, 0, 1 });
+                    VkImageSubresourceRange{ (VkImageAspectFlags)bri.colorAspectFlag, 0, 1, 0, 1 });
+            }
+
+            if (bri.targetDepthImage->valid())
+            {
+                vkdepthImage = bri.targetDepthImage->getVulkanImage();
+                VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkdepthImage,
+                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                    0,
+                    VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL,
+                    VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL,
+                    VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                    VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                    VkImageSubresourceRange{ (VkImageAspectFlags)bri.depthAspectFlag, 0, 1, 0, 1 });
             }
         }
 
@@ -342,7 +356,7 @@ namespace DRHI
             vkVertexInputAttribute.emplace_back(info.vertexInputAttributes[i].getVulkanVertexInputAttributeDescription());
         }
 
-        VulkanPipeline::createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, &_swapChainImageFormat, vkVertexInputBinding, vkVertexInputAttribute);
+        VulkanPipeline::createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, (VkFormat)info.colorImageFormat, (VkFormat)info.depthImageFormat, info.includeStencil, vkVertexInputBinding, vkVertexInputAttribute);
 
         pipeline->internalID = vkpipeline;
     }
