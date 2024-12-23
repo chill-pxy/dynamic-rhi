@@ -34,15 +34,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkCommandBuffer>(internalID))
+			if (this)
 			{
-				if (std::get<VkCommandBuffer>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkCommandBuffer>(internalID))
+				{
+					if (std::get<VkCommandBuffer>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -55,15 +56,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkCommandPool>(internalID))
+			if (this)
 			{
-				if (std::get<VkCommandPool>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkCommandPool>(internalID))
+				{
+					if (std::get<VkCommandPool>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -76,15 +78,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkBuffer>(internalID))
+			if (this)
 			{
-				if (std::get<VkBuffer>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkBuffer>(internalID))
+				{
+					if (std::get<VkBuffer>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -97,15 +100,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkDeviceMemory>(internalID))
+			if (this)
 			{
-				if (std::get<VkDeviceMemory>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkDeviceMemory>(internalID))
+				{
+					if (std::get<VkDeviceMemory>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -162,15 +166,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkSampler>(internalID))
+			if (this)
 			{
-				if (std::get<VkSampler>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkSampler>(internalID))
+				{
+					if (std::get<VkSampler>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -183,15 +188,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkPipeline>(internalID))
+			if (this)
 			{
-				if (std::get<VkPipeline>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkPipeline>(internalID))
+				{
+					if (std::get<VkPipeline>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -204,15 +210,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkPipelineLayout>(internalID))
+			if (this)
 			{
-				if (std::get<VkPipelineLayout>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkPipelineLayout>(internalID))
+				{
+					if (std::get<VkPipelineLayout>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -225,15 +232,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkDescriptorPool>(internalID))
+			if (this)
 			{
-				if (std::get<VkDescriptorPool>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkDescriptorPool>(internalID))
+				{
+					if (std::get<VkDescriptorPool>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -246,15 +254,16 @@ namespace DRHI
 
 		bool valid()
 		{
-			if (std::holds_alternative<VkDescriptorSet>(internalID))
+			if (this)
 			{
-				if (std::get<VkDescriptorSet>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkDescriptorSet>(internalID))
+				{
+					if (std::get<VkDescriptorSet>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
@@ -267,15 +276,16 @@ namespace DRHI
 	
 		bool valid()
 		{
-			if (std::holds_alternative<VkDescriptorSetLayout>(internalID))
+			if (this)
 			{
-				if (std::get<VkDescriptorSetLayout>(internalID) == nullptr) return false;
-				else return true;
+				if (std::holds_alternative<VkDescriptorSetLayout>(internalID))
+				{
+					if (std::get<VkDescriptorSetLayout>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
 			}
-			else
-			{
-				return false;
-			}
+			else return false;
 		}
 	};
 
