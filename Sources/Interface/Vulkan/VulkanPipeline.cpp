@@ -135,7 +135,6 @@ namespace DRHI
             depthStencil.depthBoundsTestEnable = VK_FALSE;
             depthStencil.stencilTestEnable = VK_FALSE;
            
-
             VkPipelineRenderingCreateInfoKHR pipelineRenderingCreateInfo{};
             pipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
             pipelineRenderingCreateInfo.colorAttachmentCount = 1;

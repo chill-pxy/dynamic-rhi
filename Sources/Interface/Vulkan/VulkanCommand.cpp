@@ -121,7 +121,7 @@ namespace DRHI
 			renderingInfo.colorAttachmentCount = 1;
 			renderingInfo.pColorAttachments = &colorAttachment;
 			renderingInfo.pDepthAttachment = &depthStencilAttachment;
-			//renderingInfo.pStencilAttachment = &depthStencilAttachment;
+			renderingInfo.pStencilAttachment = &depthStencilAttachment;
 
 			//Begin dynamic rendering
 			vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);

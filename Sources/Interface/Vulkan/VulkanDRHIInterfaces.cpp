@@ -181,19 +181,6 @@ namespace DRHI
                     VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
                     VkImageSubresourceRange{ (VkImageAspectFlags)bri.colorAspectFlag, 0, 1, 0, 1 });
             }
-
-           /* if (bri.targetDepthImage->valid())
-            {
-                vkdepthImage = bri.targetDepthImage->getVulkanImage();
-                VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkdepthImage,
-                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
-                    0,
-                    VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL,
-                    VK_IMAGE_LAYOUT_DEPTH_READ_ONLY_OPTIMAL,
-                    VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-                    VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-                    VkImageSubresourceRange{ (VkImageAspectFlags)bri.depthAspectFlag, 0, 1, 0, 1 });
-            }*/
         }
 
         commandBuffer.internalID = vkCommandBuffer;
