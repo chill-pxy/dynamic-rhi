@@ -19,7 +19,7 @@ namespace DRHI
 
 	void VulkanDRHI::clean()
 	{
-        cleanSwapChain(&_device, &_swapChainFramebuffers, &_swapChainImageViews, &_swapChain);
+        VulkanSwapChain::cleanSwapChain(&_device, &_swapChainFramebuffers, &_swapChainImageViews, &_swapChain);
 
         vkDestroyImage(_device, _depthStencil.image, nullptr);
         vkDestroyImageView(_device, _depthStencil.view, nullptr);
@@ -54,9 +54,9 @@ namespace DRHI
 		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
 		createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices);
 		
-        createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, true);
-		createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
-        createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, &_device, &_physicalDevice);
+        VulkanSwapChain::createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, true);
+        VulkanSwapChain::createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
+        VulkanSwapChain::createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, &_device, &_physicalDevice);
 
         VulkanPipeline::createPipelineCache(&_pipelineCache, &_device);
 
@@ -171,14 +171,14 @@ namespace DRHI
 
         vkDestroySwapchainKHR(_device, _swapChain, nullptr);
 
-        createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, false);
-        createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
+        VulkanSwapChain::createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, false);
+        VulkanSwapChain::createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
 
         vkDestroyImageView(_device, _depthStencil.view, nullptr);
         vkDestroyImage(_device, _depthStencil.image, nullptr);
         vkFreeMemory(_device, _depthStencil.memory, nullptr);
 
-        createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, &_device, &_physicalDevice);
+        VulkanSwapChain::createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, &_device, &_physicalDevice);
 
         for (auto f : recreatefuncs)
         {
@@ -221,7 +221,7 @@ namespace DRHI
 
     void VulkanDRHI::submitFrame(std::vector<std::function<void()>> recreatefuncs)
     {
-        auto result = queuePresent(&_graphicQueue, &_swapChain, &_currentFrame, &_semaphores.renderComplete);
+        auto result = VulkanSwapChain::queuePresent(&_graphicQueue, &_swapChain, &_currentFrame, &_semaphores.renderComplete);
         // Recreate the swapchain if it's no longer compatible with the surface (OUT_OF_DATE) or no longer optimal for presentation (SUBOPTIMAL)
         if ((result == VK_ERROR_OUT_OF_DATE_KHR) || (result == VK_SUBOPTIMAL_KHR)) 
         {

@@ -106,7 +106,7 @@ namespace DRHI
 
                 VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkDepthImage,
                     0,
-                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_READ_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                    VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
                     VK_IMAGE_LAYOUT_UNDEFINED,
                     VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL,
                     VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
@@ -673,6 +673,18 @@ namespace DRHI
         auto vkcommandPool = commandPool->getVulkanCommandPool();
         VulkanImage::transitionImageLayout(vkimage, (VkFormat)format, (VkImageLayout)oldLayout, (VkImageLayout)newLayout, &_graphicQueue, &vkcommandPool, &_device);
         image->internalID = vkimage;
+    }
+
+    void VulkanDRHI::createDepthStencil(DynamicImage* depthImage, DynamicImageView* depthImageView, DynamicDeviceMemory* memory, uint32_t format, uint32_t width, uint32_t height)
+    {
+        DepthStencil depth{};
+        depth.image = depthImage->getVulkanImage();
+        depth.view = depthImageView->getVulkanImageView();
+        depth.memory = memory->getVulkanDeviceMemory();
+        VulkanSwapChain::createDepthStencil(&depth, (VkFormat)format, width, height, &_device, &_physicalDevice);
+        depthImage->internalID = depth.image;
+        depthImageView->internalID = depth.view;
+        memory->internalID = depth.memory;
     }
     //-----------------------------------------------------------------------------------------------
 

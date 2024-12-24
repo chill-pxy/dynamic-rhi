@@ -506,7 +506,7 @@ namespace DRHI
 			IMAGE_ASPECT_PLANE_2_BIT_KHR{ 0 },
 			IMAGE_ASPECT_NONE_KHR{ 0 },
 			IMAGE_ASPECT_FLAG_BITS_MAX_ENUM{ 0 };
-	};
+	}DynamicImageAspectFlagBits;
 
 	typedef struct DynamicBufferUsageFlags
 	{
