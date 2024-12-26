@@ -459,12 +459,12 @@ namespace DRHI
         descriptorPool->internalID = vkdescriptorPool;
     }
     
-    void VulkanDRHI::createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicWriteDescriptorSet>* wds)
+    void VulkanDRHI::createDescriptorSet(DynamicDescriptorSet* descriptorSet, DynamicDescriptorSetLayout* descriptorSetLayout, DynamicDescriptorPool* descriptorPool, std::vector<DynamicWriteDescriptorSet>* wds, uint32_t imageCount)
     {
         VkDescriptorSet vkdescriptorSet{};
         VkDescriptorPool vkdescriptorPool = descriptorPool->getVulkanDescriptorPool();
         VkDescriptorSetLayout vkdescriptorSetLayout = descriptorSetLayout->getVulkanDescriptorSetLayout();
-        VulkanDescriptor::createDescriptorSet(&vkdescriptorSet, &vkdescriptorPool, &vkdescriptorSetLayout, wds, &_device);
+        VulkanDescriptor::createDescriptorSet(&vkdescriptorSet, &vkdescriptorPool, &vkdescriptorSetLayout, wds, imageCount, &_device);
         descriptorSet->internalID = vkdescriptorSet;
         descriptorSetLayout->internalID = vkdescriptorSetLayout;
     }
