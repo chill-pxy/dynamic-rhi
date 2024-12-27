@@ -84,7 +84,7 @@ namespace DRHI
 		}
 
 		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImage* depthImage, VkImageView* swapchainImageView, VkImageView* depthImageView,
-			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear)
+			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear, bool includeStencil)
 		{
 			// New structures are used to define the attachments used in dynamic rendering
 			VkRenderingAttachmentInfoKHR colorAttachment{};
@@ -121,7 +121,10 @@ namespace DRHI
 			renderingInfo.colorAttachmentCount = 1;
 			renderingInfo.pColorAttachments = &colorAttachment;
 			renderingInfo.pDepthAttachment = &depthStencilAttachment;
-			renderingInfo.pStencilAttachment = &depthStencilAttachment;
+			if (includeStencil)
+			{
+				renderingInfo.pStencilAttachment = &depthStencilAttachment;
+			}
 
 			//Begin dynamic rendering
 			vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);

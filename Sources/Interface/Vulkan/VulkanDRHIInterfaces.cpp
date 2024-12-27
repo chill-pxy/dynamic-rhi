@@ -118,7 +118,7 @@ namespace DRHI
             height = _swapChainExtent.height;
         }   
 
-        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &vkDepthImage, &vkImageView, &vkDepthImageView, width, height, bri.isClearEveryFrame);
+        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &vkDepthImage, &vkImageView, &vkDepthImageView, width, height, bri.isClearEveryFrame, bri.includeStencil);
     
         if (bri.isRenderOnSwapChain)
         {

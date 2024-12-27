@@ -1020,6 +1020,7 @@ namespace DRHI
 		DynamicImageView*  targetDepthImageView;
 		uint32_t           colorAspectFlag;
 		uint32_t           depthAspectFlag;
+		bool               includeStencil;
 	}DynamicRenderingInfo;
 
 	typedef struct RenderingInfo
