@@ -13,6 +13,7 @@ namespace DRHI
 			VkShaderModule vertexShader;
 			VkShaderModule fragmentShader;
 			uint32_t shaderCount;
+			bool dynamicDepthBias;
 		};
 
 		void createPipelineLayout(DynamicPipelineLayout* pipelineLayout ,DynamicPipelineLayoutCreateInfo* createInfo, VkDevice* device);

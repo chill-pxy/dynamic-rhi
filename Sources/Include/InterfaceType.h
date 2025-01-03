@@ -966,6 +966,7 @@ namespace DRHI
 		uint32_t colorImageFormat;
 		uint32_t depthImageFormat;
 		bool includeStencil;
+		bool dynamicDepthBias;
 	}DynamicPipelineCreateInfo;
 
 	typedef struct DynamicDescriptorPoolSize {

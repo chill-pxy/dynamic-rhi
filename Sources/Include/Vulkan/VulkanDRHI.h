@@ -163,6 +163,7 @@ namespace DRHI
 		
 		//cmd functions
 		virtual void cmdPushConstants(DynamicPipelineLayout* layout, DynamicCommandBuffer* commandBuffer, uint32_t stage, uint32_t offset, uint32_t size, void* value);
+		virtual void cmdSetDepthBias(DynamicCommandBuffer commandBuffer, float depthBias, float depthBiasClamp, float depthBiasSlope);
 
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  

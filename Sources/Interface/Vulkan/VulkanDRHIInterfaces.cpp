@@ -346,6 +346,8 @@ namespace DRHI
 
         pci.shaderCount = shaderCount;
 
+        pci.dynamicDepthBias = info.dynamicDepthBias;
+
         auto vkVertexInputBinding = info.vertexInputBinding.getVulkanVertexInputBindingDescription();
 
         std::vector<VkVertexInputAttributeDescription> vkVertexInputAttribute{};
@@ -699,6 +701,11 @@ namespace DRHI
         auto vklayout = layout->getVulkanPipelineLayout();
         auto vkcommandBuffer = commandBuffer->getVulkanCommandBuffer();
         vkCmdPushConstants(vkcommandBuffer, vklayout, (VkShaderStageFlags)stage, offset, size, value);
+    }
+
+    void VulkanDRHI::cmdSetDepthBias(DynamicCommandBuffer commandBuffer, float depthBias, float depthBiasClamp, float depthBiasSlope)
+    {
+        vkCmdSetDepthBias(commandBuffer.getVulkanCommandBuffer(), depthBias, depthBiasClamp, depthBiasSlope);
     }
     //-----------------------------------------------------------------------------------------------
 }

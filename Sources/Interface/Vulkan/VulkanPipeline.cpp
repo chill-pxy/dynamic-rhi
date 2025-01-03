@@ -94,9 +94,19 @@ namespace DRHI
             rasterizer.rasterizerDiscardEnable = VK_FALSE;
             rasterizer.polygonMode = VK_POLYGON_MODE_FILL;
             rasterizer.lineWidth = 1.0f;
-            rasterizer.cullMode = VK_CULL_MODE_NONE;
+            
             rasterizer.frontFace = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-            rasterizer.depthBiasEnable = VK_FALSE;
+            if (createInfo.dynamicDepthBias)
+            {
+                rasterizer.cullMode = VK_CULL_MODE_FRONT_BIT;
+                rasterizer.depthBiasEnable = VK_TRUE;
+            }
+            else
+            {
+                rasterizer.cullMode = VK_CULL_MODE_NONE;
+                rasterizer.depthBiasEnable = VK_FALSE;
+            }
+           
 
             VkPipelineMultisampleStateCreateInfo multisampling{};
             multisampling.sType = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
@@ -121,6 +131,7 @@ namespace DRHI
             std::vector<VkDynamicState> dynamicStates = {
                 VK_DYNAMIC_STATE_VIEWPORT,
                 VK_DYNAMIC_STATE_SCISSOR,
+                VK_DYNAMIC_STATE_DEPTH_BIAS,
             };
             VkPipelineDynamicStateCreateInfo dynamicState{};
             dynamicState.sType = VK_STRUCTURE_TYPE_PIPELINE_DYNAMIC_STATE_CREATE_INFO;
