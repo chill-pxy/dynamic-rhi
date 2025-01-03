@@ -114,8 +114,8 @@ namespace DRHI
                     VkImageSubresourceRange{ (VkImageAspectFlags)bri.depthAspectFlag, 0, 1, 0, 1 });
             } 
 
-            width = _swapChainExtent.width;
-            height = _swapChainExtent.height;
+            width = bri.targetImageWidth; //_swapChainExtent.width;
+            height = bri.targetImageHeight; //_swapChainExtent.height;
         }   
 
         VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &vkDepthImage, &vkImageView, &vkDepthImageView, width, height, bri.isClearEveryFrame, bri.includeStencil);

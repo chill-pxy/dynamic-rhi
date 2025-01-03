@@ -1023,6 +1023,8 @@ namespace DRHI
 		uint32_t           depthAspectFlag;
 		bool               includeStencil;
 		uint32_t           depthImageLayout;
+		uint32_t           targetImageWidth;
+		uint32_t           targetImageHeight;
 	}DynamicRenderingInfo;
 
 	typedef struct RenderingInfo
