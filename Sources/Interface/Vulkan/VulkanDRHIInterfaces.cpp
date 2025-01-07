@@ -347,6 +347,10 @@ namespace DRHI
         pci.shaderCount = shaderCount;
 
         pci.dynamicDepthBias = info.dynamicDepthBias;
+        pci.colorImageFormat = (VkFormat)info.colorImageFormat;
+        pci.depthImageFormat = (VkFormat)info.depthImageFormat;
+        pci.cullMode = (VkCullModeFlagBits)info.cullMode;
+        pci.includeStencil = info.includeStencil;
 
         auto vkVertexInputBinding = info.vertexInputBinding.getVulkanVertexInputBindingDescription();
 
@@ -357,7 +361,7 @@ namespace DRHI
             vkVertexInputAttribute.emplace_back(info.vertexInputAttributes[i].getVulkanVertexInputAttributeDescription());
         }
 
-        VulkanPipeline::createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, (VkFormat)info.colorImageFormat, (VkFormat)info.depthImageFormat, info.includeStencil, vkVertexInputBinding, vkVertexInputAttribute);
+        VulkanPipeline::createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, vkVertexInputBinding, vkVertexInputAttribute);
 
         pipeline->internalID = vkpipeline;
     }

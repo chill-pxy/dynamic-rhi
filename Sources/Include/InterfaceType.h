@@ -914,6 +914,32 @@ namespace DRHI
 
 	}DynamicMemoryPropertyFlagBits;
 
+	typedef struct DynamicCullMode
+	{
+		DynamicCullMode(API api)
+		{
+			switch (api)
+			{
+			case VULKAN:
+				CULL_MODE_NONE = VK_CULL_MODE_NONE;
+				CULL_MODE_FRONT_BIT = VK_CULL_MODE_FRONT_BIT;
+				CULL_MODE_BACK_BIT = VK_CULL_MODE_BACK_BIT;
+				CULL_MODE_FRONT_AND_BACK = VK_CULL_MODE_FRONT_AND_BACK;
+				CULL_MODE_FLAG_BITS_MAX_ENUM = VK_CULL_MODE_FLAG_BITS_MAX_ENUM;
+				break;
+			case DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t
+			CULL_MODE_NONE{ 0 },
+			CULL_MODE_FRONT_BIT{ 0 },
+			CULL_MODE_BACK_BIT{ 0 },
+			CULL_MODE_FRONT_AND_BACK{ 0 },
+			CULL_MODE_FLAG_BITS_MAX_ENUM{ 0 };
+	};
+
 	typedef  DynamicMemoryPropertyFlagBits DynamicMemoryPropertyFlags;
 
 	typedef struct DynamicDescriptorImageInfo {
@@ -967,6 +993,7 @@ namespace DRHI
 		uint32_t depthImageFormat;
 		bool includeStencil;
 		bool dynamicDepthBias;
+		uint32_t cullMode;
 	}DynamicPipelineCreateInfo;
 
 	typedef struct DynamicDescriptorPoolSize {

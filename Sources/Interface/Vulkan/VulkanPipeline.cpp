@@ -39,7 +39,7 @@ namespace DRHI
         }
 
         void createGraphicsPipeline(VkPipeline* graphicsPipeline, VkPipelineLayout* pipelineLayout, VkPipelineCache* pipelineCache,
-            VulkanPipelineCreateInfo createInfo, VkDevice* device, VkFormat colorImageFormat, VkFormat depthImageFormat, bool includeStencil,
+            VulkanPipelineCreateInfo createInfo, VkDevice* device,
             VkVertexInputBindingDescription bindingDescription, std::vector<VkVertexInputAttributeDescription> attributeDescriptions)
         {
             //----------------------------------shader state----------------------------------
@@ -103,7 +103,7 @@ namespace DRHI
             }
             else
             {
-                rasterizer.cullMode = VK_CULL_MODE_NONE;
+                rasterizer.cullMode = createInfo.cullMode;
                 rasterizer.depthBiasEnable = VK_FALSE;
             }
            
@@ -149,11 +149,11 @@ namespace DRHI
             VkPipelineRenderingCreateInfoKHR pipelineRenderingCreateInfo{};
             pipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
             pipelineRenderingCreateInfo.colorAttachmentCount = 1;
-            pipelineRenderingCreateInfo.pColorAttachmentFormats = &colorImageFormat;
-            pipelineRenderingCreateInfo.depthAttachmentFormat = depthImageFormat;
-            if (includeStencil)
+            pipelineRenderingCreateInfo.pColorAttachmentFormats = &createInfo.colorImageFormat;
+            pipelineRenderingCreateInfo.depthAttachmentFormat = createInfo.depthImageFormat;
+            if (createInfo.includeStencil)
             {
-                pipelineRenderingCreateInfo.stencilAttachmentFormat = depthImageFormat;
+                pipelineRenderingCreateInfo.stencilAttachmentFormat = createInfo.depthImageFormat;
             }
             else
             {
