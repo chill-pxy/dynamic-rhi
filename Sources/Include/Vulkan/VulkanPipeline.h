@@ -18,6 +18,7 @@ namespace DRHI
 			bool includeStencil;
 			bool dynamicDepthBias;
 			uint32_t cullMode;
+			uint32_t sampleCounts;
 		};
 
 		void createPipelineLayout(DynamicPipelineLayout* pipelineLayout ,DynamicPipelineLayoutCreateInfo* createInfo, VkDevice* device);

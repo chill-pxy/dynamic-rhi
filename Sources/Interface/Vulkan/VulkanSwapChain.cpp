@@ -199,7 +199,7 @@ namespace DRHI
             return vkQueuePresentKHR(*queue, &presentInfo);
         }
 
-        void createDepthStencil(DepthStencil* depthStencil, VkFormat depthFormat, uint32_t width, uint32_t height, VkDevice* device, VkPhysicalDevice* physicalDevice)
+        void createDepthStencil(DepthStencil* depthStencil, VkFormat depthFormat, uint32_t width, uint32_t height, uint32_t sampleCounts, VkDevice* device, VkPhysicalDevice* physicalDevice)
         {
             VkImageCreateInfo imageCI{};
             imageCI.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -208,7 +208,7 @@ namespace DRHI
             imageCI.extent = { width, height, 1 };
             imageCI.mipLevels = 1;
             imageCI.arrayLayers = 1;
-            imageCI.samples = VK_SAMPLE_COUNT_1_BIT;
+            imageCI.samples = (VkSampleCountFlagBits)sampleCounts;
             imageCI.tiling = VK_IMAGE_TILING_OPTIMAL;
             imageCI.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 

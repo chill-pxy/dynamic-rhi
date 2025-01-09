@@ -56,7 +56,7 @@ namespace DRHI
 		
         VulkanSwapChain::createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, true);
         VulkanSwapChain::createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
-        VulkanSwapChain::createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, &_device, &_physicalDevice);
+        VulkanSwapChain::createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, VK_SAMPLE_COUNT_1_BIT, &_device, &_physicalDevice);
 
         VulkanPipeline::createPipelineCache(&_pipelineCache, &_device);
 
@@ -178,7 +178,7 @@ namespace DRHI
         vkDestroyImage(_device, _depthStencil.image, nullptr);
         vkFreeMemory(_device, _depthStencil.memory, nullptr);
 
-        VulkanSwapChain::createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, &_device, &_physicalDevice);
+        VulkanSwapChain::createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, VK_SAMPLE_COUNT_1_BIT ,&_device, &_physicalDevice);
 
         for (auto f : recreatefuncs)
         {

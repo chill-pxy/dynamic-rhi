@@ -43,7 +43,7 @@ namespace DRHI
 
         VkResult queuePresent(VkQueue* queue, VkSwapchainKHR* swapChain, uint32_t* imageIndex, VkSemaphore* waitSemaphore);
 
-        void createDepthStencil(DepthStencil* depthStencil, VkFormat depthFormat, uint32_t width, uint32_t height, VkDevice* device, VkPhysicalDevice* physicalDevice);
+        void createDepthStencil(DepthStencil* depthStencil, VkFormat depthFormat, uint32_t width, uint32_t height, uint32_t sampleCounts, VkDevice* device, VkPhysicalDevice* physicalDevice);
     }
 }
 

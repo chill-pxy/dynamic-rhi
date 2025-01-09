@@ -804,6 +804,39 @@ namespace DRHI
 
 	}DynamicImageLayout;
 
+	typedef struct DynamicSampleCountFlags
+	{
+		DynamicSampleCountFlags(API api)
+		{
+			switch (api)
+			{
+			case VULKAN:
+				SAMPLE_COUNT_1_BIT = VK_SAMPLE_COUNT_1_BIT;
+				SAMPLE_COUNT_2_BIT = VK_SAMPLE_COUNT_2_BIT;
+				SAMPLE_COUNT_4_BIT = VK_SAMPLE_COUNT_4_BIT;
+				SAMPLE_COUNT_8_BIT = VK_SAMPLE_COUNT_8_BIT;
+				SAMPLE_COUNT_16_BIT = VK_SAMPLE_COUNT_16_BIT;
+				SAMPLE_COUNT_32_BIT = VK_SAMPLE_COUNT_32_BIT;
+				SAMPLE_COUNT_64_BIT = VK_SAMPLE_COUNT_64_BIT;
+				SAMPLE_COUNT_FLAG_BITS_MAX_ENUM = VK_SAMPLE_COUNT_FLAG_BITS_MAX_ENUM;
+				break;
+			case DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t
+			SAMPLE_COUNT_1_BIT{ 0 },
+			SAMPLE_COUNT_2_BIT{ 0 },
+			SAMPLE_COUNT_4_BIT{ 0 },
+			SAMPLE_COUNT_8_BIT{ 0 },
+			SAMPLE_COUNT_16_BIT{ 0 },
+			SAMPLE_COUNT_32_BIT{ 0 },
+			SAMPLE_COUNT_64_BIT{ 0 },
+			SAMPLE_COUNT_FLAG_BITS_MAX_ENUM{ 0 };
+
+	}DynamicSampleCountFlags;
+
 	typedef struct DynamicShaderStageFlagBits
 	{
 		DynamicShaderStageFlagBits(API api)
@@ -994,6 +1027,7 @@ namespace DRHI
 		bool includeStencil;
 		bool dynamicDepthBias;
 		uint32_t cullMode;
+		uint32_t sampleCounts;
 	}DynamicPipelineCreateInfo;
 
 	typedef struct DynamicDescriptorPoolSize {

@@ -42,6 +42,7 @@ namespace DRHI
         deviceFeatures.samplerAnisotropy = VK_TRUE;
         deviceFeatures.geometryShader = VK_TRUE;
         deviceFeatures.tessellationShader = VK_TRUE;
+        deviceFeatures.sampleRateShading = VK_TRUE;
 
         constexpr VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeature
         {

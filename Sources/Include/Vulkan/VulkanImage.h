@@ -13,7 +13,7 @@ namespace DRHI
         void createImage(
             VkImage* image,
             uint32_t width, uint32_t height,
-            VkFormat format, VkImageTiling tiling,
+            VkFormat format, VkImageTiling tiling, VkSampleCountFlagBits samples,
             VkImageUsageFlags usage, VkMemoryPropertyFlags properties,
             VkDeviceMemory& imageMemory,
             VkDevice* device, VkPhysicalDevice* physicalDevice);

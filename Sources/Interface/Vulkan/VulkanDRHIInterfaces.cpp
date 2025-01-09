@@ -351,6 +351,7 @@ namespace DRHI
         pci.depthImageFormat = (VkFormat)info.depthImageFormat;
         pci.cullMode = (VkCullModeFlagBits)info.cullMode;
         pci.includeStencil = info.includeStencil;
+        pci.sampleCounts = info.sampleCounts;
 
         auto vkVertexInputBinding = info.vertexInputBinding.getVulkanVertexInputBindingDescription();
 
@@ -546,7 +547,7 @@ namespace DRHI
     }
 
     void VulkanDRHI::createImage(DynamicImage* image, uint32_t width, uint32_t height, 
-        uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory)
+        uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, uint32_t sampleCounts, DynamicDeviceMemory* imageMemory)
     {
         VkImage vkimage{};
         VkDeviceMemory vkmemory{};
@@ -554,8 +555,9 @@ namespace DRHI
         VkImageTiling vkimageTiling = (VkImageTiling)imageTiling;
         VkImageUsageFlagBits vkImageUsageFlagBits = (VkImageUsageFlagBits)imageUsageFlagBits;
         VkMemoryPropertyFlagBits vkMemoryPropertyFlagBits = (VkMemoryPropertyFlagBits)memoryPropertyFlags;
+        VkSampleCountFlagBits vkSampleCounts = (VkSampleCountFlagBits)sampleCounts;
 
-        VulkanImage::createImage(&vkimage, width, height, vkformat, vkimageTiling, vkImageUsageFlagBits, vkMemoryPropertyFlagBits, vkmemory, &_device, &_physicalDevice);
+        VulkanImage::createImage(&vkimage, width, height, vkformat, vkimageTiling, vkSampleCounts, vkImageUsageFlagBits, vkMemoryPropertyFlagBits, vkmemory, &_device, &_physicalDevice);
 
         image->internalID = vkimage;
         imageMemory->internalID = vkmemory;
@@ -681,13 +683,13 @@ namespace DRHI
         image->internalID = vkimage;
     }
 
-    void VulkanDRHI::createDepthStencil(DynamicImage* depthImage, DynamicImageView* depthImageView, DynamicDeviceMemory* memory, uint32_t format, uint32_t width, uint32_t height)
+    void VulkanDRHI::createDepthStencil(DynamicImage* depthImage, DynamicImageView* depthImageView, DynamicDeviceMemory* memory, uint32_t format, uint32_t width, uint32_t height, uint32_t sampleCounts)
     {
         DepthStencil depth{};
         depth.image = depthImage->getVulkanImage();
         depth.view = depthImageView->getVulkanImageView();
         depth.memory = memory->getVulkanDeviceMemory();
-        VulkanSwapChain::createDepthStencil(&depth, (VkFormat)format, width, height, &_device, &_physicalDevice);
+        VulkanSwapChain::createDepthStencil(&depth, (VkFormat)format, width, height, sampleCounts, &_device, &_physicalDevice);
         depthImage->internalID = depth.image;
         depthImageView->internalID = depth.view;
         memory->internalID = depth.memory;
