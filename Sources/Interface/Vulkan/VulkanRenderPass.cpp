@@ -32,23 +32,35 @@ namespace DRHI
 
 			// color attachments
 			VkAttachmentReference vkar{};
-			vkar.attachment = ci->pSubpasses->pColorAttachments->attachment;
-			vkar.layout = (VkImageLayout)ci->pSubpasses->pColorAttachments->layout;
+			if (ci->pSubpasses->pColorAttachments)
+			{
+				vkar.attachment = ci->pSubpasses->pColorAttachments->attachment;
+				vkar.layout = (VkImageLayout)ci->pSubpasses->pColorAttachments->layout;
+			}
 
 			// depth attachment
 			VkAttachmentReference vkdepthar{};
-			vkdepthar.attachment = ci->pSubpasses->pDepthStencilAttachment->attachment;
-			vkdepthar.layout = (VkImageLayout)ci->pSubpasses->pDepthStencilAttachment->layout;
+			if (ci->pSubpasses->pDepthStencilAttachment) 
+			{
+				vkdepthar.attachment = ci->pSubpasses->pDepthStencilAttachment->attachment;
+				vkdepthar.layout = (VkImageLayout)ci->pSubpasses->pDepthStencilAttachment->layout;
+			}
 
 			// input attachment
 			VkAttachmentReference vkinputar{};
-			vkinputar.attachment = ci->pSubpasses->pInputAttachments->attachment;
-			vkinputar.layout = (VkImageLayout)ci->pSubpasses->pInputAttachments->layout;
+			if (ci->pSubpasses->pInputAttachments)
+			{
+				vkinputar.attachment = ci->pSubpasses->pInputAttachments->attachment;
+				vkinputar.layout = (VkImageLayout)ci->pSubpasses->pInputAttachments->layout;
+			}
 
 			// resolve attachment
 			VkAttachmentReference vkrar{};
-			vkrar.attachment = ci->pSubpasses->pResolveAttachments->attachment;
-			vkrar.layout = (VkImageLayout)ci->pSubpasses->pResolveAttachments->layout;
+			if (ci->pSubpasses->pResolveAttachments)
+			{
+				vkrar.attachment = ci->pSubpasses->pResolveAttachments->attachment;
+				vkrar.layout = (VkImageLayout)ci->pSubpasses->pResolveAttachments->layout;
+			}
 
 			// subpass description
 			VkSubpassDescription vksdp{};
@@ -64,6 +76,7 @@ namespace DRHI
 			vksdp.pResolveAttachments = &vkrar;
 			
 			VkRenderPassCreateInfo vkci{};
+			vkci.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
 			vkci.attachmentCount = ci->attachmentCount;
 			vkci.dependencyCount = ci->dependencyCount;
 			vkci.flags = (VkRenderPassCreateFlags)ci->flags;
