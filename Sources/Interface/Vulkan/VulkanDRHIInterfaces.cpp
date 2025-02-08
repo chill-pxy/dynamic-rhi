@@ -714,4 +714,29 @@ namespace DRHI
         vkCmdSetDepthBias(commandBuffer.getVulkanCommandBuffer(), depthBias, depthBiasClamp, depthBiasSlope);
     }
     //-----------------------------------------------------------------------------------------------
+
+    
+
+
+
+
+    //----------------------------------- render pass functions -------------------------------------
+    void VulkanDRHI::createRenderPass(DynamicRenderPass* renderPass, DynamicRenderPassCreateInfo* createInfo)
+    {
+        VulkanRenderPass::createRenderPass(renderPass, createInfo, _device);
+    }
+    //-----------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+    //----------------------------------- framebuffer functions -------------------------------------
+    void VulkanDRHI::createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo)
+    {
+        VulkanFramebuffer::createFramebuffer(frameBuffer, createInfo, _device);
+    }
+    //-----------------------------------------------------------------------------------------------
 }

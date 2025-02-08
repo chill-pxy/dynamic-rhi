@@ -98,5 +98,11 @@ namespace DRHI
 		//cmd functions
 		virtual void cmdPushConstants(DynamicPipelineLayout* layout, DynamicCommandBuffer* commandBuffer, uint32_t stage, uint32_t offset, uint32_t size, void* value) = 0;
 		virtual void cmdSetDepthBias(DynamicCommandBuffer commandBuffer, float depthBias, float depthBiasClamp, float depthBiasSlope) = 0;
+	
+		//render pass functions
+		virtual void createRenderPass(DynamicRenderPass* renderPass, DynamicRenderPassCreateInfo* createInfo) = 0;
+
+		//framebuffer functions
+		virtual void createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo) = 0;
 	};
 }

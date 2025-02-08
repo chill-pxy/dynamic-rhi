@@ -311,6 +311,28 @@ namespace DRHI
 		}
 	};
 
+	class DynamicFramebuffer
+	{
+	public:
+		std::variant<VkFramebuffer> internalID;
+
+		inline VkFramebuffer getVulkanFramebuffer() { return std::get<VkFramebuffer>(internalID); }
+
+		bool valid()
+		{
+			if (this)
+			{
+				if (std::holds_alternative<VkFramebuffer>(internalID))
+				{
+					if (std::get<VkFramebuffer>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
+			}
+			else return false;
+		}
+	};
+
 	class DynamicFilter
 	{
 	public:
@@ -1526,6 +1548,40 @@ namespace DRHI
 		uint32_t                            dependencyCount;
 		const DynamicSubpassDependency*     pDependencies;
 	}DynamicRenderPassCreateInfo;
+
+	typedef struct DynamicFramebufferCreateFlagBits
+	{
+		DynamicFramebufferCreateFlagBits(API api)
+		{
+			switch (api)
+			{
+			case VULKAN:
+				FRAMEBUFFER_CREATE_IMAGELESS_BIT = VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT;
+				FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR = VK_FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR;
+				FRAMEBUFFER_CREATE_FLAG_BITS_MAX_ENUM = VK_FRAMEBUFFER_CREATE_FLAG_BITS_MAX_ENUM;
+				break;
+			case DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t
+			FRAMEBUFFER_CREATE_IMAGELESS_BIT{ 0 },
+			FRAMEBUFFER_CREATE_IMAGELESS_BIT_KHR{ 0 },
+			FRAMEBUFFER_CREATE_FLAG_BITS_MAX_ENUM{ 0 };
+	}DynamicFramebufferCreateFlagBits;
+
+	typedef struct DynamicFramebufferCreateInfo
+	{
+		//DynamicFramebufferCreateFlags    
+		uint32_t                flags;
+		DynamicRenderPass       renderPass;
+		uint32_t                attachmentCount;
+		DynamicImageView*       pAttachments;
+		uint32_t                width;
+		uint32_t                height;
+		uint32_t                layers;
+	}DynamicFramebufferCreateInfo;
 
 	typedef struct RenderingInfo
 	{

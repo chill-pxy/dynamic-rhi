@@ -17,6 +17,8 @@
 #include "VulkanBuffer.h"
 #include "VulkanFence.h"
 #include "VulkanImage.h"
+#include "VulkanRenderPass.h"
+#include "VulkanFramebuffer.h"
 
 namespace DRHI
 {
@@ -164,6 +166,12 @@ namespace DRHI
 		//cmd functions
 		virtual void cmdPushConstants(DynamicPipelineLayout* layout, DynamicCommandBuffer* commandBuffer, uint32_t stage, uint32_t offset, uint32_t size, void* value);
 		virtual void cmdSetDepthBias(DynamicCommandBuffer commandBuffer, float depthBias, float depthBiasClamp, float depthBiasSlope);
+
+		//render pass functions
+		virtual void createRenderPass(DynamicRenderPass* renderPass, DynamicRenderPassCreateInfo* createInfo);
+
+		//framebuffer functions
+		virtual void createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo);
 
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  
