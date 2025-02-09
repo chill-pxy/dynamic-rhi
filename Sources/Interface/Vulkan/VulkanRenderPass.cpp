@@ -21,14 +21,20 @@ namespace DRHI
 			vkad.storeOp = (VkAttachmentStoreOp)ci->pAttachments->storeOp;
 
 			// subpass dependency
-			VkSubpassDependency vksd{};
-			vksd.dependencyFlags = (VkDependencyFlags)ci->pDependencies->dependencyFlags;
-			vksd.dstAccessMask = (VkAccessFlags)ci->pDependencies->dstAccessMask;
-			vksd.dstStageMask = (VkPipelineStageFlags)ci->pDependencies->dstStageMask;
-			vksd.dstSubpass = ci->pDependencies->dstSubpass;
-			vksd.srcAccessMask = (VkAccessFlags)ci->pDependencies->srcAccessMask;
-			vksd.srcStageMask = (VkPipelineStageFlags)ci->pDependencies->srcStageMask;
-			vksd.srcSubpass = ci->pDependencies->srcSubpass;
+			std::vector<VkSubpassDependency> vksds{};
+			vksds.resize(ci->dependencyCount);
+			
+			int index = 0;
+			for (auto v : *ci->pDependencies)
+			{
+				vksds[index].dependencyFlags = (VkDependencyFlags)v.dependencyFlags;
+				vksds[index].dstAccessMask = (VkAccessFlags)v.dstAccessMask;
+				vksds[index].dstStageMask = (VkPipelineStageFlags)v.dstStageMask;
+				vksds[index].dstSubpass = v.dstSubpass;
+				vksds[index].srcAccessMask = (VkAccessFlags)v.srcAccessMask;
+				vksds[index].srcStageMask = (VkPipelineStageFlags)v.srcStageMask;
+				vksds[index].srcSubpass = v.srcSubpass;
+			}
 
 			// color attachments
 			VkAttachmentReference vkar{};
@@ -81,7 +87,7 @@ namespace DRHI
 			vkci.dependencyCount = ci->dependencyCount;
 			vkci.flags = (VkRenderPassCreateFlags)ci->flags;
 			vkci.pAttachments = &vkad;
-			vkci.pDependencies = &vksd;
+			vkci.pDependencies = vksds.data();
 			vkci.pSubpasses = &vksdp;
 			vkci.subpassCount = ci->subpassCount;
 

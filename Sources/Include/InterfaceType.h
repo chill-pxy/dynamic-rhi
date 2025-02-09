@@ -1540,13 +1540,13 @@ namespace DRHI
 	typedef struct DynamicRenderPassCreateInfo
 	{
 		//DynamicRenderPassCreateFlags           
-		uint32_t                            flags;
-		uint32_t                            attachmentCount;
-		const DynamicAttachmentDescription* pAttachments;
-		uint32_t                            subpassCount;
-		const DynamicSubpassDescription*    pSubpasses;
-		uint32_t                            dependencyCount;
-		const DynamicSubpassDependency*     pDependencies;
+		uint32_t                               flags;
+		uint32_t                               attachmentCount;
+		const DynamicAttachmentDescription*    pAttachments;
+		uint32_t                               subpassCount;
+		const DynamicSubpassDescription*       pSubpasses;
+		uint32_t                               dependencyCount;
+		std::vector<DynamicSubpassDependency>* pDependencies;
 	}DynamicRenderPassCreateInfo;
 
 	typedef struct DynamicFramebufferCreateFlagBits
