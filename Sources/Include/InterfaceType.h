@@ -1537,6 +1537,31 @@ namespace DRHI
 			RENDER_PASS_CREATE_TRANSFORM_BIT_QCOM{ 0 },
 			RENDER_PASS_CREATE_FLAG_BITS_MAX_ENUM{ 0 };
 	}DynamicRenderPassCreateFlagBits;
+
+	typedef struct DynamicSubpassContents 
+	{
+		DynamicSubpassContents(API api)
+		{
+			switch (api)
+			{
+			case VULKAN:
+				SUBPASS_CONTENTS_INLINE = VK_SUBPASS_CONTENTS_INLINE;
+				SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS = VK_SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS;
+				SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_KHR = VK_SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_KHR;
+				SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT = VK_SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT;
+				SUBPASS_CONTENTS_MAX_ENUM = VK_SUBPASS_CONTENTS_MAX_ENUM;
+				break;
+			case DIRECT3D12:
+				break;
+			}
+		}
+		uint32_t
+			SUBPASS_CONTENTS_INLINE{ 0 },
+			SUBPASS_CONTENTS_SECONDARY_COMMAND_BUFFERS{ 0 },
+			SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_KHR{ 0 },
+			SUBPASS_CONTENTS_INLINE_AND_SECONDARY_COMMAND_BUFFERS_EXT{ 0 },
+			SUBPASS_CONTENTS_MAX_ENUM{ 0 };
+	}DynamicSubpassContents;
 	
 	typedef struct DynamicRenderPassCreateInfo
 	{
@@ -1549,6 +1574,13 @@ namespace DRHI
 		uint32_t                               dependencyCount;
 		std::vector<DynamicSubpassDependency>* pDependencies;
 	}DynamicRenderPassCreateInfo;
+
+	typedef struct DynamicRenderPassBeginInfo
+	{
+		DynamicRenderPass      renderPass;
+		DynamicFramebuffer     framebuffer;
+		DynamicRect2D          renderArea;
+	}DynamicRenderPassBeginInfo;
 
 	typedef struct DynamicFramebufferCreateFlagBits
 	{

@@ -106,6 +106,7 @@ namespace DRHI
 		//command functions
 		virtual void createCommandPool(DynamicCommandPool* commandPool);
 		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
+		virtual void createCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool);
 		virtual void beginCommandBuffer(DynamicCommandBuffer commandBuffer);
 		virtual void beginRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri);
 		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer);
@@ -169,6 +170,8 @@ namespace DRHI
 
 		//render pass functions
 		virtual void createRenderPass(DynamicRenderPass* renderPass, DynamicRenderPassCreateInfo* createInfo);
+		virtual void beginRenderPass(DynamicCommandBuffer* cmdBuffer, DynamicRenderPassBeginInfo* info, uint32_t subpassContents);
+		virtual void endRenderPass(DynamicCommandBuffer* cmdBuffer);
 
 		//framebuffer functions
 		virtual void createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo);

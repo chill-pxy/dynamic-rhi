@@ -37,6 +37,20 @@ namespace DRHI
         }
     }
 
+    void VulkanDRHI::createCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool)
+    {
+        VkCommandBufferAllocateInfo info{};
+        info.commandBufferCount = 1;
+        info.commandPool = commandPool->getVulkanCommandPool();
+        info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
+
+        VkCommandBuffer cmb{};
+        vkAllocateCommandBuffers(_device, &info, &cmb);
+
+        commandBuffer->internalID = cmb;
+    }
+
     void VulkanDRHI::beginCommandBuffer(DynamicCommandBuffer commandBuffer)
     {
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
@@ -724,6 +738,38 @@ namespace DRHI
     void VulkanDRHI::createRenderPass(DynamicRenderPass* renderPass, DynamicRenderPassCreateInfo* createInfo)
     {
         VulkanRenderPass::createRenderPass(renderPass, createInfo, _device);
+    }
+
+    void VulkanDRHI::beginRenderPass(DynamicCommandBuffer* cmdBuffer, DynamicRenderPassBeginInfo* info, uint32_t subpassContents)
+    {
+        VkClearValue clearVs[1]{};
+        clearVs[0].color = { {0.0f,0.0f,0.0f,1.0f} };
+
+        VkExtent2D e2d{};
+        e2d.height = info->renderArea.extent.height;
+        e2d.width = info->renderArea.extent.width;
+
+        VkOffset2D o2d{};
+        o2d.x = info->renderArea.offset.x;
+        o2d.y = info->renderArea.offset.y;
+
+        VkRect2D r2d{};
+        r2d.extent = e2d;
+        r2d.offset = o2d;
+
+        VkRenderPassBeginInfo bi{};
+        bi.clearValueCount = 1;
+        bi.framebuffer = info->framebuffer.getVulkanFramebuffer();
+        bi.pClearValues = clearVs;
+        bi.renderArea = r2d;
+        bi.renderPass = info->renderPass.getVulkanRenderPass();
+        bi.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        vkCmdBeginRenderPass(cmdBuffer->getVulkanCommandBuffer(), &bi, (VkSubpassContents)subpassContents);
+    }
+
+    void VulkanDRHI::endRenderPass(DynamicCommandBuffer* cmdBuffer)
+    {
+        vkCmdEndRenderPass(cmdBuffer->getVulkanCommandBuffer());
     }
     //-----------------------------------------------------------------------------------------------
 
