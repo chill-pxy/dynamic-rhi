@@ -136,41 +136,44 @@ namespace DRHI
                 throw std::runtime_error("failed to allocate descriptorsets");
             }
 
-            std::vector<VkWriteDescriptorSet> writeDescriptorSets;
-            std::vector<VkDescriptorImageInfo> imageInfos(imageCount);
-            uint32_t count = 0;
-
-            for (int i = 0; i < wds->size(); ++i)
+            if (wds)
             {
-                DynamicWriteDescriptorSet wd = (*wds)[i];
+                std::vector<VkWriteDescriptorSet> writeDescriptorSets;
+                std::vector<VkDescriptorImageInfo> imageInfos(imageCount);
+                uint32_t count = 0;
 
-                VkWriteDescriptorSet vkwd{};
-                vkwd.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
-                vkwd.dstSet = *descriptorSet;
-                vkwd.descriptorType = (VkDescriptorType)wd.descriptorType;
-                vkwd.descriptorCount = wd.descriptorCount;
-                vkwd.dstBinding = wd.dstBinding;
-
-                if (wd.pBufferInfo != nullptr)
+                for (int i = 0; i < wds->size(); ++i)
                 {
-                    auto bufferInfo = wd.pBufferInfo->getVulkanDescriptorBufferInfo();
-                    vkwd.pBufferInfo = &bufferInfo;
+                    DynamicWriteDescriptorSet wd = (*wds)[i];
+
+                    VkWriteDescriptorSet vkwd{};
+                    vkwd.sType = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+                    vkwd.dstSet = *descriptorSet;
+                    vkwd.descriptorType = (VkDescriptorType)wd.descriptorType;
+                    vkwd.descriptorCount = wd.descriptorCount;
+                    vkwd.dstBinding = wd.dstBinding;
+
+                    if (wd.pBufferInfo != nullptr)
+                    {
+                        auto bufferInfo = wd.pBufferInfo->getVulkanDescriptorBufferInfo();
+                        vkwd.pBufferInfo = &bufferInfo;
+                    }
+
+                    if (wd.pImageInfo != nullptr)
+                    {
+                        VkDescriptorImageInfo vkdescriptorImageInfo{};
+                        vkdescriptorImageInfo.sampler = wd.pImageInfo->sampler.getVulkanSampler();
+                        vkdescriptorImageInfo.imageView = wd.pImageInfo->imageView.getVulkanImageView();
+                        vkdescriptorImageInfo.imageLayout = (VkImageLayout)wd.pImageInfo->imageLayout;
+                        imageInfos[count] = vkdescriptorImageInfo;
+                        vkwd.pImageInfo = &imageInfos[count++];
+                    }
+
+                    writeDescriptorSets.push_back(vkwd);
                 }
 
-                if (wd.pImageInfo != nullptr)
-                {
-                    VkDescriptorImageInfo vkdescriptorImageInfo{};
-                    vkdescriptorImageInfo.sampler = wd.pImageInfo->sampler.getVulkanSampler();
-                    vkdescriptorImageInfo.imageView = wd.pImageInfo->imageView.getVulkanImageView();
-                    vkdescriptorImageInfo.imageLayout = (VkImageLayout)wd.pImageInfo->imageLayout;
-                    imageInfos[count] = vkdescriptorImageInfo;
-                    vkwd.pImageInfo = &imageInfos[count++];
-                }
-
-                writeDescriptorSets.push_back(vkwd);
-            }
-
-            vkUpdateDescriptorSets(*device, static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
+                vkUpdateDescriptorSets(*device, static_cast<uint32_t>(writeDescriptorSets.size()), writeDescriptorSets.data(), 0, nullptr);
+            }  
         }
     }
 }
