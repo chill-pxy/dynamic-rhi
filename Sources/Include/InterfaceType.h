@@ -1109,8 +1109,9 @@ namespace DRHI
 
 	typedef struct DynamicDescriptorPoolCreateInfo
 	{
-		VkDescriptorPoolCreateFlags    flags;
-		uint32_t                       maxSets;
+		//VkDescriptorPoolCreateFlags    
+		uint32_t                                flags;
+		uint32_t                                maxSets;
 		std::vector<DynamicDescriptorPoolSize>* pPoolSizes;
 	}DynamicDescriptorPoolCreateInfo;
 

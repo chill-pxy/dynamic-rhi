@@ -34,6 +34,7 @@ namespace DRHI
 				vksds[index].srcAccessMask = (VkAccessFlags)v.srcAccessMask;
 				vksds[index].srcStageMask = (VkPipelineStageFlags)v.srcStageMask;
 				vksds[index].srcSubpass = v.srcSubpass;
+				index++;
 			}
 
 			// color attachments
@@ -43,6 +44,11 @@ namespace DRHI
 				vkar.attachment = ci->pSubpasses->pColorAttachments->attachment;
 				vkar.layout = (VkImageLayout)ci->pSubpasses->pColorAttachments->layout;
 			}
+			else
+			{
+				vkar.attachment = VK_ATTACHMENT_UNUSED;
+				vkar.layout = VK_IMAGE_LAYOUT_UNDEFINED;
+			}
 
 			// depth attachment
 			VkAttachmentReference vkdepthar{};
@@ -50,6 +56,11 @@ namespace DRHI
 			{
 				vkdepthar.attachment = ci->pSubpasses->pDepthStencilAttachment->attachment;
 				vkdepthar.layout = (VkImageLayout)ci->pSubpasses->pDepthStencilAttachment->layout;
+			}
+			else
+			{
+				vkdepthar.attachment = VK_ATTACHMENT_UNUSED;
+				vkdepthar.layout = VK_IMAGE_LAYOUT_UNDEFINED;
 			}
 
 			// input attachment
@@ -59,6 +70,11 @@ namespace DRHI
 				vkinputar.attachment = ci->pSubpasses->pInputAttachments->attachment;
 				vkinputar.layout = (VkImageLayout)ci->pSubpasses->pInputAttachments->layout;
 			}
+			else
+			{
+				vkinputar.attachment = VK_ATTACHMENT_UNUSED;
+				vkinputar.layout = VK_IMAGE_LAYOUT_UNDEFINED;
+			}
 
 			// resolve attachment
 			VkAttachmentReference vkrar{};
@@ -66,6 +82,11 @@ namespace DRHI
 			{
 				vkrar.attachment = ci->pSubpasses->pResolveAttachments->attachment;
 				vkrar.layout = (VkImageLayout)ci->pSubpasses->pResolveAttachments->layout;
+			}
+			else
+			{
+				vkrar.attachment = VK_ATTACHMENT_UNUSED;
+				vkrar.layout = VK_IMAGE_LAYOUT_UNDEFINED;
 			}
 
 			// subpass description
