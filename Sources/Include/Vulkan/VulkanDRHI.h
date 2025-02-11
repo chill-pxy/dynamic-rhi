@@ -149,6 +149,7 @@ namespace DRHI
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat, uint32_t imageAspect);
 		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t sampleCounts, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory);
+		virtual void createImage(DynamicImage* image, DynamicDeviceMemory* imageMemory, DynamicImageCreateInfo info, uint32_t memoryPropertyFlags);
 		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, DynamicCommandPool* commandPool, uint32_t width, uint32_t height);
 		virtual void createSampler(DynamicSampler* sampler, DynamicSamplerCreateInfo createInfo);
 		virtual void clearImage(DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory);
@@ -177,9 +178,11 @@ namespace DRHI
 		virtual void createRenderPass(DynamicRenderPass* renderPass, DynamicRenderPassCreateInfo* createInfo);
 		virtual void beginRenderPass(DynamicCommandBuffer* cmdBuffer, DynamicRenderPassBeginInfo* info, uint32_t subpassContents);
 		virtual void endRenderPass(DynamicCommandBuffer* cmdBuffer);
+		virtual void clearRenderPass(DynamicRenderPass* renderPass);
 
 		//framebuffer functions
 		virtual void createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo);
+		virtual void clearFramebuffer(DynamicFramebuffer* frameBuffer);
 
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  

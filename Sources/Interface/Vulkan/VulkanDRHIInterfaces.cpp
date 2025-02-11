@@ -591,6 +591,18 @@ namespace DRHI
         imageMemory->internalID = vkmemory;
     }
 
+    void VulkanDRHI::createImage(DynamicImage* image, DynamicDeviceMemory* imageMemory, DynamicImageCreateInfo info, uint32_t memoryPropertyFlags)
+    {
+        VkImage vkimage{};
+        VkDeviceMemory vkmemory{};
+        VkMemoryPropertyFlagBits vkMemoryPropertyFlagBits = (VkMemoryPropertyFlagBits)memoryPropertyFlags;
+
+        VulkanImage::createImage(&vkimage, info, vkmemory, memoryPropertyFlags, &_device, &_physicalDevice);
+
+        image->internalID = vkimage;
+        imageMemory->internalID = vkmemory;
+    }
+
     void VulkanDRHI::copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, DynamicCommandPool* commandPool, uint32_t width, uint32_t height)
     {
         VkBuffer vkbuffer = buffer->getVulkanBuffer();
@@ -818,6 +830,12 @@ namespace DRHI
     {
         vkCmdEndRenderPass(cmdBuffer->getVulkanCommandBuffer());
     }
+
+    void VulkanDRHI::clearRenderPass(DynamicRenderPass* renderPass)
+    {
+        vkDestroyRenderPass(_device, renderPass->getVulkanRenderPass(), nullptr);
+        renderPass->internalID = nullptr;
+    }
     //-----------------------------------------------------------------------------------------------
 
 
@@ -830,6 +848,12 @@ namespace DRHI
     void VulkanDRHI::createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo)
     {
         VulkanFramebuffer::createFramebuffer(frameBuffer, createInfo, _device);
+    }
+
+    void VulkanDRHI::clearFramebuffer(DynamicFramebuffer* frameBuffer)
+    {
+        vkDestroyFramebuffer(_device, frameBuffer->getVulkanFramebuffer(), nullptr);
+        frameBuffer->internalID = nullptr;
     }
     //-----------------------------------------------------------------------------------------------
 }

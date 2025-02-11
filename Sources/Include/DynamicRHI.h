@@ -82,6 +82,7 @@ namespace DRHI
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat, uint32_t imageAspect) = 0;
 		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t sampleCounts, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory) = 0;
+		virtual void createImage(DynamicImage* image, DynamicDeviceMemory* imageMemory, DynamicImageCreateInfo info, uint32_t memoryPropertyFlags) = 0;
 		virtual void copyBufferToImage(DynamicBuffer* buffer, DynamicImage* image, DynamicCommandPool* commandPool, uint32_t width, uint32_t height) = 0;
 		virtual void createSampler(DynamicSampler* sampler, DynamicSamplerCreateInfo createInfo) = 0;
 		virtual void clearImage(DynamicImageView* imageView, DynamicImage* image, DynamicDeviceMemory* memory) = 0;
@@ -109,8 +110,10 @@ namespace DRHI
 		virtual void createRenderPass(DynamicRenderPass* renderPass, DynamicRenderPassCreateInfo* createInfo) = 0;
 		virtual void beginRenderPass(DynamicCommandBuffer* cmdBuffer, DynamicRenderPassBeginInfo* info, uint32_t subpassContents) = 0;
 		virtual void endRenderPass(DynamicCommandBuffer* cmdBuffer) = 0;
+		virtual void clearRenderPass(DynamicRenderPass* renderPass) = 0;
 
 		//framebuffer functions
 		virtual void createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo) = 0;
+		virtual void clearFramebuffer(DynamicFramebuffer* frameBuffer) = 0;
 	};
 }

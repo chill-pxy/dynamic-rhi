@@ -82,6 +82,43 @@ namespace DRHI
             vkBindImageMemory(*device, *image, imageMemory, 0);
         }
 
+        void createImage(VkImage* image, DynamicImageCreateInfo info, VkDeviceMemory& imageMemory, VkMemoryPropertyFlags properties, VkDevice* device, VkPhysicalDevice* physicalDevice)
+        {
+            VkImageCreateInfo imageInfo{};
+            imageInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+            imageInfo.imageType = VK_IMAGE_TYPE_2D;
+            imageInfo.extent.width = info.extent.width;
+            imageInfo.extent.height = info.extent.height;
+            imageInfo.extent.depth = info.extent.depth;
+            imageInfo.mipLevels = info.mipLevels;
+            imageInfo.arrayLayers = info.arrayLayers;
+            imageInfo.format = (VkFormat)info.format;
+            imageInfo.tiling = (VkImageTiling)info.tiling;
+            imageInfo.initialLayout = (VkImageLayout)info.initialLayout;
+            imageInfo.usage = (VkImageUsageFlags)info.usage;
+            imageInfo.samples = (VkSampleCountFlagBits)info.samples;
+            imageInfo.sharingMode = (VkSharingMode)info.sharingMode;
+
+            if (vkCreateImage(*device, &imageInfo, nullptr, image) != VK_SUCCESS) {
+                throw std::runtime_error("failed to create image!");
+            }
+
+            VkMemoryRequirements memRequirements;
+            vkGetImageMemoryRequirements(*device, *image, &memRequirements);
+
+            VkMemoryAllocateInfo allocInfo{};
+            allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            allocInfo.allocationSize = memRequirements.size;
+            allocInfo.memoryTypeIndex = VulkanBuffer::findMemoryType(memRequirements.memoryTypeBits, properties, physicalDevice);
+
+            if (vkAllocateMemory(*device, &allocInfo, nullptr, &imageMemory) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to allocate image memory!");
+            }
+
+            vkBindImageMemory(*device, *image, imageMemory, 0);
+        }
+
         void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device) 
         {
             VkCommandBuffer commandBuffer = VulkanCommand::beginSingleTimeCommands(commandPool, device);
