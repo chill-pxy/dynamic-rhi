@@ -371,6 +371,7 @@ namespace DRHI
         pci.cullMode = (VkCullModeFlagBits)info.cullMode;
         pci.includeStencil = info.includeStencil;
         pci.sampleCounts = info.sampleCounts;
+        if(info.renderPass) pci.renderPass = info.renderPass->getVulkanRenderPass();
 
         auto vkVertexInputBinding = info.vertexInputBinding.getVulkanVertexInputBindingDescription();
 
@@ -381,7 +382,15 @@ namespace DRHI
             vkVertexInputAttribute.emplace_back(info.vertexInputAttributes[i].getVulkanVertexInputAttributeDescription());
         }
 
-        VulkanPipeline::createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, vkVertexInputBinding, vkVertexInputAttribute);
+        if (pci.renderPass)
+        {
+            VulkanPipeline::createGraphicsPipeline(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, vkVertexInputBinding, vkVertexInputAttribute);
+        }
+        else
+        {
+            // using dynamic rendering feature
+            VulkanPipeline::createGraphicsPipelineKHR(&vkpipeline, &vkpipelineLayout, &_pipelineCache, pci, &_device, vkVertexInputBinding, vkVertexInputAttribute);
+        }     
 
         pipeline->internalID = vkpipeline;
     }

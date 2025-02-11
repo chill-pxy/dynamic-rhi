@@ -1072,6 +1072,7 @@ namespace DRHI
 		bool dynamicDepthBias;
 		uint32_t cullMode;
 		uint32_t sampleCounts;
+		DynamicRenderPass* renderPass;
 	}DynamicPipelineCreateInfo;
 
 	typedef struct DynamicDescriptorPoolSize {
