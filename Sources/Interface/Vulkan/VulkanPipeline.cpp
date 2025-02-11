@@ -74,6 +74,7 @@ namespace DRHI
             vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
             vertexInputInfo.vertexBindingDescriptionCount = 1;
+            if (static_cast<uint32_t>(attributeDescriptions.size()) == 0) vertexInputInfo.vertexBindingDescriptionCount = 0;
             vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
             vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
             vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
@@ -234,6 +235,7 @@ namespace DRHI
             vertexInputInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
 
             vertexInputInfo.vertexBindingDescriptionCount = 1;
+            if (static_cast<uint32_t>(attributeDescriptions.size()) == 0) vertexInputInfo.vertexBindingDescriptionCount = 0;
             vertexInputInfo.vertexAttributeDescriptionCount = static_cast<uint32_t>(attributeDescriptions.size());
             vertexInputInfo.pVertexBindingDescriptions = &bindingDescription;
             vertexInputInfo.pVertexAttributeDescriptions = attributeDescriptions.data();
