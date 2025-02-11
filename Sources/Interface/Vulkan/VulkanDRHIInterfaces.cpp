@@ -231,6 +231,11 @@ namespace DRHI
         vkDestroyCommandPool(_device, vkcommandPool, nullptr);
         commandPool->internalID = nullptr;
     }
+
+    void VulkanDRHI::flushCommandBuffer(DynamicCommandBuffer cmdBuf, DynamicCommandPool cmdPool, bool free)
+    {
+        VulkanCommand::flushCommandBuffer(_device, cmdBuf.getVulkanCommandBuffer(), _graphicQueue, cmdPool.getVulkanCommandPool(), free);
+    }
     //----------------------------------------------------------------------------------------
 
 
@@ -726,6 +731,39 @@ namespace DRHI
     void VulkanDRHI::cmdSetDepthBias(DynamicCommandBuffer commandBuffer, float depthBias, float depthBiasClamp, float depthBiasSlope)
     {
         vkCmdSetDepthBias(commandBuffer.getVulkanCommandBuffer(), depthBias, depthBiasClamp, depthBiasSlope);
+    }
+
+    void VulkanDRHI::cmdSetViewport(DynamicCommandBuffer cmdBuf, uint32_t firstViewport, uint32_t viewportCount, DynamicViewport viewport)
+    {
+        VkViewport vkvp{};
+        vkvp.x = viewport.x;
+        vkvp.y = viewport.y;
+        vkvp.height = viewport.height;
+        vkvp.width = viewport.width;
+        vkvp.maxDepth = vkvp.maxDepth;
+        vkvp.minDepth = vkvp.minDepth;
+     
+        vkCmdSetViewport(cmdBuf.getVulkanCommandBuffer(), firstViewport, viewportCount, &vkvp);
+    }
+
+    void VulkanDRHI::cmdSetScissor(DynamicCommandBuffer cmdBuf, uint32_t firstScissor, uint32_t scissorCount, DynamicRect2D scissor)
+    {
+        VkRect2D r2d{};
+        r2d.extent.height = scissor.extent.height;
+        r2d.extent.width = scissor.extent.width;
+        r2d.offset.x = scissor.offset.x;
+        r2d.offset.y = scissor.offset.y;
+        vkCmdSetScissor(cmdBuf.getVulkanCommandBuffer(), firstScissor, scissorCount, &r2d);
+    }
+
+    void VulkanDRHI::cmdDraw(DynamicCommandBuffer cmdBuf, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
+    {
+        vkCmdDraw(cmdBuf.getVulkanCommandBuffer(), vertexCount, instanceCount, firstVertex, firstInstance);
+    }
+
+    void VulkanDRHI::cmdQueueWaitIdle()
+    {
+        vkQueueWaitIdle(_graphicQueue);
     }
     //-----------------------------------------------------------------------------------------------
 

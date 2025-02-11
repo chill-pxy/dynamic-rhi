@@ -26,7 +26,7 @@ target_link_libraries(${TARGET_NAME} PUBLIC
 include_directories(${THIRD_PARTY_DIR})
 
 #---------------------------------#
-#------------é…ç½®æ–‡ä»¶-------------#
+#------------ÅäÖÃÎÄ¼ş-------------#
 #---------------------------------#
 #set(content " ")
 #set(codeDefine "undefine")
@@ -40,17 +40,17 @@ include_directories(${THIRD_PARTY_DIR})
 #endif()
 
 #if(content STREQUAL "undefine")
-#    message(FATAL_ERROR "æ²¡æœ‰å®šä¹‰å›¾å½¢API")
+#    message(FATAL_ERROR "Ã»ÓĞ¶¨ÒåÍ¼ĞÎAPI")
 #endif()
 
 #file(WRITE ${PROJECT_SOURCE_DIR}/Include/InterfaceConfig.h "${codeDefine}" )
 #add_definitions(-DINCLUDE_GENERATED_HEADER)
 
 #---------------------------------#
-#------å¤åˆ¶dllåŠlibåˆ°åº“ç›®å½•-------#
+#------¸´ÖÆdll¼°libµ½¿âÄ¿Â¼-------#
 #---------------------------------#
 add_custom_command(
-    TARGET ${TARGET_NAME} POST_BUILD # å¯¹äºåº“åˆ™ä½¿ç”¨å¯¹åº”çš„åº“å
+    TARGET ${TARGET_NAME} POST_BUILD # ¶ÔÓÚ¿âÔòÊ¹ÓÃ¶ÔÓ¦µÄ¿âÃû
     COMMAND ${CMAKE_COMMAND} -E copy_if_different
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/drhi.dll 
     ${CMAKE_RUNTIME_OUTPUT_DIRECTORY}/../drhi/

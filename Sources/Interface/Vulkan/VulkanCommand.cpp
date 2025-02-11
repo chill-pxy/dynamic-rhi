@@ -2,6 +2,11 @@
 
 #include"../../Include/Vulkan/VulkanCommand.h"
 
+// Custom define for better code readability
+#define VK_FLAGS_NONE 0
+// Default fence timeout in nanoseconds
+#define DEFAULT_FENCE_TIMEOUT 100000000000
+
 namespace DRHI
 {
 	namespace VulkanCommand
@@ -226,6 +231,36 @@ namespace DRHI
 			vkQueueWaitIdle(*graphicsQueue);
 
 			vkFreeCommandBuffers(*device, *commandPool, 1, &commandBuffer);
+		}
+
+		void flushCommandBuffer(VkDevice device, VkCommandBuffer commandBuffer, VkQueue queue, VkCommandPool pool, bool free)
+		{
+			if (commandBuffer == VK_NULL_HANDLE)
+			{
+				return;
+			}
+
+			vkEndCommandBuffer(commandBuffer);
+
+			VkSubmitInfo submitInfo{};
+			submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+			submitInfo.commandBufferCount = 1;
+			submitInfo.pCommandBuffers = &commandBuffer;
+			// Create fence to ensure that the command buffer has finished executing
+			VkFenceCreateInfo fenceCreateInfo{};
+			fenceCreateInfo.sType = VK_STRUCTURE_TYPE_FENCE_CREATE_INFO;
+			fenceCreateInfo.flags = VK_FLAGS_NONE;
+			VkFence fence;
+			vkCreateFence(device, &fenceCreateInfo, nullptr, &fence);
+			// Submit to the queue
+			vkQueueSubmit(queue, 1, &submitInfo, fence);
+			// Wait for the fence to signal that command buffer has finished executing
+			vkWaitForFences(device, 1, &fence, VK_TRUE, DEFAULT_FENCE_TIMEOUT);
+			vkDestroyFence(device, fence, nullptr);
+			if (free)
+			{
+				vkFreeCommandBuffers(device, pool, 1, &commandBuffer);
+			}
 		}
 	}
 }

@@ -113,6 +113,7 @@ namespace DRHI
 		virtual void endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri);
 		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
 		virtual void destroyCommandPool(DynamicCommandPool* commandPool);
+		virtual void flushCommandBuffer(DynamicCommandBuffer cmdBuf, DynamicCommandPool cmdPool, bool free);
 
 		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, DynamicCommandBuffer* commandBuffer);
@@ -167,6 +168,10 @@ namespace DRHI
 		//cmd functions
 		virtual void cmdPushConstants(DynamicPipelineLayout* layout, DynamicCommandBuffer* commandBuffer, uint32_t stage, uint32_t offset, uint32_t size, void* value);
 		virtual void cmdSetDepthBias(DynamicCommandBuffer commandBuffer, float depthBias, float depthBiasClamp, float depthBiasSlope);
+		virtual void cmdSetViewport(DynamicCommandBuffer cmdBuf, uint32_t firstViewport, uint32_t viewportCount, DynamicViewport viewport);
+		virtual void cmdSetScissor(DynamicCommandBuffer cmdBuf, uint32_t firstScissor, uint32_t scissorCount, DynamicRect2D scissor);
+		virtual void cmdDraw(DynamicCommandBuffer cmdBuf, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance);
+		virtual void cmdQueueWaitIdle();
 
 		//render pass functions
 		virtual void createRenderPass(DynamicRenderPass* renderPass, DynamicRenderPassCreateInfo* createInfo);

@@ -35,5 +35,7 @@ namespace DRHI
 		VkCommandBuffer beginSingleTimeCommands(VkCommandPool* commandPool, VkDevice* device);
 
 		void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device);
+	
+		void flushCommandBuffer(VkDevice device, VkCommandBuffer commandBuffer, VkQueue queue, VkCommandPool pool, bool free);
 	}
 }

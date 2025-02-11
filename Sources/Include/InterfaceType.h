@@ -1616,6 +1616,16 @@ namespace DRHI
 		uint32_t                layers;
 	}DynamicFramebufferCreateInfo;
 
+	typedef struct DynamicViewport 
+	{
+		float    x;
+		float    y;
+		float    width;
+		float    height;
+		float    minDepth;
+		float    maxDepth;
+	}DynamicViewport;
+
 	typedef struct RenderingInfo
 	{
 		VkImage     colorImage;
