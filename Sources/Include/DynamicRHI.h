@@ -80,6 +80,7 @@ namespace DRHI
 
 		//image functions
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat, uint32_t imageAspect) = 0;
+		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, DynamicImageViewCreateInfo info) = 0;
 		virtual void createImage(DynamicImage* image, uint32_t width, uint32_t height,
 			uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t sampleCounts, uint32_t memoryPropertyFlags, DynamicDeviceMemory* imageMemory) = 0;
 		virtual void createImage(DynamicImage* image, DynamicDeviceMemory* imageMemory, DynamicImageCreateInfo info, uint32_t memoryPropertyFlags) = 0;

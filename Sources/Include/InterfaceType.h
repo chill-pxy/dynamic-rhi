@@ -1120,6 +1120,80 @@ namespace DRHI
 		uint32_t       initialLayout;
 	}DynamicImageCreateInfo;
 
+	typedef struct DynamicImageViewCreateFlags
+	{
+		DynamicImageViewCreateFlags(API api)
+		{
+			switch (api)
+			{
+			case VULKAN:
+				IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT;
+				IMAGE_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT = VK_IMAGE_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT;
+				IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT = VK_IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT;
+				IMAGE_VIEW_CREATE_FLAG_BITS_MAX_ENUM = VK_IMAGE_VIEW_CREATE_FLAG_BITS_MAX_ENUM;
+				break;
+			case DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t
+			IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DYNAMIC_BIT_EXT{ 0 },
+			IMAGE_VIEW_CREATE_DESCRIPTOR_BUFFER_CAPTURE_REPLAY_BIT_EXT{ 0 },
+			IMAGE_VIEW_CREATE_FRAGMENT_DENSITY_MAP_DEFERRED_BIT_EXT{ 0 },
+			IMAGE_VIEW_CREATE_FLAG_BITS_MAX_ENUM{ 0 };
+	};
+
+	typedef struct DynamicImageViewType
+	{
+		DynamicImageViewType(API api)
+		{
+			switch (api)
+			{
+			case VULKAN:
+				IMAGE_VIEW_TYPE_1D = VK_IMAGE_VIEW_TYPE_1D;
+				IMAGE_VIEW_TYPE_2D = VK_IMAGE_VIEW_TYPE_2D;
+				IMAGE_VIEW_TYPE_3D = VK_IMAGE_VIEW_TYPE_3D;
+				IMAGE_VIEW_TYPE_CUBE = VK_IMAGE_VIEW_TYPE_CUBE;
+				IMAGE_VIEW_TYPE_1D_ARRAY = VK_IMAGE_VIEW_TYPE_1D_ARRAY;
+				IMAGE_VIEW_TYPE_2D_ARRAY = VK_IMAGE_VIEW_TYPE_2D_ARRAY;
+				IMAGE_VIEW_TYPE_CUBE_ARRAY = VK_IMAGE_VIEW_TYPE_CUBE_ARRAY;
+				IMAGE_VIEW_TYPE_MAX_ENUM = VK_IMAGE_VIEW_TYPE_MAX_ENUM;
+				break;
+			case DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t
+			IMAGE_VIEW_TYPE_1D{ 0 },
+			IMAGE_VIEW_TYPE_2D{ 0 },
+			IMAGE_VIEW_TYPE_3D{ 0 },
+			IMAGE_VIEW_TYPE_CUBE{ 0 },
+			IMAGE_VIEW_TYPE_1D_ARRAY{ 0 },
+			IMAGE_VIEW_TYPE_2D_ARRAY{ 0 },
+			IMAGE_VIEW_TYPE_CUBE_ARRAY{ 0 },
+			IMAGE_VIEW_TYPE_MAX_ENUM{ 0 };
+	}DynamicImageViewType;
+
+	typedef struct DynamicImageSubresourceRange 
+	{
+		uint32_t    aspectMask;
+		uint32_t    baseMipLevel;
+		uint32_t    levelCount;
+		uint32_t    baseArrayLayer;
+		uint32_t    layerCount;
+	}DynamicImageSubresourceRange;
+
+	typedef struct DynamicImageViewCreateInfo
+	{
+		uint32_t                        type;
+		DynamicImage                    image;
+		//VkFormat                   
+		uint32_t                        format;
+		DynamicImageSubresourceRange    subresourceRange;
+	}DynamicImageViewCreateInfo;
+
 	typedef struct DynamicDescriptorImageInfo {
 		DynamicSampler        sampler;
 		DynamicImageView      imageView;

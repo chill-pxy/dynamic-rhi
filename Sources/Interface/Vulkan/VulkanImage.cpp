@@ -98,6 +98,7 @@ namespace DRHI
             imageInfo.usage = (VkImageUsageFlags)info.usage;
             imageInfo.samples = (VkSampleCountFlagBits)info.samples;
             imageInfo.sharingMode = (VkSharingMode)info.sharingMode;
+            imageInfo.flags = (VkImageCreateFlagBits)info.flags;
 
             if (vkCreateImage(*device, &imageInfo, nullptr, image) != VK_SUCCESS) {
                 throw std::runtime_error("failed to create image!");
@@ -234,6 +235,28 @@ namespace DRHI
             viewInfo.subresourceRange.levelCount = 1;
             viewInfo.subresourceRange.baseArrayLayer = 0;
             viewInfo.subresourceRange.layerCount = 1;
+
+            VkImageView imageView;
+            if (vkCreateImageView(*device, &viewInfo, nullptr, &imageView) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create image view!");
+            }
+
+            return imageView;
+        }
+
+        VkImageView createImageView(VkDevice* device, VkImage* image, DynamicImageViewCreateInfo info)
+        {
+            VkImageViewCreateInfo viewInfo{};
+            viewInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+            viewInfo.image = *image;
+            viewInfo.viewType = (VkImageViewType)info.type;
+            viewInfo.format = (VkFormat)info.format;
+            viewInfo.subresourceRange.aspectMask = (VkImageAspectFlagBits)info.subresourceRange.aspectMask;
+            viewInfo.subresourceRange.baseMipLevel = info.subresourceRange.baseMipLevel;
+            viewInfo.subresourceRange.levelCount = info.subresourceRange.layerCount;
+            viewInfo.subresourceRange.baseArrayLayer = info.subresourceRange.baseArrayLayer;
+            viewInfo.subresourceRange.layerCount = info.subresourceRange.layerCount;
 
             VkImageView imageView;
             if (vkCreateImageView(*device, &viewInfo, nullptr, &imageView) != VK_SUCCESS)

@@ -26,6 +26,8 @@ namespace DRHI
     
         VkImageView createImageView(VkDevice* device, VkImage* image, VkFormat format, VkImageAspectFlags aspectFlags);
    
+        VkImageView createImageView(VkDevice* device, VkImage* image, DynamicImageViewCreateInfo info);
+
         void createTextureSampler(VkSampler* textureSampler, VkPhysicalDevice* physicalDevice, VkDevice* device);
     
         void createSampler(VkSampler* sampler, DynamicSamplerCreateInfo createInfo, VkPhysicalDevice* physicalDevice, VkDevice* device);

@@ -574,6 +574,13 @@ namespace DRHI
         imageView->internalID = vkTextureImageView;
     }
 
+    void VulkanDRHI::createImageView(DynamicImageView* imageView, DynamicImage* image, DynamicImageViewCreateInfo info)
+    {
+        VkImage vkImage = image->getVulkanImage();
+        VkImageView vkTextureImageView = VulkanImage::createImageView(&_device, &vkImage, info);
+        imageView->internalID = vkTextureImageView;
+    }
+
     void VulkanDRHI::createImage(DynamicImage* image, uint32_t width, uint32_t height, 
         uint32_t format, uint32_t imageTiling, uint32_t imageUsageFlagBits, uint32_t memoryPropertyFlags, uint32_t sampleCounts, DynamicDeviceMemory* imageMemory)
     {
