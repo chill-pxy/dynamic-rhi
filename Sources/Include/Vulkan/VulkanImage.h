@@ -31,5 +31,14 @@ namespace DRHI
         void createTextureSampler(VkSampler* textureSampler, VkPhysicalDevice* physicalDevice, VkDevice* device);
     
         void createSampler(VkSampler* sampler, DynamicSamplerCreateInfo createInfo, VkPhysicalDevice* physicalDevice, VkDevice* device);
+    
+        void setImageLayout(
+            VkCommandBuffer cmdbuffer,
+            VkImage& image,
+            VkImageLayout oldImageLayout,
+            VkImageLayout newImageLayout,
+            VkImageSubresourceRange subresourceRange,
+            VkPipelineStageFlags srcStageMask,
+            VkPipelineStageFlags dstStageMask);
     }
 }

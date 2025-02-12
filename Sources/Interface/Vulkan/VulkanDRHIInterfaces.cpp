@@ -741,6 +741,21 @@ namespace DRHI
         depthImageView->internalID = depth.view;
         memory->internalID = depth.memory;
     }
+
+    void VulkanDRHI::setImageLayout(DynamicCommandBuffer* cmdBuf, DynamicImage* image, uint32_t aspectMask, uint32_t oldImageLayout, uint32_t newImageLayout, uint32_t srcStageMask, uint32_t dstStageMask)
+    {
+        VkImageSubresourceRange subresourceRange = {};
+        subresourceRange.aspectMask = (VkImageAspectFlags)aspectMask;
+        subresourceRange.baseMipLevel = 0;
+        subresourceRange.levelCount = 1;
+        subresourceRange.layerCount = 1;
+
+        VkImage vkimage = image->getVulkanImage();
+
+        VulkanImage::setImageLayout(cmdBuf->getVulkanCommandBuffer(), vkimage, (VkImageLayout)oldImageLayout, (VkImageLayout)newImageLayout, subresourceRange, (VkPipelineStageFlagBits)srcStageMask, (VkPipelineStageFlagBits)dstStageMask);
+    
+        image->internalID = vkimage;
+    }
     //-----------------------------------------------------------------------------------------------
 
 
