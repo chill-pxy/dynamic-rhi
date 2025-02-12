@@ -742,7 +742,7 @@ namespace DRHI
         memory->internalID = depth.memory;
     }
 
-    void VulkanDRHI::setImageLayout(DynamicCommandBuffer* cmdBuf, DynamicImage* image, uint32_t aspectMask, uint32_t oldImageLayout, uint32_t newImageLayout, uint32_t srcStageMask, uint32_t dstStageMask)
+    void VulkanDRHI::setImageLayout(DynamicCommandBuffer* cmdBuf, DynamicImage* image, uint32_t aspectMask, uint32_t oldImageLayout, uint32_t newImageLayout)
     {
         VkImageSubresourceRange subresourceRange = {};
         subresourceRange.aspectMask = (VkImageAspectFlags)aspectMask;
@@ -752,7 +752,7 @@ namespace DRHI
 
         VkImage vkimage = image->getVulkanImage();
 
-        VulkanImage::setImageLayout(cmdBuf->getVulkanCommandBuffer(), vkimage, (VkImageLayout)oldImageLayout, (VkImageLayout)newImageLayout, subresourceRange, (VkPipelineStageFlagBits)srcStageMask, (VkPipelineStageFlagBits)dstStageMask);
+        VulkanImage::setImageLayout(cmdBuf->getVulkanCommandBuffer(), vkimage, (VkImageLayout)oldImageLayout, (VkImageLayout)newImageLayout, subresourceRange, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
     
         image->internalID = vkimage;
     }
