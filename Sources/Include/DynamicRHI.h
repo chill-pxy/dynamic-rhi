@@ -93,6 +93,7 @@ namespace DRHI
 		virtual void transitionImageLayout(DynamicImage* image, DynamicCommandPool* commandPool, uint32_t format, uint32_t oldLayout, uint32_t newLayout) = 0;
 		virtual void createDepthStencil(DynamicImage* depthImage, DynamicImageView* depthImageView, DynamicDeviceMemory* memory, uint32_t format, uint32_t width, uint32_t height, uint32_t sampleCounts) = 0;
 		virtual void setImageLayout(DynamicCommandBuffer* cmdBuf, DynamicImage* image, uint32_t aspectMask, uint32_t oldImageLayout, uint32_t newImageLayout) = 0;
+		virtual void setImageLayout(DynamicCommandBuffer* cmdBuf, DynamicImage* image, uint32_t oldImageLayout, uint32_t newImageLayout, DynamicImageSubresourceRange range) = 0;
 
 		//pipeline functions
 		virtual void createPipelineLayout(DynamicPipelineLayout* pipelineLayout, DynamicPipelineLayoutCreateInfo* createInfo) = 0;

@@ -756,6 +756,22 @@ namespace DRHI
     
         image->internalID = vkimage;
     }
+
+    void VulkanDRHI::setImageLayout(DynamicCommandBuffer* cmdBuf, DynamicImage* image, uint32_t oldImageLayout, uint32_t newImageLayout, DynamicImageSubresourceRange range)
+    {
+        VkImageSubresourceRange subresourceRange = {};
+        subresourceRange.aspectMask = (VkImageAspectFlags)range.aspectMask;
+        subresourceRange.baseMipLevel = range.baseMipLevel;
+        subresourceRange.levelCount = range.levelCount;
+        subresourceRange.layerCount = range.layerCount;
+        subresourceRange.baseArrayLayer = range.baseArrayLayer;
+
+        VkImage vkimage = image->getVulkanImage();
+
+        VulkanImage::setImageLayout(cmdBuf->getVulkanCommandBuffer(), vkimage, (VkImageLayout)oldImageLayout, (VkImageLayout)newImageLayout, subresourceRange, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
+
+        image->internalID = vkimage;
+    }
     //-----------------------------------------------------------------------------------------------
 
 
