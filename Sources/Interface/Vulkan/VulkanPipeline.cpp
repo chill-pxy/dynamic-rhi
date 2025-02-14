@@ -335,6 +335,7 @@ namespace DRHI
             pipelineInfo.pDynamicState = &dynamicState;
             pipelineInfo.layout = *pipelineLayout;
             pipelineInfo.renderPass = createInfo.renderPass;
+            pipelineInfo.subpass = createInfo.subpass;
             pipelineInfo.basePipelineHandle = VK_NULL_HANDLE;
             pipelineInfo.pTessellationState = &pipelineTessellationStateCreateInfo;
 

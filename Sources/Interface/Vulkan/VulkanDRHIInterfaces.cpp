@@ -371,6 +371,7 @@ namespace DRHI
         pci.cullMode = (VkCullModeFlagBits)info.cullMode;
         pci.includeStencil = info.includeStencil;
         pci.sampleCounts = info.sampleCounts;
+        pci.subpass = info.subpass;
         if(info.renderPass) pci.renderPass = info.renderPass->getVulkanRenderPass();
 
         auto vkVertexInputBinding = info.vertexInputBinding.getVulkanVertexInputBindingDescription();

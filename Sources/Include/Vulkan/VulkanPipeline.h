@@ -20,6 +20,7 @@ namespace DRHI
 			uint32_t cullMode;
 			uint32_t sampleCounts;
 			VkRenderPass renderPass;
+			uint32_t subpass;
 		};
 
 		void createPipelineLayout(DynamicPipelineLayout* pipelineLayout ,DynamicPipelineLayoutCreateInfo* createInfo, VkDevice* device);
