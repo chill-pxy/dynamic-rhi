@@ -76,6 +76,7 @@ namespace DRHI
 
 		//texture funcitons
 		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, DynamicCommandPool* commandPool, int texWidth, int texHeight, int texChannels, stbi_uc* pixels) = 0;
+		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, DynamicImageCreateInfo info, DynamicCommandPool* commandPool, stbi_uc* pixels) = 0;
 		virtual void createTextureSampler(DynamicSampler* textureSampler) = 0;
 
 		//image functions

@@ -39,6 +39,46 @@ namespace DRHI
             vkFreeMemory(*device, stagingBufferMemory, nullptr);
         }
 
+        void createTextureImage(VkImage* textureImage, DynamicImageCreateInfo info, VkDeviceMemory* textureMemory, stbi_uc* pixels, VkDevice* device, VkPhysicalDevice* physicalDevice, VkQueue* graphicsQueue, VkCommandPool* commandPool)
+        {
+            VkDeviceSize imageSize = (float)info.extent.width * (float)info.extent.height * 4;
+            VkBuffer stagingBuffer;
+            VkDeviceMemory stagingBufferMemory;
+            VkDeviceSize bufferSize = imageSize * info.arrayLayers;
+            VulkanBuffer::createBuffer(device, physicalDevice, bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, &stagingBuffer, &stagingBufferMemory);
+
+            void* data;
+            vkMapMemory(*device, stagingBufferMemory, 0, imageSize, 0, &data);
+            memcpy(data, pixels, static_cast<size_t>(imageSize));
+            vkUnmapMemory(*device, stagingBufferMemory);
+
+            stbi_image_free(pixels);
+
+            info.format = VK_FORMAT_R8G8B8A8_SRGB;
+            info.tiling = VK_IMAGE_TILING_OPTIMAL;
+            info.samples = VK_SAMPLE_COUNT_1_BIT;
+            info.usage = VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+            info.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+            info.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            VulkanImage::createImage(textureImage, info, *textureMemory, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, device, physicalDevice);
+
+            VkImageSubresourceRange subr{};
+            subr.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            subr.baseArrayLayer = 0;
+            subr.baseMipLevel = 0;
+            subr.layerCount = info.mipLevels;
+            subr.levelCount = info.mipLevels;
+
+            VkCommandBuffer commandBuffer = VulkanCommand::beginSingleTimeCommands(commandPool, device);
+
+            VulkanImage::setImageLayout(commandBuffer, *textureImage, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, subr, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
+            VulkanImage::copyBufferToImage(&stagingBuffer, textureImage, static_cast<uint32_t>(info.extent.width), static_cast<uint32_t>(info.extent.height), subr, graphicsQueue, commandPool, device);
+            VulkanImage::setImageLayout(commandBuffer, *textureImage, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL, subr, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
+
+            vkDestroyBuffer(*device, stagingBuffer, nullptr);
+            vkFreeMemory(*device, stagingBufferMemory, nullptr);
+        }
+
         void createImage(
             VkImage* image,
             uint32_t width, uint32_t height, 
@@ -219,6 +259,36 @@ namespace DRHI
             };
 
             vkCmdCopyBufferToImage(commandBuffer, *buffer, *image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
+
+            VulkanCommand::endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
+        }
+
+        void copyBufferToImage(VkBuffer* buffer, VkImage* image, uint32_t width, uint32_t height, VkImageSubresourceRange range,VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device)
+        {
+            VkCommandBuffer commandBuffer = VulkanCommand::beginSingleTimeCommands(commandPool, device);
+
+            std::vector<VkBufferImageCopy> region{};
+            for (uint32_t i = 0; i < range.layerCount; ++i)
+            {
+                VkBufferImageCopy reg{};
+                reg.bufferOffset = (double)i * width * height * 4;
+                reg.bufferRowLength = 0;
+                reg.bufferImageHeight = 0;
+                reg.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                reg.imageSubresource.mipLevel = i;
+                reg.imageSubresource.baseArrayLayer = 0;
+                reg.imageSubresource.layerCount = 1;
+                reg.imageOffset = { 0, 0, 0 };
+                reg.imageExtent = {
+                    width,
+                    height,
+                    1
+                };
+
+                region.push_back(reg);
+            }
+
+            vkCmdCopyBufferToImage(commandBuffer, *buffer, *image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, static_cast<uint32_t>(region.size()), region.data());
 
             VulkanCommand::endSingleTimeCommands(commandBuffer, graphicsQueue, commandPool, device);
         }

@@ -555,6 +555,16 @@ namespace DRHI
         textureMemory->internalID = vkMemory;
     }
 
+    void VulkanDRHI::createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, DynamicImageCreateInfo info, DynamicCommandPool* commandPool, stbi_uc* pixels)
+    {
+        auto vkCommandPool = commandPool->getVulkanCommandPool();
+        VkImage vkImage;
+        VkDeviceMemory vkMemory;
+        VulkanImage::createTextureImage(&vkImage, info, &vkMemory, pixels, &_device, &_physicalDevice, &_graphicQueue, &vkCommandPool);
+        textureImage->internalID = vkImage;
+        textureMemory->internalID = vkMemory;
+    }
+
     void VulkanDRHI::createTextureSampler(DynamicSampler* textureSampler)
     {
         VkSampler vkSampler;
