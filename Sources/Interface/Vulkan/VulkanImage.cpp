@@ -271,7 +271,7 @@ namespace DRHI
             for (uint32_t i = 0; i < range.layerCount; ++i)
             {
                 VkBufferImageCopy reg{};
-                reg.bufferOffset = (double)i * width * height * 4;
+                reg.bufferOffset = 0;
                 reg.bufferRowLength = 0;
                 reg.bufferImageHeight = 0;
                 reg.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -324,7 +324,7 @@ namespace DRHI
             viewInfo.format = (VkFormat)info.format;
             viewInfo.subresourceRange.aspectMask = (VkImageAspectFlagBits)info.subresourceRange.aspectMask;
             viewInfo.subresourceRange.baseMipLevel = info.subresourceRange.baseMipLevel;
-            viewInfo.subresourceRange.levelCount = info.subresourceRange.layerCount;
+            viewInfo.subresourceRange.levelCount = info.subresourceRange.levelCount;
             viewInfo.subresourceRange.baseArrayLayer = info.subresourceRange.baseArrayLayer;
             viewInfo.subresourceRange.layerCount = info.subresourceRange.layerCount;
 
