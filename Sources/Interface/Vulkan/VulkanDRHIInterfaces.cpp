@@ -905,4 +905,40 @@ namespace DRHI
         frameBuffer->internalID = nullptr;
     }
     //-----------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+    //----------------------------------- ray tracing functions -------------------------------------
+    void VulkanDRHI::initRayTracing()
+    {
+        VkPhysicalDeviceRayTracingPipelinePropertiesKHR  rayTracingPipelineProperties{};
+        VkPhysicalDeviceAccelerationStructureFeaturesKHR accelerationStructureFeatures{};
+        rayTracingPipelineProperties.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_RAY_TRACING_PIPELINE_PROPERTIES_KHR;
+        VkPhysicalDeviceProperties2 deviceProperties2{};
+        deviceProperties2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_PROPERTIES_2;
+        deviceProperties2.pNext = &rayTracingPipelineProperties;
+        vkGetPhysicalDeviceProperties2(_physicalDevice, &deviceProperties2);
+        accelerationStructureFeatures.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_ACCELERATION_STRUCTURE_FEATURES_KHR;
+        VkPhysicalDeviceFeatures2 deviceFeatures2{};
+        deviceFeatures2.sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_FEATURES_2;
+        deviceFeatures2.pNext = &accelerationStructureFeatures;
+        vkGetPhysicalDeviceFeatures2(_physicalDevice, &deviceFeatures2);
+    }
+
+    void VulkanDRHI::createBLAS()
+    {
+
+    }
+
+    void VulkanDRHI::createTLAS()
+    {
+
+    }
+    //-----------------------------------------------------------------------------------------------
 }

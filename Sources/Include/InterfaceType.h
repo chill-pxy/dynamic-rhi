@@ -1843,6 +1843,110 @@ namespace DRHI
 		uint32_t    depthHeight;
 		bool        isClearEveryFrame;
 	}RenderingInfo;
+
+	//ray tracing
+	typedef VkDeviceAddress DynamicDeviceAddress;
+
+	typedef union DynamicDeviceOrHostAddressConst 
+	{
+		DynamicDeviceAddress    deviceAddress;
+		const void*             hostAddress;
+	} DynamicDeviceOrHostAddressConst;
+
+	typedef struct DynamicAccelerationStructureGeometryTrianglesData
+	{
+		uint32_t                         vertexFormat;
+		DynamicDeviceOrHostAddressConst  vertexData;
+		uint64_t                         vertexStride;
+		uint32_t                         maxVertex;
+		uint32_t                         indexType;
+		DynamicDeviceOrHostAddressConst  indexData;
+		DynamicDeviceOrHostAddressConst  transformData;
+	}DynamicAccelerationStructureGeometryTrianglesData;
+
+	typedef struct DynamicGeometryType
+	{
+		DynamicGeometryType(API api)
+		{
+			switch (api)
+			{
+			case VULKAN:
+				GEOMETRY_TYPE_TRIANGLES_KHR = VK_GEOMETRY_TYPE_TRIANGLES_KHR;
+				GEOMETRY_TYPE_AABBS_KHR = VK_GEOMETRY_TYPE_AABBS_KHR;
+				GEOMETRY_TYPE_INSTANCES_KHR = VK_GEOMETRY_TYPE_INSTANCES_KHR;
+				GEOMETRY_TYPE_TRIANGLES_NV = VK_GEOMETRY_TYPE_TRIANGLES_NV;
+				GEOMETRY_TYPE_AABBS_NV = VK_GEOMETRY_TYPE_AABBS_NV;
+				GEOMETRY_TYPE_MAX_ENUM_KHR = VK_GEOMETRY_TYPE_MAX_ENUM_KHR;
+				break;
+			case DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t
+			GEOMETRY_TYPE_TRIANGLES_KHR{ 0 },
+			GEOMETRY_TYPE_AABBS_KHR{ 0 },
+			GEOMETRY_TYPE_INSTANCES_KHR{ 0 },
+			GEOMETRY_TYPE_TRIANGLES_NV{ 0 },
+			GEOMETRY_TYPE_AABBS_NV{ 0 },
+			GEOMETRY_TYPE_MAX_ENUM_KHR{ 0 };
+
+	} DynamicGeometryType;
+
+	typedef struct DynamicAccelerationStructureGeometryAabbsData
+	{
+		DynamicDeviceOrHostAddressConst   data;
+		uint64_t                          stride;
+	} DynamicAccelerationStructureGeometryAabbsData;
+
+	typedef struct DynamicAccelerationStructureGeometryInstancesData
+	{
+		uint32_t                        arrayOfPointers;
+		DynamicDeviceOrHostAddressConst data;
+	} DynamicAccelerationStructureGeometryInstancesData;
+
+	typedef union DynamicAccelerationStructureGeometryData 
+	{
+		DynamicAccelerationStructureGeometryTrianglesData  triangles;
+		DynamicAccelerationStructureGeometryAabbsData      aabbs;
+		DynamicAccelerationStructureGeometryInstancesData  instances;
+	} DynamicAccelerationStructureGeometryData;
+
+	typedef struct DynamicGeometryFlagBits
+	{
+		DynamicGeometryFlagBits(API api)
+		{
+			switch (api)
+			{
+			case VULKAN:
+				GEOMETRY_OPAQUE_BIT_KHR = VK_GEOMETRY_OPAQUE_BIT_KHR;
+				GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR = VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR;
+				GEOMETRY_OPAQUE_BIT_NV = VK_GEOMETRY_OPAQUE_BIT_KHR;
+				GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NV = VK_GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NV;
+				GEOMETRY_FLAG_BITS_MAX_ENUM_KHR = VK_GEOMETRY_FLAG_BITS_MAX_ENUM_KHR;
+				break;
+			case DIRECT3D12:
+				break;
+			}
+		}
+
+		uint32_t
+			GEOMETRY_OPAQUE_BIT_KHR{ 0 },
+			GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_KHR{ 0 },
+			GEOMETRY_OPAQUE_BIT_NV{ 0 },
+			GEOMETRY_NO_DUPLICATE_ANY_HIT_INVOCATION_BIT_NV{ 0 },
+			GEOMETRY_FLAG_BITS_MAX_ENUM_KHR{ 0 };
+
+	}DynamicGeometryFlagBits;
+ 
+	typedef struct DynamicAccelerationStructureGeometryKHR 
+	{
+		//DynamicGeometryType
+		uint32_t                         geometryType;
+		DynamicAccelerationStructureGeometryData    geometry;
+		//DynamicGeometryFlagBits
+		uint32_t                        flags;
+	} DynamicAccelerationStructureGeometryKHR;
 }
 
 

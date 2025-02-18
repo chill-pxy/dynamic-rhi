@@ -188,6 +188,11 @@ namespace DRHI
 		virtual void createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo);
 		virtual void clearFramebuffer(DynamicFramebuffer* frameBuffer);
 
+		//ray tracing functions
+		virtual void initRayTracing();
+		virtual void createBLAS();
+		virtual void createTLAS();
+
 		//-------------------------------------------------------------------------------------------------------------------------- 
 		//--------------------------------------------------------------------------------------------------------------------------  
 		//--------------------------------------------------------------------------------------------------------------------------
