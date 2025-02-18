@@ -1831,6 +1831,32 @@ namespace DRHI
 		float    maxDepth;
 	}DynamicViewport;
 
+	typedef struct DynamicOffset3D 
+	{
+		int32_t    x;
+		int32_t    y;
+		int32_t    z;
+	} DynamicOffset3D;
+
+
+	typedef struct DynamicImageSubresourceLayers
+	{
+		//DynamicImageAspectFlags
+		uint32_t    aspectMask;
+		uint32_t    mipLevel;
+		uint32_t    baseArrayLayer;
+		uint32_t    layerCount;
+	} DynamicImageSubresourceLayers;
+
+	typedef struct DynamicImageCopy 
+	{
+		DynamicImageSubresourceLayers    srcSubresource;
+		DynamicOffset3D                  srcOffset;
+		DynamicImageSubresourceLayers    dstSubresource;
+		DynamicOffset3D                  dstOffset;
+		DynamicExtent3D                  extent;
+	} Dynamic;
+
 	typedef struct RenderingInfo
 	{
 		VkImage     colorImage;

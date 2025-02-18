@@ -177,6 +177,7 @@ namespace DRHI
 		virtual void cmdSetScissor(DynamicCommandBuffer cmdBuf, uint32_t firstScissor, uint32_t scissorCount, DynamicRect2D scissor);
 		virtual void cmdDraw(DynamicCommandBuffer cmdBuf, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance);
 		virtual void cmdQueueWaitIdle();
+		virtual void cmdCopyImage(DynamicCommandBuffer cmdBuffer, DynamicImage* srcImage, uint32_t srcImageLayout, DynamicImage* dstImage, uint32_t dstImageLayout, uint32_t regionCount, DynamicImageCopy regions);
 
 		//render pass functions
 		virtual void createRenderPass(DynamicRenderPass* renderPass, DynamicRenderPassCreateInfo* createInfo);

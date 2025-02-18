@@ -835,6 +835,35 @@ namespace DRHI
     {
         vkQueueWaitIdle(_graphicQueue);
     }
+
+    void VulkanDRHI::cmdCopyImage(DynamicCommandBuffer cmdBuffer, DynamicImage* srcImage, uint32_t srcImageLayout, DynamicImage* dstImage, uint32_t dstImageLayout, uint32_t regionCount, DynamicImageCopy regions)
+    {
+        VkImage vkdstImage = dstImage->getVulkanImage();
+
+        VkImageCopy vkregion{};
+        vkregion.dstOffset.x = regions.dstOffset.x;
+        vkregion.dstOffset.y = regions.dstOffset.y;
+        vkregion.dstOffset.z = regions.dstOffset.z;
+        vkregion.dstSubresource.aspectMask = (VkImageAspectFlagBits)regions.dstSubresource.aspectMask;
+        vkregion.dstSubresource.baseArrayLayer = regions.dstSubresource.baseArrayLayer;
+        vkregion.dstSubresource.layerCount = regions.dstSubresource.layerCount;
+        vkregion.dstSubresource.mipLevel = regions.dstSubresource.mipLevel;
+        vkregion.extent.depth = regions.extent.depth;
+        vkregion.extent.height = regions.extent.height;
+        vkregion.extent.width = regions.extent.width;
+        vkregion.srcOffset.x = regions.srcOffset.x;
+        vkregion.srcOffset.y = regions.srcOffset.y;
+        vkregion.srcOffset.z = regions.srcOffset.z;
+        vkregion.srcSubresource.aspectMask = (VkImageAspectFlagBits)regions.srcSubresource.aspectMask;
+        vkregion.srcSubresource.baseArrayLayer = regions.srcSubresource.baseArrayLayer;
+        vkregion.srcSubresource.layerCount = regions.srcSubresource.layerCount;
+        vkregion.srcSubresource.mipLevel = regions.srcSubresource.mipLevel;
+
+        vkCmdCopyImage(cmdBuffer.getVulkanCommandBuffer(), srcImage->getVulkanImage(), (VkImageLayout)srcImageLayout,
+            vkdstImage, (VkImageLayout)dstImageLayout, regionCount, &vkregion);
+
+        dstImage->internalID = vkdstImage;
+    }
     //-----------------------------------------------------------------------------------------------
 
     
