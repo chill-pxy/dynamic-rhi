@@ -15,7 +15,7 @@ namespace DRHI
 		virtual API getCurrentAPI() { return API::VULKAN; };
 
 		//initialize function
-		virtual void initialize() = 0;
+		virtual void initialize(bool supportRayTracing = false) = 0;
 
 		//tick function
 		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* commandBuffers) = 0;

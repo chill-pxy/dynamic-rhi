@@ -45,14 +45,14 @@ namespace DRHI
         vkDestroyInstance(_instance, nullptr);
 	}
 
-	void VulkanDRHI::initialize()
+	void VulkanDRHI::initialize(bool supportRayTracing)
 	{   
 		createInstance(&_instance);
 		createSurface(&_surface, &_instance, _platformInfo);
 		
         pickPhysicalDevice(&_physicalDevice, &_instance, 0);
 		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
-		createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices);
+		createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices, supportRayTracing);
 		
         VulkanSwapChain::createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, true);
         VulkanSwapChain::createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);

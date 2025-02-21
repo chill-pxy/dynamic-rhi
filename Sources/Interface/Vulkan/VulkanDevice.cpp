@@ -10,6 +10,16 @@ const std::vector<const char*> deviceExtensions =
     VK_KHR_MAINTENANCE2_EXTENSION_NAME,
     VK_KHR_MULTIVIEW_EXTENSION_NAME,
     VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
+    VK_KHR_DEPTH_STENCIL_RESOLVE_EXTENSION_NAME
+};
+
+const std::vector<const char*> deviceExtensionsWithRayTracing =
+{
+    VK_KHR_DYNAMIC_RENDERING_EXTENSION_NAME,
+    VK_KHR_SWAPCHAIN_EXTENSION_NAME,
+    VK_KHR_MAINTENANCE2_EXTENSION_NAME,
+    VK_KHR_MULTIVIEW_EXTENSION_NAME,
+    VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
     VK_KHR_DEPTH_STENCIL_RESOLVE_EXTENSION_NAME,
     // vk ray tracing extensions
     VK_KHR_ACCELERATION_STRUCTURE_EXTENSION_NAME,
@@ -27,7 +37,7 @@ const std::vector<const char*> validationLayers =
 
 namespace DRHI
 {
-    void createLogicalDevice(VkDevice* device, VkPhysicalDevice* physicalDevice, VkQueue* graphicsQueue, VkQueue* presentQueue, VkSurfaceKHR* surface, QueueFamilyIndices* queueFamilyIndices)
+    void createLogicalDevice(VkDevice* device, VkPhysicalDevice* physicalDevice, VkQueue* graphicsQueue, VkQueue* presentQueue, VkSurfaceKHR* surface, QueueFamilyIndices* queueFamilyIndices, bool supportRayTracing)
     {
         QueueFamilyIndices indices = findQueueFamilies(*physicalDevice, *surface);
 
@@ -65,8 +75,11 @@ namespace DRHI
 
         createInfo.pEnabledFeatures = &deviceFeatures;
 
-        createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
-        createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+        auto extensions = deviceExtensions;
+        if (supportRayTracing) extensions = deviceExtensionsWithRayTracing;
+
+        createInfo.enabledExtensionCount = static_cast<uint32_t>(extensions.size());
+        createInfo.ppEnabledExtensionNames = extensions.data();
 
         if (enableValidationLayers) {
             createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
