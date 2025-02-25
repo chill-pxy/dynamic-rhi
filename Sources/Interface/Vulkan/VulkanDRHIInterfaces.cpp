@@ -571,6 +571,15 @@ namespace DRHI
         VulkanImage::createTextureSampler(&vkSampler, &_physicalDevice, &_device);
         textureSampler->internalID = vkSampler;
     }
+
+    void VulkanDRHI::createCubeTexture(DynamicImage* image, DynamicDeviceMemory memory, DynamicCommandPool cmdPool, unsigned char* textureData, uint64_t textureSize, uint32_t width, uint32_t height, uint32_t mipLevels, std::vector<size_t> offsets, std::vector<DynamicExtent2D> texSizes)
+    {
+        VkImage vkimage{};
+        VkDeviceMemory vkmemory{};
+        VulkanImage::createCubeTextureImage(&vkimage, &vkmemory, cmdPool.getVulkanCommandPool(), textureData, textureSize, width, height, mipLevels, offsets, texSizes, _device, &_physicalDevice, _graphicQueue);
+        image->internalID = vkimage;
+        memory.internalID = vkmemory;
+    }
     //------------------------------------------------------------------------------------------
 
 

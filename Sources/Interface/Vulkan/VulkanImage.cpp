@@ -160,6 +160,137 @@ namespace DRHI
             vkBindImageMemory(*device, *image, imageMemory, 0);
         }
 
+        void createCubeTextureImage(VkImage* image, VkDeviceMemory* deviceMemory, VkCommandPool cmdPool, unsigned char* textureData, uint64_t textureSize, uint32_t width, uint32_t height, uint32_t mipLevels, std::vector<size_t> offsets, std::vector<DynamicExtent2D> texSizes, VkDevice device, VkPhysicalDevice* physicalDevice, VkQueue copyQueue)
+        {
+            VkMemoryAllocateInfo memAllocInfo{};
+            memAllocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            VkMemoryRequirements memReqs;
+
+            // Create a host-visible staging buffer that contains the raw image data
+            VkBuffer stagingBuffer;
+            VkDeviceMemory stagingMemory;
+
+            VkBufferCreateInfo bufCreateInfo{};
+            bufCreateInfo.sType = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+            bufCreateInfo.size = textureSize;
+            // This buffer is used as a transfer source for the buffer copy
+            bufCreateInfo.usage = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
+            bufCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+
+            vkCreateBuffer(device, &bufCreateInfo, nullptr, &stagingBuffer);
+
+            // Get memory requirements for the staging buffer (alignment, memory type bits)
+            vkGetBufferMemoryRequirements(device, stagingBuffer, &memReqs);
+
+            memAllocInfo.allocationSize = memReqs.size;
+            // Get memory type index for a host visible buffer
+            memAllocInfo.memoryTypeIndex = VulkanBuffer::findMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, physicalDevice);
+
+            vkAllocateMemory(device, &memAllocInfo, nullptr, &stagingMemory);
+            vkBindBufferMemory(device, stagingBuffer, stagingMemory, 0);
+
+            // Copy texture data into staging buffer
+            uint8_t* data;
+            vkMapMemory(device, stagingMemory, 0, memReqs.size, 0, (void**)&data);
+            memcpy(data, textureData, textureSize);
+            vkUnmapMemory(device, stagingMemory);
+
+            // Setup buffer copy regions for each face including all of its mip levels
+            std::vector<VkBufferImageCopy> bufferCopyRegions;
+
+            for (uint32_t face = 0; face < 6; face++)
+            {
+                for (uint32_t level = 0; level < mipLevels; level++)
+                {
+                    size_t offset = offsets[level];
+                    //KTX_error_code result = ktxTexture_GetImageOffset(ktxTexture, level, 0, face, &offset);
+                    //assert(result == KTX_SUCCESS);
+
+                    VkBufferImageCopy bufferCopyRegion = {};
+                    bufferCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+                    bufferCopyRegion.imageSubresource.mipLevel = level;
+                    bufferCopyRegion.imageSubresource.baseArrayLayer = face;
+                    bufferCopyRegion.imageSubresource.layerCount = 1;
+                    bufferCopyRegion.imageExtent.width = texSizes[level].width;
+                    bufferCopyRegion.imageExtent.height = texSizes[level].height;//ktxTexture->baseHeight >> level;
+                    bufferCopyRegion.imageExtent.depth = 1;
+                    bufferCopyRegion.bufferOffset = offset;
+
+                    bufferCopyRegions.push_back(bufferCopyRegion);
+                }
+            }
+
+            // Create optimal tiled target image
+            VkImageCreateInfo imageCreateInfo{};
+            imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+            imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
+            imageCreateInfo.format = VK_FORMAT_R8G8B8_SRGB;
+            imageCreateInfo.mipLevels = mipLevels;
+            imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
+            imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
+            imageCreateInfo.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+            imageCreateInfo.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+            imageCreateInfo.extent = { width, height, 1 };
+            imageCreateInfo.usage = VK_IMAGE_USAGE_SAMPLED_BIT;
+            // Ensure that the TRANSFER_DST bit is set for staging
+            if (!(imageCreateInfo.usage & VK_IMAGE_USAGE_TRANSFER_DST_BIT))
+            {
+                imageCreateInfo.usage |= VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+            }
+            // Cube faces count as array layers in Vulkan
+            imageCreateInfo.arrayLayers = 6;
+            // This flag is required for cube map images
+            imageCreateInfo.flags = VK_IMAGE_CREATE_CUBE_COMPATIBLE_BIT;
+
+            vkCreateImage(device, &imageCreateInfo, nullptr, image);
+
+            vkGetImageMemoryRequirements(device, *image, &memReqs);
+
+            memAllocInfo.allocationSize = memReqs.size;
+            memAllocInfo.memoryTypeIndex = VulkanBuffer::findMemoryType(memReqs.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, physicalDevice);
+
+            vkAllocateMemory(device, &memAllocInfo, nullptr, deviceMemory);
+            vkBindImageMemory(device, *image, *deviceMemory, 0);
+
+            // Use a separate command buffer for texture loading
+            VkCommandBuffer copyCmd{};
+            VulkanCommand::createCommandBuffer(&copyCmd, &cmdPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, &device);
+
+            // Image barrier for optimal image (target)
+            // Set initial layout for all array layers (faces) of the optimal (target) tiled texture
+            VkImageSubresourceRange subresourceRange = {};
+            subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            subresourceRange.baseMipLevel = 0;
+            subresourceRange.levelCount = mipLevels;
+            subresourceRange.layerCount = 6;
+
+            setImageLayout(
+                copyCmd,
+                *image,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                subresourceRange, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
+
+            // Copy the cube map faces from the staging buffer to the optimal tiled image
+            vkCmdCopyBufferToImage(
+                copyCmd,
+                stagingBuffer,
+                *image,
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                static_cast<uint32_t>(bufferCopyRegions.size()),
+                bufferCopyRegions.data());
+
+            // Change texture image layout to shader read after all faces have been copied
+            setImageLayout(
+                copyCmd,
+                *image,
+                VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
+                VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL,
+                subresourceRange, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
+
+            VulkanCommand::flushCommandBuffer(device ,copyCmd, copyQueue, cmdPool, true);
+        }
+
         void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout, VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device) 
         {
             VkCommandBuffer commandBuffer = VulkanCommand::beginSingleTimeCommands(commandPool, device);

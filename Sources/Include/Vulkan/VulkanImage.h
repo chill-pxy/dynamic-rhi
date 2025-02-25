@@ -12,6 +12,8 @@ namespace DRHI
 
         void createTextureImage(VkImage* textureImage, DynamicImageCreateInfo info, VkDeviceMemory* textureMemory, stbi_uc* pixels, VkDevice* device, VkPhysicalDevice* physicalDevice, VkQueue* graphicsQueue, VkCommandPool* commandPool);
 
+        void createCubeTextureImage(VkImage* image, VkDeviceMemory* deviceMemory, VkCommandPool cmdPool, unsigned char* textureData, uint64_t textureSize, uint32_t width, uint32_t height, uint32_t mipLevels, std::vector<size_t> offsets, std::vector<DynamicExtent2D> texSizes, VkDevice device, VkPhysicalDevice* physicalDevice, VkQueue copyQueue);
+
         void createImage(VkImage* image, DynamicImageCreateInfo info, VkDeviceMemory& imageMemory, VkMemoryPropertyFlags properties, VkDevice* device, VkPhysicalDevice* physicalDevice);
 
         void createImage(
