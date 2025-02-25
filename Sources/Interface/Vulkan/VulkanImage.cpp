@@ -224,7 +224,7 @@ namespace DRHI
             VkImageCreateInfo imageCreateInfo{};
             imageCreateInfo.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageCreateInfo.imageType = VK_IMAGE_TYPE_2D;
-            imageCreateInfo.format = VK_FORMAT_R8G8B8_SRGB;
+            imageCreateInfo.format = VK_FORMAT_R16G16B16A16_SFLOAT;
             imageCreateInfo.mipLevels = mipLevels;
             imageCreateInfo.samples = VK_SAMPLE_COUNT_1_BIT;
             imageCreateInfo.tiling = VK_IMAGE_TILING_OPTIMAL;
@@ -255,7 +255,10 @@ namespace DRHI
             // Use a separate command buffer for texture loading
             VkCommandBuffer copyCmd{};
             VulkanCommand::createCommandBuffer(&copyCmd, &cmdPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, &device);
-
+            VkCommandBufferBeginInfo info{};
+            info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+            info.flags = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+            vkBeginCommandBuffer(copyCmd, &info);
             // Image barrier for optimal image (target)
             // Set initial layout for all array layers (faces) of the optimal (target) tiled texture
             VkImageSubresourceRange subresourceRange = {};
@@ -285,7 +288,7 @@ namespace DRHI
                 copyCmd,
                 *image,
                 VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL,
-                VK_IMAGE_LAYOUT_READ_ONLY_OPTIMAL,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 subresourceRange, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT, VK_PIPELINE_STAGE_ALL_COMMANDS_BIT);
 
             VulkanCommand::flushCommandBuffer(device ,copyCmd, copyQueue, cmdPool, true);

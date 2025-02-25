@@ -145,7 +145,7 @@ namespace DRHI
 		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, DynamicCommandPool* commandPool, int texWidth, int texHeight, int texChannels, stbi_uc* pixels);
 		virtual void createTextureImage(DynamicImage* textureImage, DynamicDeviceMemory* textureMemory, DynamicImageCreateInfo info, DynamicCommandPool* commandPool, stbi_uc* pixels);
 		virtual void createTextureSampler(DynamicSampler* textureSampler);
-		virtual void createCubeTexture(DynamicImage* image, DynamicDeviceMemory memory, DynamicCommandPool cmdPool, unsigned char* textureData, uint64_t textureSize, uint32_t width, uint32_t height, uint32_t mipLevels, std::vector<size_t> offsets, std::vector<DynamicExtent2D> texSizes);
+		virtual void createCubeTexture(DynamicImage* image, DynamicDeviceMemory* memory, DynamicCommandPool cmdPool, unsigned char* textureData, uint64_t textureSize, uint32_t width, uint32_t height, uint32_t mipLevels, std::vector<size_t> offsets, std::vector<DynamicExtent2D> texSizes);
 
 		//image functions
 		virtual void createImageView(DynamicImageView* imageView, DynamicImage* image, uint32_t imageFormat, uint32_t imageAspect);
