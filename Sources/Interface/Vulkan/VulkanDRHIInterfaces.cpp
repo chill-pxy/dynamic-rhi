@@ -675,7 +675,7 @@ namespace DRHI
             imageCreateCI.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
             imageCreateCI.imageType = VK_IMAGE_TYPE_2D;
             // Note that vkCmdBlitImage (if supported) will also do format conversions if the swapchain color format would differ
-            imageCreateCI.format = VK_FORMAT_B8G8R8A8_SRGB;
+            imageCreateCI.format = VK_FORMAT_B8G8R8A8_UNORM;
             imageCreateCI.extent.width = _swapChainExtent.width;
             imageCreateCI.extent.height = _swapChainExtent.height;
             imageCreateCI.extent.depth = 1;
@@ -738,7 +738,7 @@ namespace DRHI
         for (uint32_t i = 0; i < viewportImages->size(); i++)
         {
             VkImage scImages = (*viewportImages)[i].getVulkanImage();
-            (*viewportImageViews)[i].internalID = VulkanImage::createImageView(&_device, &scImages, VK_FORMAT_B8G8R8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
+            (*viewportImageViews)[i].internalID = VulkanImage::createImageView(&_device, &scImages, VK_FORMAT_B8G8R8A8_UNORM, VK_IMAGE_ASPECT_COLOR_BIT);
         }
     }
 
