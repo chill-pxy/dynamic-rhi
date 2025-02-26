@@ -197,14 +197,12 @@ namespace DRHI
 
             // Setup buffer copy regions for each face including all of its mip levels
             std::vector<VkBufferImageCopy> bufferCopyRegions;
-
+            uint32_t count = 0;
             for (uint32_t face = 0; face < 6; face++)
             {
                 for (uint32_t level = 0; level < mipLevels; level++)
                 {
-                    size_t offset = offsets[level];
-                    //KTX_error_code result = ktxTexture_GetImageOffset(ktxTexture, level, 0, face, &offset);
-                    //assert(result == KTX_SUCCESS);
+                    size_t offset = offsets[count];
 
                     VkBufferImageCopy bufferCopyRegion = {};
                     bufferCopyRegion.imageSubresource.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
@@ -212,11 +210,12 @@ namespace DRHI
                     bufferCopyRegion.imageSubresource.baseArrayLayer = face;
                     bufferCopyRegion.imageSubresource.layerCount = 1;
                     bufferCopyRegion.imageExtent.width = texSizes[level].width;
-                    bufferCopyRegion.imageExtent.height = texSizes[level].height;//ktxTexture->baseHeight >> level;
+                    bufferCopyRegion.imageExtent.height = texSizes[level].height;
                     bufferCopyRegion.imageExtent.depth = 1;
                     bufferCopyRegion.bufferOffset = offset;
 
                     bufferCopyRegions.push_back(bufferCopyRegion);
+                    count++;
                 }
             }
 
