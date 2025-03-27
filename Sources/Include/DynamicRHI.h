@@ -126,5 +126,7 @@ namespace DRHI
 		virtual void initRayTracing() = 0;
 		virtual void createBLAS() = 0;
 		virtual void createTLAS() = 0;
+
+		virtual bool getGraphicsQueueState() = 0;
 	};
 }

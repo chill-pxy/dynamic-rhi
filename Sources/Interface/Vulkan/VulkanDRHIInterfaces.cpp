@@ -948,7 +948,7 @@ namespace DRHI
 
 
 
-
+    
 
 
 
@@ -979,4 +979,18 @@ namespace DRHI
 
     }
     //-----------------------------------------------------------------------------------------------
+
+
+
+
+    bool VulkanDRHI::getGraphicsQueueState()
+    {
+        if (vkQueueWaitIdle(_graphicQueue) != VK_SUCCESS) {
+            return false;
+        }
+        else
+        {
+            return true;
+        }
+    }
 }
