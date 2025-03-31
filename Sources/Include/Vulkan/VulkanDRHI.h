@@ -20,7 +20,7 @@
 #include "VulkanRenderPass.h"
 #include "VulkanFramebuffer.h"
 
-namespace DRHI
+namespace drhi
 {
 	struct RHICreateInfo
 	{

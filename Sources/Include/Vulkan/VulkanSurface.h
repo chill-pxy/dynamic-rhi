@@ -5,7 +5,7 @@
 
 #include"../../Include/InterfaceType.h"
 
-namespace DRHI
+namespace drhi
 {
 	struct PlatformInfo
 	{

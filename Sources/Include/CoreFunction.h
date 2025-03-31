@@ -7,7 +7,7 @@
 #include<glm/glm.hpp>
 #include"InterfaceType.h"
 
-namespace DRHI
+namespace drhi
 {
     //read file from address to generate std::vector<char> data
     static std::vector<char> readFile(const std::string& filename)

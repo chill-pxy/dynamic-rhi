@@ -2,7 +2,7 @@
 
 #include "../../Include/Vulkan/VulkanSemphores.h"
 
-namespace DRHI
+namespace drhi
 {
 	void createSemaphore(Semaphores* semaphores, VkDevice* device)
 	{

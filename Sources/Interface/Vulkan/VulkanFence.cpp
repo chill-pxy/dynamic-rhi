@@ -1,6 +1,6 @@
 #include"../../Include/Vulkan/VulkanFence.h"
 
-namespace DRHI
+namespace drhi
 {
 	void createSynchronizationPrimitives(std::vector<VkFence>* waitFences, uint32_t frameSize, VkDevice* device)
 	{

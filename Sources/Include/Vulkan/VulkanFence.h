@@ -5,7 +5,7 @@
 
 #include"../InterfaceType.h"
 
-namespace DRHI
+namespace drhi
 {
 	void createSynchronizationPrimitives(std::vector<VkFence>* waitFences, uint32_t commandBufferSize, VkDevice* device);
 }

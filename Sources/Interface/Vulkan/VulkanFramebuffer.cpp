@@ -1,6 +1,6 @@
 #include"../../Include/Vulkan/VulkanFramebuffer.h"
 
-namespace DRHI
+namespace drhi
 {
 	namespace VulkanFramebuffer
 	{

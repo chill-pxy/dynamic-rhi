@@ -1,6 +1,6 @@
 #include "../../Include/Vulkan/VulkanQueueFamily.h"
 
-namespace DRHI
+namespace drhi
 {
     QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device, VkSurfaceKHR surface)
     {

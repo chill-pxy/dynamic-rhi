@@ -2,7 +2,7 @@
 
 #include"../InterfaceType.h"
 
-namespace DRHI
+namespace drhi
 {
 	namespace VulkanRenderPass
 	{

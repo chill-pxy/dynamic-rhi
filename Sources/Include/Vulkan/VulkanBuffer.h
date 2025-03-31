@@ -6,7 +6,7 @@
 
 #include"VulkanCommand.h"
 
-namespace DRHI
+namespace drhi
 {
     namespace VulkanBuffer
     {

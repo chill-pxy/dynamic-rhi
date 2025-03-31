@@ -7,7 +7,7 @@
 #include"VulkanQueueFamily.h"
 #include"VulkanSurface.h"
 
-namespace DRHI
+namespace drhi
 {
     struct SwapChainSupportDetails
     {

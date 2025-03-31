@@ -7,7 +7,7 @@
 // Default fence timeout in nanoseconds
 #define DEFAULT_FENCE_TIMEOUT 100000000000
 
-namespace DRHI
+namespace drhi
 {
 	namespace VulkanCommand
 	{

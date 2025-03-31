@@ -2,7 +2,7 @@
 
 #include"../../Include/Vulkan/VulkanShader.h"
 
-namespace DRHI
+namespace drhi
 {
     VkShaderModule createShaderModule(const std::vector<char>& code, VkDevice* device)
     {

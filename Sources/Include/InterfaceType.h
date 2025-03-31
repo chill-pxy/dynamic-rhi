@@ -17,7 +17,7 @@ const bool enableValidationLayers = true;
 
 const int MAX_FRAMES_IN_FLIGHT = 3;
 
-namespace DRHI
+namespace drhi
 {
 	typedef enum API
 	{
@@ -350,7 +350,7 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 			{
 				VkDescriptorBufferInfo vkinfo{};
 				vkinfo.buffer = buffer.getVulkanBuffer();
@@ -359,7 +359,7 @@ namespace DRHI
 
 				internalID = vkinfo;
 			}break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 
@@ -376,7 +376,7 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 			{
 				VkVertexInputBindingDescription vkinfo{};
 				vkinfo.binding = binding;
@@ -386,7 +386,7 @@ namespace DRHI
 				internalID = vkinfo;
 
 			}break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}
@@ -403,7 +403,7 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 			{
 				VkVertexInputAttributeDescription vkinfo{};
 				vkinfo.binding = binding;
@@ -413,7 +413,7 @@ namespace DRHI
 
 				internalID = vkinfo;
 			}break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}
@@ -427,7 +427,7 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 				FORMAT_R32G32B32_SFLOAT = VK_FORMAT_R32G32B32_SFLOAT;
 				FORMAT_R32G32_SFLOAT = VK_FORMAT_R32G32_SFLOAT;
 				FORMAT_R8G8B8A8_UNORM = VK_FORMAT_R8G8B8A8_UNORM;
@@ -441,7 +441,7 @@ namespace DRHI
 				FORMAT_R32G32B32A32_SFLOAT = VK_FORMAT_R32G32B32A32_SFLOAT;
 				FORMAT_B8G8R8A8_UNORM = VK_FORMAT_B8G8R8A8_UNORM;
 				break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}
@@ -468,13 +468,13 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 				IMAGE_TILING_OPTIMAL = VK_IMAGE_TILING_OPTIMAL;
 				IMAGE_TILING_LINEAR = VK_IMAGE_TILING_LINEAR;
 				IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT = VK_IMAGE_TILING_DRM_FORMAT_MODIFIER_EXT;
 				IMAGE_TILING_MAX_ENUM = VK_IMAGE_TILING_MAX_ENUM;
 				break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}
@@ -491,14 +491,14 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 				IMAGE_USAGE_SAMPLED_BIT = VK_IMAGE_USAGE_SAMPLED_BIT;
 				IMAGE_USAGE_TRANSFER_DST_BIT = VK_IMAGE_USAGE_TRANSFER_DST_BIT;
 				IMAGE_USAGE_TRANSFER_SRC_BIT = VK_IMAGE_USAGE_TRANSFER_SRC_BIT;
 				IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
 				IMAGE_USAGE_COLOR_ATTACHMENT_BIT = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT;
 				break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}
@@ -517,7 +517,7 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 				IMAGE_ASPECT_COLOR_BIT = VK_IMAGE_ASPECT_COLOR_BIT;
 				IMAGE_ASPECT_DEPTH_BIT = VK_IMAGE_ASPECT_DEPTH_BIT;
 				IMAGE_ASPECT_STENCIL_BIT = VK_IMAGE_ASPECT_STENCIL_BIT;
@@ -537,7 +537,7 @@ namespace DRHI
 				IMAGE_ASPECT_FLAG_BITS_MAX_ENUM = VK_IMAGE_ASPECT_FLAG_BITS_MAX_ENUM;
 				break;
 
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}
@@ -568,13 +568,13 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 				BUFFER_USAGE_VERTEX_BUFFER_BIT = VK_BUFFER_USAGE_VERTEX_BUFFER_BIT;
 				BUFFER_USAGE_INDEX_BUFFER_BIT = VK_BUFFER_USAGE_INDEX_BUFFER_BIT;
 				BUFFER_USAGE_TRANSFER_DST_BIT = VK_BUFFER_USAGE_TRANSFER_DST_BIT;
 				BUFFER_USAGE_TRANSFER_SRC_BIT = VK_BUFFER_USAGE_TRANSFER_SRC_BIT;
 				break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}
@@ -589,10 +589,10 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 				PIPELINE_BIND_POINT_GRAPHICS = VK_PIPELINE_BIND_POINT_GRAPHICS;
 				break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}
@@ -607,7 +607,7 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 				SAMPLER_ADDRESS_MODE_REPEAT = VK_SAMPLER_ADDRESS_MODE_REPEAT;
 				SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT = VK_SAMPLER_ADDRESS_MODE_MIRRORED_REPEAT;
 				SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE = VK_SAMPLER_ADDRESS_MODE_CLAMP_TO_EDGE;
@@ -616,7 +616,7 @@ namespace DRHI
 				SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE_KHR = VK_SAMPLER_ADDRESS_MODE_MIRROR_CLAMP_TO_EDGE_KHR;
 				SAMPLER_ADDRESS_MODE_MAX_ENUM = VK_SAMPLER_ADDRESS_MODE_MAX_ENUM;
 				break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}
@@ -634,7 +634,7 @@ namespace DRHI
 		{
 			switch (api)
 			{
-			case DRHI::VULKAN:
+			case drhi::VULKAN:
 				BORDER_COLOR_FLOAT_TRANSPARENT_BLACK = VK_BORDER_COLOR_FLOAT_TRANSPARENT_BLACK;
 				BORDER_COLOR_INT_TRANSPARENT_BLACK = VK_BORDER_COLOR_INT_TRANSPARENT_BLACK;
 				BORDER_COLOR_FLOAT_OPAQUE_BLACK = VK_BORDER_COLOR_FLOAT_OPAQUE_BLACK;
@@ -645,7 +645,7 @@ namespace DRHI
 				BORDER_COLOR_INT_CUSTOM_EXT = VK_BORDER_COLOR_INT_CUSTOM_EXT;
 				BORDER_COLOR_MAX_ENUM = VK_BORDER_COLOR_MAX_ENUM;
 				break;
-			case DRHI::DIRECT3D12:
+			case drhi::DIRECT3D12:
 				break;
 			}
 		}

@@ -2,7 +2,7 @@
 #include"../../Include/Vulkan/VulkanShader.h"
 #include"../../Include/CoreFunction.h"
 
-namespace DRHI
+namespace drhi
 {
     //-------------------------------------   swap chain    ------------------------------------
     uint32_t VulkanDRHI::getSwapChainExtentWidth()

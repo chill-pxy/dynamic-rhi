@@ -6,7 +6,7 @@
 
 #include"../../Include/InterfaceType.h"
 
-namespace DRHI
+namespace drhi
 {
     void createInstance(VkInstance* instance);
 }

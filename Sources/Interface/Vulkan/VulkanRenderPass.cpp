@@ -1,6 +1,6 @@
 #include"../../Include/Vulkan/VulkanRenderPass.h"
 
-namespace DRHI
+namespace drhi
 {
 	namespace VulkanRenderPass
 	{

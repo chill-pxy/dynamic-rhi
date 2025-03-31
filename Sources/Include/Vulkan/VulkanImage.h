@@ -4,7 +4,7 @@
 
 #include<stb_image.h>
 
-namespace DRHI
+namespace drhi
 {
 	namespace VulkanImage
 	{

@@ -5,7 +5,7 @@
 #include "../../Include/InterfaceType.h"
 #include "VulkanDevice.h"
 
-namespace DRHI
+namespace drhi
 {
 	namespace VulkanCommand
 	{

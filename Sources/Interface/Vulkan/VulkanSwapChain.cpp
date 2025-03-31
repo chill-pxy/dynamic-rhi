@@ -5,7 +5,7 @@
 #include"../../Include/Vulkan/VulkanPhysicalDevice.h"
 #include"../../Include/Vulkan/VulkanImage.h"
 
-namespace DRHI
+namespace drhi
 {
     namespace VulkanSwapChain
     {

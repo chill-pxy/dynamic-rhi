@@ -4,7 +4,7 @@
 
 #include"../../Include/Vulkan/VulkanDescriptor.h"
 
-namespace DRHI
+namespace drhi
 {
     namespace VulkanDescriptor
     {

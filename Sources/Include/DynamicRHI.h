@@ -6,7 +6,7 @@
 
 #include"InterfaceType.h"
 
-namespace DRHI
+namespace drhi
 {
 	class DynamicRHI
 	{

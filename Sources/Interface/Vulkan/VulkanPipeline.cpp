@@ -4,7 +4,7 @@
 #include"../../Include/Vulkan/VulkanPipeline.h"
 #include"../../Include/CoreFunction.h"
 
-namespace DRHI
+namespace drhi
 {
     namespace VulkanPipeline
     {

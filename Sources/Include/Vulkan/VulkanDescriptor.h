@@ -1,7 +1,7 @@
 #include<vector>
 #include "../InterfaceType.h"
 
-namespace DRHI
+namespace drhi
 {
     namespace VulkanDescriptor
     {

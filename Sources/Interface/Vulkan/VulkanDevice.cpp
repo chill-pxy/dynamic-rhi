@@ -35,7 +35,7 @@ const std::vector<const char*> validationLayers =
     "VK_LAYER_KHRONOS_validation"
 };
 
-namespace DRHI
+namespace drhi
 {
     void createLogicalDevice(VkDevice* device, VkPhysicalDevice* physicalDevice, VkQueue* graphicsQueue, VkQueue* presentQueue, VkSurfaceKHR* surface, QueueFamilyIndices* queueFamilyIndices, bool supportRayTracing)
     {

@@ -1,6 +1,6 @@
 #include"../../Include/Vulkan/VulkanBuffer.h"
 
-namespace DRHI
+namespace drhi
 {
     namespace VulkanBuffer
     {

@@ -1,6 +1,6 @@
 #include"../../Include/Vulkan/VulkanInstance.h"
 
-namespace DRHI
+namespace drhi
 {
     void createInstance(VkInstance* instance)
     {

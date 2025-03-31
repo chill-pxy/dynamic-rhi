@@ -2,7 +2,7 @@
 
 #include"../../Include/Vulkan/VulkanSurface.h"
 
-namespace DRHI
+namespace drhi
 {
 	void createSurface(VkSurfaceKHR* surface, VkInstance* instance, PlatformInfo platfromInfo)
 	{

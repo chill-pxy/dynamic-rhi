@@ -2,7 +2,7 @@
 
 #include "../../Include/InterfaceType.h"
 
-namespace DRHI
+namespace drhi
 {
     void pickPhysicalDevice(VkPhysicalDevice* physicalDevice, VkInstance* instance, unsigned int id);
 
