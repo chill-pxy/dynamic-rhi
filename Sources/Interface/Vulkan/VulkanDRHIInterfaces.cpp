@@ -225,6 +225,14 @@ namespace drhi
         vkFreeCommandBuffers(_device, vkcommandPool, commandBuffers->size(), vkcommandBuffers.data());
     }
 
+    void VulkanDRHI::freeCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool)
+    {
+        auto vkcommandPool = commandPool->getVulkanCommandPool();
+        auto vkcmdbuf = commandBuffer->getVulkanCommandBuffer();
+
+        vkFreeCommandBuffers(_device, vkcommandPool, 1, &vkcmdbuf);
+    }
+
     void VulkanDRHI::destroyCommandPool(DynamicCommandPool* commandPool)
     {
         auto vkcommandPool = commandPool->getVulkanCommandPool();

@@ -3,7 +3,7 @@
 #include<vector>
 #include<functional>
 
-#include "../DynamicRHI.h"
+#include "../dynamic_rhi.h"
 #include "VulkanInstance.h"
 #include "VulkanSurface.h"
 #include "VulkanPhysicalDevice.h"
@@ -112,6 +112,7 @@ namespace drhi
 		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer);
 		virtual void endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri);
 		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
+		virtual void freeCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool);
 		virtual void destroyCommandPool(DynamicCommandPool* commandPool);
 		virtual void flushCommandBuffer(DynamicCommandBuffer cmdBuf, DynamicCommandPool cmdPool, bool free);
 

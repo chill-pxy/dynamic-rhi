@@ -1,6 +1,6 @@
 #pragma once
 
-#include"DynamicRHI.h"
+#include"dynamic_rhi.h"
 #include"../Include/Vulkan/VulkanDRHI.h"
 #include"InterfaceType.h"
 
