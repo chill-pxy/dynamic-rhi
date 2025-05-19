@@ -38,8 +38,8 @@ namespace drhi
 
 		//command functions
 		virtual void createCommandPool(DynamicCommandPool* commandPool) = 0;
-		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
-		virtual void createCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool) = 0;
+		virtual void createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool, DynamicCommandBufferLevel level = DynamicCommandBufferLevel::PRIMARY) = 0;
+		virtual void createCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool, DynamicCommandBufferLevel level = DynamicCommandBufferLevel::PRIMARY) = 0;
 		virtual void beginCommandBuffer(DynamicCommandBuffer commandBuffer) = 0;
 		virtual void beginRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri) = 0;
 		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer) = 0;

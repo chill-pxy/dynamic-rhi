@@ -23,11 +23,14 @@ namespace drhi
         commandPool->internalID = vkcommandPool;
     }
     
-    void VulkanDRHI::createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool)
+    void VulkanDRHI::createCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool, DynamicCommandBufferLevel level)
     {
         std::vector<VkCommandBuffer> vkcommandbuffers{};
         auto vkcommandPool = commandPool->getVulkanCommandPool();
-        VulkanCommand::createCommandBuffers(&vkcommandbuffers, &vkcommandPool, VK_COMMAND_BUFFER_LEVEL_PRIMARY, &_device);
+        auto vklevel = VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        if (level == DynamicCommandBufferLevel::SECONDARY) vklevel = VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+
+        VulkanCommand::createCommandBuffers(&vkcommandbuffers, &vkcommandPool, vklevel, &_device);
         commandPool->internalID = vkcommandPool;
 
         commandBuffers->resize(vkcommandbuffers.size());
@@ -37,12 +40,15 @@ namespace drhi
         }
     }
 
-    void VulkanDRHI::createCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool)
+    void VulkanDRHI::createCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool, DynamicCommandBufferLevel level)
     {
+        auto vklevel = VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        if (level == DynamicCommandBufferLevel::SECONDARY) vklevel = VkCommandBufferLevel::VK_COMMAND_BUFFER_LEVEL_SECONDARY;
+
         VkCommandBufferAllocateInfo info{};
         info.commandBufferCount = 1;
         info.commandPool = commandPool->getVulkanCommandPool();
-        info.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
+        info.level = vklevel;
         info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
 
         VkCommandBuffer cmb{};

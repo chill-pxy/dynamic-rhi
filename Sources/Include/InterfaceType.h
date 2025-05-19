@@ -1699,6 +1699,12 @@ namespace drhi
 			DEPENDENCY_FLAG_BITS_MAX_ENUM{ 0 };
 	}DynamicDependencyFlagBits;
 
+	enum DynamicCommandBufferLevel
+	{
+		PRIMARY,
+		SECONDARY
+	};
+
 	typedef struct DynamicSubpassDescription
 	{
 		//DynamicSubpassDescriptionFlags       
