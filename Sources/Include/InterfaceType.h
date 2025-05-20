@@ -1710,10 +1710,21 @@ namespace drhi
 	typedef struct DynamicCommandBufferInheritanceInfo 
 	{
 		const void* pNext;
-		DynamicRenderPass                renderPass;
-		uint32_t                         subpass;
-		DynamicFramebuffer               framebuffer;
+		DynamicRenderPass*                renderPass;
+		uint32_t                          subpass;
+		DynamicFramebuffer*               framebuffer;
 	} DynamicCommandBufferInheritanceInfo;
+
+	typedef struct DynamicCommandBufferInheritanceRenderingInfoKHR
+	{
+		//VkRenderingFlags         flags;
+		//uint32_t                 viewMask;
+		//uint32_t                 colorAttachmentCount;
+		//const VkFormat* pColorAttachmentFormats;
+		//VkFormat                 depthAttachmentFormat;
+		//VkFormat                 stencilAttachmentFormat;
+		//VkSampleCountFlagBits    rasterizationSamples;
+	}DynamicCommandBufferInheritanceRenderingInfoKHR;
 
 	typedef struct DynamicSubpassDescription
 	{

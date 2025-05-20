@@ -57,12 +57,26 @@ namespace drhi
         commandBuffer->internalID = cmb;
     }
 
-    void VulkanDRHI::beginCommandBuffer(DynamicCommandBuffer commandBuffer)
+    void VulkanDRHI::beginCommandBuffer(DynamicCommandBuffer commandBuffer, DynamicCommandBufferInheritanceInfo* inheritanceInfo)
     {
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
 
         VkCommandBufferBeginInfo cmdBufferBeginInfo{};
         cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        if (inheritanceInfo != nullptr)
+        {
+            VkCommandBufferInheritanceInfo vkinheritanceInfo{};
+            if(inheritanceInfo->framebuffer) vkinheritanceInfo.framebuffer = inheritanceInfo->framebuffer->getVulkanFramebuffer();
+            if(inheritanceInfo->renderPass) vkinheritanceInfo.renderPass = inheritanceInfo->renderPass->getVulkanRenderPass();
+            if (inheritanceInfo->pNext)
+            {
+                VkCommandBufferInheritanceRenderingInfoKHR inheritanceRenderinginfo{};
+                //inheritanceRenderinginfo.colorAttachmentCount = 
+                vkinheritanceInfo.pNext = &inheritanceRenderinginfo;
+            }
+            cmdBufferBeginInfo.pInheritanceInfo = &vkinheritanceInfo;
+        }
+
         vkBeginCommandBuffer(vkCommandBuffer, &cmdBufferBeginInfo);
     }
 
