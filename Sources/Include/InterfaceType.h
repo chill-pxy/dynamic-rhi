@@ -8,6 +8,7 @@
 
 #include<variant>
 #include<vector>
+#include<string>
 
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
@@ -28,6 +29,7 @@ namespace drhi
 	class DynamicCommandBuffer
 	{
 	public:
+		std::string _name = "unnamed command buffer";
 		std::variant<VkCommandBuffer> internalID;
 
 		inline VkCommandBuffer getVulkanCommandBuffer() { return std::get<VkCommandBuffer>(internalID); }
@@ -1704,6 +1706,14 @@ namespace drhi
 		PRIMARY,
 		SECONDARY
 	};
+
+	typedef struct DynamicCommandBufferInheritanceInfo 
+	{
+		const void* pNext;
+		DynamicRenderPass                renderPass;
+		uint32_t                         subpass;
+		DynamicFramebuffer               framebuffer;
+	} DynamicCommandBufferInheritanceInfo;
 
 	typedef struct DynamicSubpassDescription
 	{
