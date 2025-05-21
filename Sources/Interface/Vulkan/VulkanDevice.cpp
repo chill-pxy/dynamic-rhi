@@ -10,7 +10,8 @@ const std::vector<const char*> deviceExtensions =
     VK_KHR_MAINTENANCE2_EXTENSION_NAME,
     VK_KHR_MULTIVIEW_EXTENSION_NAME,
     VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
-    VK_KHR_DEPTH_STENCIL_RESOLVE_EXTENSION_NAME
+    VK_KHR_DEPTH_STENCIL_RESOLVE_EXTENSION_NAME,
+    VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME
 };
 
 const std::vector<const char*> deviceExtensionsWithRayTracing =
@@ -61,11 +62,19 @@ namespace drhi
         deviceFeatures.tessellationShader = VK_TRUE;
         deviceFeatures.sampleRateShading = VK_TRUE;
 
-        constexpr VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeature
+        VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeature
         {
             .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_FEATURES_KHR,
-            .dynamicRendering = VK_TRUE,
+            .dynamicRendering = VK_TRUE, 
         };
+
+        VkPhysicalDeviceDynamicRenderingLocalReadFeaturesKHR dynamicRenderingLocalReadFeatures
+        {
+            .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_DYNAMIC_RENDERING_LOCAL_READ_FEATURES_KHR,
+            .dynamicRenderingLocalRead = VK_TRUE,
+        };
+
+        dynamicRenderingFeature.pNext = &dynamicRenderingLocalReadFeatures;
 
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;

@@ -115,6 +115,7 @@ namespace drhi
 		virtual void freeCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool);
 		virtual void destroyCommandPool(DynamicCommandPool* commandPool);
 		virtual void flushCommandBuffer(DynamicCommandBuffer cmdBuf, DynamicCommandPool cmdPool, bool free);
+		virtual void executeCommands(drhi::DynamicCommandBuffer primaryCommandBuffer, std::vector<drhi::DynamicCommandBuffer> executeCommandbuffers);
 
 		//buffer functions
 		virtual void bindVertexBuffers(DynamicBuffer* vertexBuffer, DynamicCommandBuffer* commandBuffer);

@@ -63,15 +63,25 @@ namespace drhi
 
         VkCommandBufferBeginInfo cmdBufferBeginInfo{};
         cmdBufferBeginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+
+        VkCommandBufferInheritanceInfo vkinheritanceInfo{};
+        VkCommandBufferInheritanceRenderingInfoKHR inheritanceRenderinginfo{};
         if (inheritanceInfo != nullptr)
         {
-            VkCommandBufferInheritanceInfo vkinheritanceInfo{};
+            cmdBufferBeginInfo.flags = VK_COMMAND_BUFFER_USAGE_RENDER_PASS_CONTINUE_BIT;
+            vkinheritanceInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_INFO;
             if(inheritanceInfo->framebuffer) vkinheritanceInfo.framebuffer = inheritanceInfo->framebuffer->getVulkanFramebuffer();
             if(inheritanceInfo->renderPass) vkinheritanceInfo.renderPass = inheritanceInfo->renderPass->getVulkanRenderPass();
             if (inheritanceInfo->pNext)
             {
-                VkCommandBufferInheritanceRenderingInfoKHR inheritanceRenderinginfo{};
-                //inheritanceRenderinginfo.colorAttachmentCount = 
+                inheritanceRenderinginfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_INHERITANCE_RENDERING_INFO_KHR;
+                inheritanceRenderinginfo.flags = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT;
+                inheritanceRenderinginfo.pNext = nullptr;
+                inheritanceRenderinginfo.colorAttachmentCount = inheritanceInfo->pNext->colorAttachmentCount;
+                inheritanceRenderinginfo.pColorAttachmentFormats = (VkFormat*)inheritanceInfo->pNext->pColorAttachmentFormats;
+                inheritanceRenderinginfo.depthAttachmentFormat = (VkFormat)inheritanceInfo->pNext->depthAttachmentFormat;
+                inheritanceRenderinginfo.rasterizationSamples = (VkSampleCountFlagBits)inheritanceInfo->pNext->rasterizationSamples;
+                inheritanceRenderinginfo.stencilAttachmentFormat = (VkFormat)inheritanceInfo->pNext->stencilAttachmentFormat;
                 vkinheritanceInfo.pNext = &inheritanceRenderinginfo;
             }
             cmdBufferBeginInfo.pInheritanceInfo = &vkinheritanceInfo;
@@ -152,7 +162,7 @@ namespace drhi
             height = bri.targetImageHeight; //_swapChainExtent.height;
         }   
 
-        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &vkDepthImage, &vkImageView, &vkDepthImageView, width, height, bri.isClearEveryFrame, bri.includeStencil);
+        VulkanCommand::beginRendering(vkCommandBuffer, &vkImage, &vkDepthImage, &vkImageView, &vkDepthImageView, width, height, bri.isClearEveryFrame, bri.includeStencil, bri.isRenderBySecondaryCommand);
     
         if (bri.isRenderOnSwapChain)
         {
@@ -263,6 +273,16 @@ namespace drhi
     void VulkanDRHI::flushCommandBuffer(DynamicCommandBuffer cmdBuf, DynamicCommandPool cmdPool, bool free)
     {
         VulkanCommand::flushCommandBuffer(_device, cmdBuf.getVulkanCommandBuffer(), _graphicQueue, cmdPool.getVulkanCommandPool(), free);
+    }
+
+    void VulkanDRHI::executeCommands(drhi::DynamicCommandBuffer primaryCommandBuffer ,std::vector<drhi::DynamicCommandBuffer> executeCommandbuffers)
+    {
+        std::vector<VkCommandBuffer> vkcommands{};
+        for (auto& ec : executeCommandbuffers)
+        {
+            vkcommands.emplace_back(ec.getVulkanCommandBuffer());
+        }
+        vkCmdExecuteCommands(primaryCommandBuffer.getVulkanCommandBuffer(), static_cast<uint32_t>(vkcommands.size()), vkcommands.data());
     }
     //----------------------------------------------------------------------------------------
 

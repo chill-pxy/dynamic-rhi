@@ -89,7 +89,7 @@ namespace drhi
 		}
 
 		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImage* depthImage, VkImageView* swapchainImageView, VkImageView* depthImageView,
-			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear, bool includeStencil)
+			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear, bool includeStencil, bool isSecondaryCommand)
 		{
 			// New structures are used to define the attachments used in dynamic rendering
 			VkRenderingAttachmentInfoKHR colorAttachment{};
@@ -121,6 +121,7 @@ namespace drhi
 
 			VkRenderingInfoKHR renderingInfo{};
 			renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
+			if (isSecondaryCommand) renderingInfo.flags = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT_KHR;
 			renderingInfo.renderArea = { 0, 0, viewPortWidth, viewPortHeight };
 			renderingInfo.layerCount = 1;
 			renderingInfo.colorAttachmentCount = 1;
@@ -152,7 +153,7 @@ namespace drhi
 		}
 
 		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImageView* swapchainImageView,
-			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear)
+			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear, bool isSecondaryCommand)
 		{
 			// New structures are used to define the attachments used in dynamic rendering
 			VkRenderingAttachmentInfoKHR colorAttachment{};
@@ -173,6 +174,7 @@ namespace drhi
 
 			VkRenderingInfoKHR renderingInfo{};
 			renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
+			if (isSecondaryCommand) renderingInfo.flags = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT_KHR;
 			renderingInfo.renderArea = { 0, 0, viewPortWidth, viewPortHeight };
 			renderingInfo.layerCount = 1;
 			renderingInfo.colorAttachmentCount = 1;

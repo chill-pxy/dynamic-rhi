@@ -1335,6 +1335,7 @@ namespace drhi
 		bool              isRenderOnSwapChain;
 		uint32_t          swapChainIndex;
 		bool              isClearEveryFrame;
+		bool              isRenderBySecondaryCommand = false;
 		//if not render on swap chain, using target iamge and iamge view
 		DynamicImage*      targetImage;
 		DynamicImageView*  targetImageView;
@@ -1707,24 +1708,26 @@ namespace drhi
 		SECONDARY
 	};
 
-	typedef struct DynamicCommandBufferInheritanceInfo 
-	{
-		const void* pNext;
-		DynamicRenderPass*                renderPass;
-		uint32_t                          subpass;
-		DynamicFramebuffer*               framebuffer;
-	} DynamicCommandBufferInheritanceInfo;
-
 	typedef struct DynamicCommandBufferInheritanceRenderingInfoKHR
 	{
-		//VkRenderingFlags         flags;
-		//uint32_t                 viewMask;
-		//uint32_t                 colorAttachmentCount;
-		//const VkFormat* pColorAttachmentFormats;
-		//VkFormat                 depthAttachmentFormat;
-		//VkFormat                 stencilAttachmentFormat;
-		//VkSampleCountFlagBits    rasterizationSamples;
+		uint32_t                 colorAttachmentCount;
+		//format
+		uint32_t*                pColorAttachmentFormats;
+		//format
+		uint32_t                 depthAttachmentFormat;
+		//format
+		uint32_t                 stencilAttachmentFormat;
+		//SampleCountFlagBits
+		uint32_t                 rasterizationSamples;
 	}DynamicCommandBufferInheritanceRenderingInfoKHR;
+
+	typedef struct DynamicCommandBufferInheritanceInfo 
+	{
+		DynamicCommandBufferInheritanceRenderingInfoKHR* pNext;
+		DynamicRenderPass*                               renderPass;
+		uint32_t                                         subpass;
+		DynamicFramebuffer*                              framebuffer;
+	} DynamicCommandBufferInheritanceInfo;
 
 	typedef struct DynamicSubpassDescription
 	{

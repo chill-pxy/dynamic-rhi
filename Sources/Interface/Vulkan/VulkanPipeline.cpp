@@ -365,7 +365,7 @@ namespace drhi
             pipelineRenderingCreateInfo.colorAttachmentCount = 1;
             pipelineRenderingCreateInfo.pColorAttachmentFormats = swapChainImageFormat;
             pipelineRenderingCreateInfo.depthAttachmentFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
-            pipelineRenderingCreateInfo.stencilAttachmentFormat = VK_FORMAT_D32_SFLOAT_S8_UINT;
+            pipelineRenderingCreateInfo.stencilAttachmentFormat = VK_FORMAT_UNDEFINED;
 
             return pipelineRenderingCreateInfo;
         }
