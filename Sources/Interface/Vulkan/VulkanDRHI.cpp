@@ -15,6 +15,8 @@ namespace drhi
 
         _viewPortWidth = _platformInfo.width;
         _viewPortHeight = _platformInfo.height;
+
+        _virtualDevice = std::make_unique<DynamicDevice>();
 	}
 
 	void VulkanDRHI::clean()
@@ -53,7 +55,8 @@ namespace drhi
         pickPhysicalDevice(&_physicalDevice, &_instance, 0);
 		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
 		createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices, supportRayTracing);
-		
+        _virtualDevice->internalID = _device;
+
         VulkanSwapChain::createSwapChain(&_swapChain, &_physicalDevice, &_device, &_surface, _platformInfo.window, &_swapChainImages, &_swapChainImageFormat, &_swapChainExtent, true);
         VulkanSwapChain::createImageViews(&_device, &_swapChainImageViews, &_swapChainImages, &_swapChainImageFormat);
         VulkanSwapChain::createDepthStencil(&_depthStencil, _depthFormat, _swapChainExtent.width, _swapChainExtent.height, VK_SAMPLE_COUNT_1_BIT, &_device, &_physicalDevice);

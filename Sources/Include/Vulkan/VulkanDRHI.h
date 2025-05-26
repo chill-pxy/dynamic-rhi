@@ -99,7 +99,10 @@ namespace drhi
 		//get frame
 		virtual uint32_t getCurrentFrame();
 
-		//swap chain
+		//device
+		virtual std::unique_ptr<DynamicDevice> getDevice();
+
+		//swap chain functions
 		virtual uint32_t getSwapChainExtentWidth();
 		virtual uint32_t getSwapChainExtentHeight();
 

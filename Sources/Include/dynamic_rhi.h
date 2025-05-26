@@ -1,6 +1,7 @@
 #pragma once
 #include<vector>
 #include<functional>
+#include<memory>
 
 #include<stb_image.h>
 
@@ -10,6 +11,9 @@ namespace drhi
 {
 	class DynamicRHI
 	{
+	public:
+		std::unique_ptr<DynamicDevice> _virtualDevice{ nullptr };
+
 	public:
 		//get current api type
 		virtual API getCurrentAPI() { return API::VULKAN; };
@@ -32,7 +36,10 @@ namespace drhi
 		//get frame
 		virtual uint32_t getCurrentFrame() = 0;
 
-		//swap chain
+		//device
+		virtual std::unique_ptr<DynamicDevice> getDevice() = 0;
+
+		//swap chain functions
 		virtual uint32_t getSwapChainExtentWidth() = 0;
 		virtual uint32_t getSwapChainExtentHeight() = 0;
 

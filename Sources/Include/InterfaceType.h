@@ -26,6 +26,28 @@ namespace drhi
 		DIRECT3D12
 	}API;
 
+	class DynamicDevice
+	{
+	public:
+		std::variant<VkDevice> internalID;
+
+		inline VkDevice getVulkanDevice() { return std::get<VkDevice>(internalID); }
+
+		bool valid()
+		{
+			if (this)
+			{
+				if (std::holds_alternative<VkDevice>(internalID))
+				{
+					if (std::get<VkDevice>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
+			}
+			else return false;
+		}
+	};
+
 	class DynamicCommandBuffer
 	{
 	public:

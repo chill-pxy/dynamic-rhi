@@ -4,6 +4,12 @@
 
 namespace drhi
 {
+    //-------------------------------------   device    ------------------------------------
+    std::unique_ptr<DynamicDevice> VulkanDRHI::getDevice()
+    {
+        return std::move(_virtualDevice);
+    }
+
     //-------------------------------------   swap chain    ------------------------------------
     uint32_t VulkanDRHI::getSwapChainExtentWidth()
     {
