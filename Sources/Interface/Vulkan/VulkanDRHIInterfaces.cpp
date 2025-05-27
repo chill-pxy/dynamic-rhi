@@ -10,6 +10,16 @@ namespace drhi
         return std::move(_virtualDevice);
     }
 
+    std::unique_ptr<DynamicPhysicalDevice> VulkanDRHI::getPhysicalDevice()
+    {
+        return std::move(_virtualPhysicalDevice);
+    }
+
+    PFN_vkGetDeviceProcAddr* VulkanDRHI::getVkDeviceProcAddr()
+    {
+        return &vkGetDeviceProcAddr;
+    }
+
     //-------------------------------------   swap chain    ------------------------------------
     uint32_t VulkanDRHI::getSwapChainExtentWidth()
     {

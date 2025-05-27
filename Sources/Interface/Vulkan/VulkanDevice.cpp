@@ -11,7 +11,9 @@ const std::vector<const char*> deviceExtensions =
     VK_KHR_MULTIVIEW_EXTENSION_NAME,
     VK_KHR_CREATE_RENDERPASS_2_EXTENSION_NAME,
     VK_KHR_DEPTH_STENCIL_RESOLVE_EXTENSION_NAME,
-    VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME
+    VK_KHR_DYNAMIC_RENDERING_LOCAL_READ_EXTENSION_NAME,
+    VK_KHR_GET_MEMORY_REQUIREMENTS_2_EXTENSION_NAME,
+    //VK_AMD_GPU_SHADER_HALF_FLOAT_EXTENSION_NAME,
 };
 
 const std::vector<const char*> deviceExtensionsWithRayTracing =
@@ -61,6 +63,8 @@ namespace drhi
         deviceFeatures.geometryShader = VK_TRUE;
         deviceFeatures.tessellationShader = VK_TRUE;
         deviceFeatures.sampleRateShading = VK_TRUE;
+        deviceFeatures.shaderInt16 = VK_TRUE;
+        deviceFeatures.shaderFloat64 = VK_TRUE;
 
         VkPhysicalDeviceDynamicRenderingFeaturesKHR dynamicRenderingFeature
         {
@@ -74,6 +78,13 @@ namespace drhi
             .dynamicRenderingLocalRead = VK_TRUE,
         };
 
+        VkPhysicalDeviceVulkan12Features exFeatures
+        {
+            .sType = VK_STRUCTURE_TYPE_PHYSICAL_DEVICE_VULKAN_1_2_FEATURES,
+            .shaderFloat16 = VK_TRUE
+        };
+
+        dynamicRenderingLocalReadFeatures.pNext = &exFeatures;
         dynamicRenderingFeature.pNext = &dynamicRenderingLocalReadFeatures;
 
         VkDeviceCreateInfo createInfo{};

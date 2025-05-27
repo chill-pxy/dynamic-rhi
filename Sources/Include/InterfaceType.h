@@ -48,6 +48,28 @@ namespace drhi
 		}
 	};
 
+	class DynamicPhysicalDevice
+	{
+	public:
+		std::variant<VkPhysicalDevice> internalID;
+
+		inline VkPhysicalDevice getVulkanPhysicalDevice() { return std::get<VkPhysicalDevice>(internalID); }
+
+		bool valid()
+		{
+			if (this)
+			{
+				if (std::holds_alternative<VkPhysicalDevice>(internalID))
+				{
+					if (std::get<VkPhysicalDevice>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
+			}
+			else return false;
+		}
+	};
+
 	class DynamicCommandBuffer
 	{
 	public:

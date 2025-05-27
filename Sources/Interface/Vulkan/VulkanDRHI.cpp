@@ -17,6 +17,7 @@ namespace drhi
         _viewPortHeight = _platformInfo.height;
 
         _virtualDevice = std::make_unique<DynamicDevice>();
+        _virtualPhysicalDevice = std::make_unique<DynamicPhysicalDevice>();
 	}
 
 	void VulkanDRHI::clean()
@@ -54,6 +55,7 @@ namespace drhi
 		
         pickPhysicalDevice(&_physicalDevice, &_instance, 0);
 		pickGraphicQueueFamily(&_physicalDevice, (uint32_t)-1);
+        _virtualPhysicalDevice->internalID = _physicalDevice;
 		createLogicalDevice(&_device, &_physicalDevice, &_graphicQueue, &_presentQueue, &_surface, &_queueFamilyIndices, supportRayTracing);
         _virtualDevice->internalID = _device;
 

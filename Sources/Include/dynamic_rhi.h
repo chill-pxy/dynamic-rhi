@@ -13,6 +13,7 @@ namespace drhi
 	{
 	public:
 		std::unique_ptr<DynamicDevice> _virtualDevice{ nullptr };
+		std::unique_ptr<DynamicPhysicalDevice> _virtualPhysicalDevice{ nullptr };
 
 	public:
 		//get current api type
@@ -38,6 +39,7 @@ namespace drhi
 
 		//device
 		virtual std::unique_ptr<DynamicDevice> getDevice() = 0;
+		virtual std::unique_ptr<DynamicPhysicalDevice> getPhysicalDevice() = 0;
 
 		//swap chain functions
 		virtual uint32_t getSwapChainExtentWidth() = 0;

@@ -101,6 +101,8 @@ namespace drhi
 
 		//device
 		virtual std::unique_ptr<DynamicDevice> getDevice();
+		virtual std::unique_ptr<DynamicPhysicalDevice> getPhysicalDevice();
+		PFN_vkGetDeviceProcAddr* getVkDeviceProcAddr();
 
 		//swap chain functions
 		virtual uint32_t getSwapChainExtentWidth();
