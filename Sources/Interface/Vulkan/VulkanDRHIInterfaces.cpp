@@ -725,6 +725,21 @@ namespace drhi
         vkDestroySampler(_device, std::get<VkSampler>(sampler->internalID), nullptr);
     }
 
+    void VulkanDRHI::getViewportImageCreateInfo(VkImageCreateInfo& imageCreateCI)
+    {
+        imageCreateCI.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageCreateCI.imageType = VK_IMAGE_TYPE_2D;
+        imageCreateCI.format = VK_FORMAT_B8G8R8A8_UNORM;
+        imageCreateCI.extent.width = _swapChainExtent.width;
+        imageCreateCI.extent.height = _swapChainExtent.height;
+        imageCreateCI.extent.depth = 1;
+        imageCreateCI.arrayLayers = 1;
+        imageCreateCI.mipLevels = 1;
+        imageCreateCI.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        imageCreateCI.samples = VK_SAMPLE_COUNT_1_BIT;
+        imageCreateCI.tiling = VK_IMAGE_TILING_OPTIMAL;
+        imageCreateCI.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT;
+    }
 
     void VulkanDRHI::createViewportImage(std::vector<DynamicImage>* viewportImages, std::vector<DynamicDeviceMemory>* viewportImageMemorys, DynamicCommandPool* commandPool)
     {
@@ -824,6 +839,19 @@ namespace drhi
         depthImage->internalID = depth.image;
         depthImageView->internalID = depth.view;
         memory->internalID = depth.memory;
+    }
+
+    void VulkanDRHI::getDepthImageCreateInfo(VkImageCreateInfo& imageCI)
+    {
+        imageCI.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+        imageCI.imageType = VK_IMAGE_TYPE_2D;
+        imageCI.format = VK_FORMAT_D32_SFLOAT_S8_UINT;
+        imageCI.extent = { getSwapChainExtentWidth(), getSwapChainExtentHeight(), 1 };
+        imageCI.mipLevels = 1;
+        imageCI.arrayLayers = 1;
+        imageCI.samples = VkSampleCountFlagBits::VK_SAMPLE_COUNT_1_BIT;
+        imageCI.tiling = VK_IMAGE_TILING_OPTIMAL;
+        imageCI.usage = VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT;
     }
 
     void VulkanDRHI::setImageLayout(DynamicCommandBuffer* cmdBuf, DynamicImage* image, uint32_t aspectMask, uint32_t oldImageLayout, uint32_t newImageLayout)
