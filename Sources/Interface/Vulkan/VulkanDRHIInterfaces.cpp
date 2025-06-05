@@ -201,6 +201,51 @@ namespace drhi
         }
     }
 
+    void VulkanDRHI::beginRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo bri)
+    {
+        VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
+        VkImage vkImage{};
+        std::vector<VkImageView> vkImageViews{};
+        VkImage vkDepthImage{};
+        VkImageView vkDepthImageView{};
+
+        uint32_t width = 0, height = 0;
+
+        for(auto& image : bri.targetImage)
+        {
+            vkImage = image.getVulkanImage();
+            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
+                0,
+                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VkImageSubresourceRange{ (VkImageAspectFlags)bri.colorAspectFlag, 0, 1, 0, 1 });
+        }
+
+        if (bri.targetDepthImage.valid() && bri.targetDepthImageView.valid())
+        {
+            vkDepthImage = bri.targetDepthImage.getVulkanImage();
+            vkDepthImageView = bri.targetDepthImageView.getVulkanImageView();
+
+            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkDepthImage,
+                0,
+                VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                (VkImageLayout)bri.depthImageLayout,
+                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
+                VkImageSubresourceRange{ (VkImageAspectFlags)bri.depthAspectFlag, 0, 1, 0, 1 });
+        }
+
+        width = bri.targetImageWidth; 
+        height = bri.targetImageHeight; 
+        
+
+        VulkanCommand::beginRendering(vkCommandBuffer, vkImageViews, &vkDepthImage, &vkDepthImageView, width, height, bri.isClearEveryFrame, bri.includeStencil, bri.isRenderBySecondaryCommand);
+    }
+
     void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer commandBuffer)
     {
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();

@@ -114,6 +114,7 @@ namespace drhi
 		virtual void createCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool, DynamicCommandBufferLevel level = DynamicCommandBufferLevel::PRIMARY);
 		virtual void beginCommandBuffer(DynamicCommandBuffer commandBuffer, DynamicCommandBufferInheritanceInfo* inheritanceInfo = nullptr);
 		virtual void beginRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri);
+		virtual void beginRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo bri);
 		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer);
 		virtual void endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri);
 		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);

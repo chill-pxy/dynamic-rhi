@@ -88,13 +88,13 @@ namespace drhi
 			}
 		}
 
-		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImage* depthImage, VkImageView* swapchainImageView, VkImageView* depthImageView,
+		void beginRendering(VkCommandBuffer commandBuffer, VkImage* image, VkImage* depthImage, VkImageView* imageView, VkImageView* depthImageView,
 			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear, bool includeStencil, bool isSecondaryCommand)
 		{
 			// New structures are used to define the attachments used in dynamic rendering
 			VkRenderingAttachmentInfoKHR colorAttachment{};
 			colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-			colorAttachment.imageView = *swapchainImageView;
+			colorAttachment.imageView = *imageView;
 			colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 			colorAttachment.clearValue.color = { 0.0f, 0.0f, 0.0f,1.0f };
@@ -152,13 +152,13 @@ namespace drhi
 			vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 		}
 
-		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImageView* swapchainImageView,
+		void beginRendering(VkCommandBuffer commandBuffer, VkImage* image, VkImageView* imageView,
 			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear, bool isSecondaryCommand)
 		{
 			// New structures are used to define the attachments used in dynamic rendering
 			VkRenderingAttachmentInfoKHR colorAttachment{};
 			colorAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
-			colorAttachment.imageView = *swapchainImageView;
+			colorAttachment.imageView = *imageView;
 			colorAttachment.imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
 			colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
 			colorAttachment.clearValue.color = { 0.0f, 0.0f, 0.0f,1.0f };
@@ -179,6 +179,72 @@ namespace drhi
 			renderingInfo.layerCount = 1;
 			renderingInfo.colorAttachmentCount = 1;
 			renderingInfo.pColorAttachments = &colorAttachment;
+
+			//Begin dynamic rendering
+			vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);
+
+			VkViewport viewport{};
+			viewport.width = viewPortWidth;
+			viewport.height = viewPortHeight;
+			viewport.minDepth = 0.0f;
+			viewport.maxDepth = 1.0f;
+
+			vkCmdSetViewport(commandBuffer, 0, 1, &viewport);
+
+			VkRect2D scissor{};
+			scissor.extent.width = viewPortWidth;
+			scissor.extent.height = viewPortHeight;
+			scissor.offset.x = 0;
+			scissor.offset.y = 0;
+
+			vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
+		}
+
+		void beginRendering(VkCommandBuffer commandBuffer, std::vector<VkImageView>& imageViews,
+			VkImage* depthImage, VkImageView* depthImageView, uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear, bool includeStencil, bool isSecondaryCommand)
+		{
+			// depth attachment
+			VkRenderingAttachmentInfoKHR depthStencilAttachment{};
+			depthStencilAttachment.sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
+			depthStencilAttachment.imageView = *depthImageView;
+			depthStencilAttachment.imageLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+			depthStencilAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+			depthStencilAttachment.clearValue.depthStencil = { 1.0f,  0 };
+
+			// New structures are used to define the attachments used in dynamic rendering
+			std::vector<VkRenderingAttachmentInfoKHR> colorAttachments{};
+			colorAttachments.resize(imageViews.size());
+			for (uint32_t i = 0; i < imageViews.size(); ++i)
+			{
+				colorAttachments[i].sType = VK_STRUCTURE_TYPE_RENDERING_ATTACHMENT_INFO_KHR;
+				colorAttachments[i].imageView = imageViews[i];
+				colorAttachments[i].imageLayout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+				colorAttachments[i].storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+				colorAttachments[i].clearValue.color = {0.0f, 0.0f, 0.0f,1.0f};
+				if (isClear)
+				{
+					colorAttachments[i].loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+					depthStencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+				}
+				else
+				{
+					colorAttachments[i].loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+					depthStencilAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_LOAD;
+				}
+			}
+
+			VkRenderingInfoKHR renderingInfo{};
+			renderingInfo.sType = VK_STRUCTURE_TYPE_RENDERING_INFO_KHR;
+			if (isSecondaryCommand) renderingInfo.flags = VK_RENDERING_CONTENTS_SECONDARY_COMMAND_BUFFERS_BIT_KHR;
+			renderingInfo.renderArea = { 0, 0, viewPortWidth, viewPortHeight };
+			renderingInfo.layerCount = 1;
+			renderingInfo.colorAttachmentCount = imageViews.size();
+			renderingInfo.pColorAttachments = colorAttachments.data();
+			renderingInfo.pDepthAttachment = &depthStencilAttachment;
+			if (includeStencil)
+			{
+				renderingInfo.pStencilAttachment = &depthStencilAttachment;
+			}
 
 			//Begin dynamic rendering
 			vkCmdBeginRenderingKHR(commandBuffer, &renderingInfo);

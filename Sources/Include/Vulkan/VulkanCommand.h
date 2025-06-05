@@ -32,6 +32,9 @@ namespace drhi
 		void beginRendering(VkCommandBuffer commandBuffer, VkImage* swapchainImage, VkImageView* swapchainImageView,
 			uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear, bool isSecondaryCommand);
 
+		void beginRendering(VkCommandBuffer commandBuffer, std::vector<VkImageView>& imageViews,
+			VkImage* depthImage, VkImageView* depthImageView, uint32_t viewPortWidth, uint32_t viewPortHeight, bool isClear, bool includeStencil, bool isSecondaryCommand);
+
 		VkCommandBuffer beginSingleTimeCommands(VkCommandPool* commandPool, VkDevice* device);
 
 		void endSingleTimeCommands(VkCommandBuffer commandBuffer, VkQueue* graphicsQueue, VkCommandPool* commandPool, VkDevice* device);

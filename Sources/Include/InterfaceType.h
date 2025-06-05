@@ -1393,6 +1393,22 @@ namespace drhi
 		uint32_t           targetImageHeight;
 	}DynamicRenderingInfo;
 
+	typedef struct DynamicRenderingMRTInfo
+	{
+		bool isClearEveryFrame;
+		bool isRenderBySecondaryCommand = false;
+		std::vector<DynamicImage>&     targetImage;
+		std::vector<DynamicImageView>& targetImageView;
+		DynamicImage&                  targetDepthImage;
+		DynamicImageView&              targetDepthImageView;
+		uint32_t                       colorAspectFlag;
+		uint32_t                       depthAspectFlag;
+		bool                           includeStencil;
+		uint32_t                       depthImageLayout;
+		uint32_t                       targetImageWidth;
+		uint32_t                       targetImageHeight;
+	}DynamicRenderingMRTInfo;
+
 	typedef struct DynamicAttachmentDescriptionFlags
 	{
 		DynamicAttachmentDescriptionFlags(API api)
