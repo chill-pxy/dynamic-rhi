@@ -1397,10 +1397,10 @@ namespace drhi
 	{
 		bool isClearEveryFrame;
 		bool isRenderBySecondaryCommand = false;
-		std::vector<DynamicImage>&     targetImage;
-		std::vector<DynamicImageView>& targetImageView;
-		DynamicImage&                  targetDepthImage;
-		DynamicImageView&              targetDepthImageView;
+		std::vector<DynamicImage>*     targetImage;
+		std::vector<DynamicImageView>* targetImageView;
+		DynamicImage*                  targetDepthImage;
+		DynamicImageView*              targetDepthImageView;
 		uint32_t                       colorAspectFlag;
 		uint32_t                       depthAspectFlag;
 		bool                           includeStencil;

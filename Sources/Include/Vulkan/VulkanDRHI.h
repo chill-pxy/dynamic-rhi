@@ -117,6 +117,7 @@ namespace drhi
 		virtual void beginRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo bri);
 		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer);
 		virtual void endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri);
+		virtual void endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo bri);
 		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool);
 		virtual void freeCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool);
 		virtual void destroyCommandPool(DynamicCommandPool* commandPool);

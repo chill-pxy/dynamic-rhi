@@ -211,7 +211,7 @@ namespace drhi
 
         uint32_t width = 0, height = 0;
 
-        for(auto& image : bri.targetImage)
+        for(auto& image : *bri.targetImage)
         {
             vkImage = image.getVulkanImage();
             VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
@@ -224,10 +224,15 @@ namespace drhi
                 VkImageSubresourceRange{ (VkImageAspectFlags)bri.colorAspectFlag, 0, 1, 0, 1 });
         }
 
-        if (bri.targetDepthImage.valid() && bri.targetDepthImageView.valid())
+        for (auto& imageView : *bri.targetImageView)
         {
-            vkDepthImage = bri.targetDepthImage.getVulkanImage();
-            vkDepthImageView = bri.targetDepthImageView.getVulkanImageView();
+            vkImageViews.emplace_back(imageView.getVulkanImageView());
+        }
+
+        if (bri.targetDepthImage->valid() && bri.targetDepthImageView->valid())
+        {
+            vkDepthImage = bri.targetDepthImage->getVulkanImage();
+            vkDepthImageView = bri.targetDepthImageView->getVulkanImageView();
 
             VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkDepthImage,
                 0,
@@ -244,6 +249,12 @@ namespace drhi
         
 
         VulkanCommand::beginRendering(vkCommandBuffer, vkImageViews, &vkDepthImage, &vkDepthImageView, width, height, bri.isClearEveryFrame, bri.includeStencil, bri.isRenderBySecondaryCommand);
+    
+        if (bri.targetDepthImage->valid() && bri.targetDepthImageView->valid())
+        {
+            bri.targetDepthImage->internalID = vkDepthImage;
+            bri.targetDepthImageView->internalID = vkDepthImageView;
+        }
     }
 
     void VulkanDRHI::endCommandBuffer(DynamicCommandBuffer commandBuffer)
@@ -301,6 +312,36 @@ namespace drhi
                 bri.targetImage->internalID = vkImage;
             }
         }
+    }
+
+    void VulkanDRHI::endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo bri)
+    {
+        VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
+        vkCmdEndRendering(vkCommandBuffer);
+
+        VkImage vkImage{};
+        VkImage vkdepthImage{};
+
+        for(auto& image : *bri.targetImage)
+        {
+            vkImage = image.getVulkanImage();
+            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
+                VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
+                0,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
+                VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
+                VkImageSubresourceRange{ (VkImageAspectFlags)bri.colorAspectFlag, 0, 1, 0, 1 });
+        }
+
+        commandBuffer.internalID = vkCommandBuffer;
+
+        //if (*bri.targetImage->valid())
+        //{
+        //    bri.targetImage->internalID = vkImage;
+        //}
+        
     }
 
     void VulkanDRHI::freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool)

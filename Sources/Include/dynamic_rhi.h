@@ -54,6 +54,7 @@ namespace drhi
 		virtual void beginRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo bri) = 0;
 		virtual void endCommandBuffer(DynamicCommandBuffer commandBuffer) = 0;
 		virtual void endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingInfo bri) = 0;
+		virtual void endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo bri) = 0;
 		virtual void freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool) = 0;
 		virtual void freeCommandBuffer(DynamicCommandBuffer* commandBuffer, DynamicCommandPool* commandPool) = 0;
 		virtual void destroyCommandPool(DynamicCommandPool* commandPool) = 0;
