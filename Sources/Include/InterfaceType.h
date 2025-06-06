@@ -1331,6 +1331,9 @@ namespace drhi
 		uint32_t sampleCounts;
 		DynamicRenderPass* renderPass;
 		uint32_t subpass;
+		uint32_t colorAttachmentCount = 1;
+		// if color attachment count over 1, use this args to creat pipeline
+		std::vector<uint32_t> colorImageFormats{};
 	}DynamicPipelineCreateInfo;
 
 	typedef struct DynamicDescriptorPoolSize {

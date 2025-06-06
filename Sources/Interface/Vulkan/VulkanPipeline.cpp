@@ -121,17 +121,32 @@ namespace drhi
                 multisampling.minSampleShading = 0.0f;
             }
 
+            
 
-            VkPipelineColorBlendAttachmentState colorBlendAttachment{};
-            colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-            colorBlendAttachment.blendEnable = VK_FALSE;
 
             VkPipelineColorBlendStateCreateInfo colorBlending{};
             colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
             colorBlending.logicOpEnable = VK_FALSE;
             colorBlending.logicOp = VK_LOGIC_OP_COPY;
-            colorBlending.attachmentCount = 1;
-            colorBlending.pAttachments = &colorBlendAttachment;
+            colorBlending.attachmentCount = createInfo.colorAttachmentCount;
+            if (createInfo.colorAttachmentCount > 1)
+            {
+                std::vector<VkPipelineColorBlendAttachmentState> blendAttachmentStates{};
+                blendAttachmentStates.resize(createInfo.colorAttachmentCount);
+                for (uint32_t i = 0; i < createInfo.colorAttachmentCount; ++i)
+                {
+                    blendAttachmentStates[i].colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+                    blendAttachmentStates[i].blendEnable = VK_FALSE;
+                }
+                colorBlending.pAttachments = blendAttachmentStates.data();
+            }
+            else
+            {
+                VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+                colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+                colorBlendAttachment.blendEnable = VK_FALSE;
+                colorBlending.pAttachments = &colorBlendAttachment;
+            }
             colorBlending.blendConstants[0] = 0.0f;
             colorBlending.blendConstants[1] = 0.0f;
             colorBlending.blendConstants[2] = 0.0f;
@@ -154,11 +169,18 @@ namespace drhi
             depthStencil.depthCompareOp = VK_COMPARE_OP_LESS;
             depthStencil.depthBoundsTestEnable = VK_FALSE;
             depthStencil.stencilTestEnable = VK_FALSE;
-           
+
             VkPipelineRenderingCreateInfoKHR pipelineRenderingCreateInfo{};
             pipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
-            pipelineRenderingCreateInfo.colorAttachmentCount = 1;
-            pipelineRenderingCreateInfo.pColorAttachmentFormats = &createInfo.colorImageFormat;
+            pipelineRenderingCreateInfo.colorAttachmentCount = createInfo.colorAttachmentCount;
+            if (createInfo.colorAttachmentCount > 1)
+            {
+                pipelineRenderingCreateInfo.pColorAttachmentFormats = createInfo.colorAttachmentFormats.data();
+            }
+            else
+            {
+                pipelineRenderingCreateInfo.pColorAttachmentFormats = &createInfo.colorImageFormat;
+            }
             pipelineRenderingCreateInfo.depthAttachmentFormat = createInfo.depthImageFormat;
             if (createInfo.includeStencil)
             {
@@ -282,17 +304,29 @@ namespace drhi
                 multisampling.minSampleShading = 0.0f;
             }
 
-
-            VkPipelineColorBlendAttachmentState colorBlendAttachment{};
-            colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
-            colorBlendAttachment.blendEnable = VK_FALSE;
-
             VkPipelineColorBlendStateCreateInfo colorBlending{};
             colorBlending.sType = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
             colorBlending.logicOpEnable = VK_FALSE;
             colorBlending.logicOp = VK_LOGIC_OP_COPY;
             colorBlending.attachmentCount = 1;
-            colorBlending.pAttachments = &colorBlendAttachment;
+            if (createInfo.colorAttachmentCount > 1)
+            {
+                std::vector<VkPipelineColorBlendAttachmentState> blendAttachmentStates{};
+                blendAttachmentStates.resize(createInfo.colorAttachmentCount);
+                for (uint32_t i = 0; i < createInfo.colorAttachmentCount; ++i)
+                {
+                    blendAttachmentStates[i].colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+                    blendAttachmentStates[i].blendEnable = VK_FALSE;
+                }
+                colorBlending.pAttachments = blendAttachmentStates.data();
+            }
+            else
+            {
+                VkPipelineColorBlendAttachmentState colorBlendAttachment{};
+                colorBlendAttachment.colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+                colorBlendAttachment.blendEnable = VK_FALSE;
+                colorBlending.pAttachments = &colorBlendAttachment;
+            }
             colorBlending.blendConstants[0] = 0.0f;
             colorBlending.blendConstants[1] = 0.0f;
             colorBlending.blendConstants[2] = 0.0f;

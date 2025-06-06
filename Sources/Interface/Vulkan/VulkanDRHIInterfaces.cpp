@@ -516,12 +516,25 @@ namespace drhi
         pci.shaderCount = shaderCount;
 
         pci.dynamicDepthBias = info.dynamicDepthBias;
-        pci.colorImageFormat = (VkFormat)info.colorImageFormat;
+        if (info.colorImageFormats.size() == 0)
+        {
+            pci.colorImageFormat = (VkFormat)info.colorImageFormat;
+        }
+        else
+        {
+            std::vector<VkFormat> formats{};
+            for (auto& format : info.colorImageFormats)
+            {
+                formats.emplace_back((VkFormat)format);
+            }
+            pci.colorAttachmentFormats = formats;
+        }
         pci.depthImageFormat = (VkFormat)info.depthImageFormat;
         pci.cullMode = (VkCullModeFlagBits)info.cullMode;
         pci.includeStencil = info.includeStencil;
         pci.sampleCounts = info.sampleCounts;
         pci.subpass = info.subpass;
+        pci.colorAttachmentCount = info.colorAttachmentCount;
         if(info.renderPass) pci.renderPass = info.renderPass->getVulkanRenderPass();
 
         auto vkVertexInputBinding = info.vertexInputBinding.getVulkanVertexInputBindingDescription();

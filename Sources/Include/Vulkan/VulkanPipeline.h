@@ -21,6 +21,8 @@ namespace drhi
 			uint32_t sampleCounts;
 			VkRenderPass renderPass;
 			uint32_t subpass;
+			uint32_t colorAttachmentCount;
+			std::vector<VkFormat> colorAttachmentFormats;
 		};
 
 		void createPipelineLayout(DynamicPipelineLayout* pipelineLayout ,DynamicPipelineLayoutCreateInfo* createInfo, VkDevice* device);
