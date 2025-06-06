@@ -53,6 +53,7 @@ namespace drhi
 		PlatformInfo                 _platformInfo{};
 
 		Semaphores                   _semaphores{ VK_NULL_HANDLE, VK_NULL_HANDLE };
+		VkSemaphore                  _offscreenSemaphore{ VK_NULL_HANDLE };
 		VkPipelineStageFlags         _submitPipelineStages{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		
 		uint32_t                     _viewPortWidth{ 0 };
@@ -85,7 +86,7 @@ namespace drhi
 		virtual void initialize(bool supportRayTracing = false);
 
 		//tick function
-		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* commandBuffers);
+		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* offscreenCommandBuffers, std::vector<DynamicCommandBuffer>* presentCommandBuffers);
 
 		//draw function
 		virtual void drawIndexed(DynamicCommandBuffer* commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance);
@@ -217,6 +218,9 @@ namespace drhi
 	private:
 		void prepareFrame(std::vector<std::function<void()>> recreatefuncs);
 		void submitFrame(std::vector<std::function<void()>> recreatefuncs);
+
+		void initializeSubmitInfo();
+		void initializeOffscreenSemaphore();
 
 		//recreate functions
 		void recreate(std::vector<std::function<void()>> recreatefuncs);

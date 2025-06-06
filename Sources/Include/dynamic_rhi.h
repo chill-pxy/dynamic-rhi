@@ -23,7 +23,7 @@ namespace drhi
 		virtual void initialize(bool supportRayTracing = false) = 0;
 
 		//tick function
-		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* commandBuffers) = 0;
+		virtual void frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* offscreenCommandBuffers, std::vector<DynamicCommandBuffer>* presentCommandBuffers) = 0;
 
 		//draw function
 		virtual void drawIndexed(DynamicCommandBuffer* commandBuffer, uint32_t indexCount, uint32_t instanceCount, uint32_t firstIndex, uint32_t vertexOffset, uint32_t firstInstance) = 0;

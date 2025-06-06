@@ -69,20 +69,14 @@ namespace drhi
 
         createSynchronizationPrimitives(&_waitFences, MAX_FRAMES_IN_FLIGHT, &_device);
 
-        //initialize submit info
-        /** @brief Pipeline stages used to wait at for graphics queue submissions */
-        _submitInfo = VkSubmitInfo{};
-        _submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        _submitInfo.pWaitDstStageMask = &_submitPipelineStages;
-        _submitInfo.waitSemaphoreCount = 1;
-        _submitInfo.pWaitSemaphores = &_semaphores.presentComplete;
-        _submitInfo.signalSemaphoreCount = 1;
-        _submitInfo.pSignalSemaphores = &_semaphores.renderComplete;
+        initializeSubmitInfo();
+
+        initializeOffscreenSemaphore();
 
         _prepare = true;
 	}
 
-    void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* commandBuffers)
+    void VulkanDRHI::frameOnTick(std::vector<std::function<void()>> recreatefuncs, std::vector<DynamicCommandBuffer>* offscreenCommandBuffers, std::vector<DynamicCommandBuffer>* presentCommandBuffers)
     {
         // if need to stop rendering
         if ((_viewPortWidth <= 0) || (_viewPortHeight <= 0))
@@ -101,16 +95,38 @@ namespace drhi
         // prepare frame
         prepareFrame(recreatefuncs);
 
-        std::vector<VkCommandBuffer> vkcommandBuffers{};
-        vkcommandBuffers.resize(commandBuffers->size());
+        std::vector<VkCommandBuffer> vkOffsceenCommandBuffers{};
+        vkOffsceenCommandBuffers.resize(offscreenCommandBuffers->size());
 
-        for (uint32_t i = 0; i < vkcommandBuffers.size(); ++i)
+        for (uint32_t i = 0; i < vkOffsceenCommandBuffers.size(); ++i)
         {
-            vkcommandBuffers[i] = (*commandBuffers)[i].getVulkanCommandBuffer();
+            vkOffsceenCommandBuffers[i] = (*offscreenCommandBuffers)[i].getVulkanCommandBuffer();
         }
 
-        _submitInfo.commandBufferCount = vkcommandBuffers.size();
-        _submitInfo.pCommandBuffers = vkcommandBuffers.data();
+        // submit offscreen rendering task
+        _submitInfo.pWaitSemaphores = &_semaphores.presentComplete;
+        _submitInfo.pSignalSemaphores = &_offscreenSemaphore;
+        _submitInfo.commandBufferCount = vkOffsceenCommandBuffers.size();
+        _submitInfo.pCommandBuffers = vkOffsceenCommandBuffers.data();
+
+        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentFrame]) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to submit queue");
+        }
+
+        _submitInfo.pWaitSemaphores = &_offscreenSemaphore;
+        _submitInfo.pSignalSemaphores = &_semaphores.renderComplete;
+
+        // submit swapchain rendering task
+        std::vector<VkCommandBuffer> vkCommandBuffers{};
+        vkCommandBuffers.resize(presentCommandBuffers->size());
+
+        for (uint32_t i = 0; i < vkCommandBuffers.size(); ++i)
+        {
+            vkCommandBuffers[i] = (*presentCommandBuffers)[i].getVulkanCommandBuffer();
+        }
+        _submitInfo.commandBufferCount = vkCommandBuffers.size();
+        _submitInfo.pCommandBuffers = vkCommandBuffers.data();
         if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentFrame]) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit queue");
@@ -247,6 +263,30 @@ namespace drhi
         if (vkQueueWaitIdle(_graphicQueue) != VK_SUCCESS)
         {
             throw std::runtime_error("failed to wait queue");
+        }
+    }
+
+    void VulkanDRHI::initializeSubmitInfo()
+    {
+        //initialize submit info
+        /** @brief Pipeline stages used to wait at for graphics queue submissions */
+        _submitInfo = VkSubmitInfo{};
+        _submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
+        _submitInfo.pWaitDstStageMask = &_submitPipelineStages;
+        _submitInfo.waitSemaphoreCount = 1;
+        _submitInfo.pWaitSemaphores = &_semaphores.presentComplete;
+        _submitInfo.signalSemaphoreCount = 1;
+        _submitInfo.pSignalSemaphores = &_semaphores.renderComplete;
+    }
+
+    void VulkanDRHI::initializeOffscreenSemaphore()
+    {
+        VkSemaphoreCreateInfo semaphoreCreateInfo{};
+        semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+        if (vkCreateSemaphore(_device, &semaphoreCreateInfo, nullptr, &_offscreenSemaphore) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to crete Semaphore");
         }
     }
 }
