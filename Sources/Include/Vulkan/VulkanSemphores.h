@@ -4,13 +4,16 @@
 
 namespace drhi
 {
-	typedef struct Semaphores
+	namespace VulkanSemaphores
 	{
-		// Swap chain image presentation
-		VkSemaphore presentComplete;
-		// Command buffer submission and execution
-		VkSemaphore renderComplete;
-	} Semaphores;
+		typedef struct Semaphores
+		{
+			// Swap chain image presentation
+			VkSemaphore presentComplete;
+			// Command buffer submission and execution
+			VkSemaphore renderComplete;
+		} Semaphores;
 
-	void createSemaphore(Semaphores* semaphores, VkDevice* device);
+		void createSemaphore(Semaphores* semaphores, VkDevice* device);
+	}
 }

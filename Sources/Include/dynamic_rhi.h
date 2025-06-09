@@ -137,6 +137,9 @@ namespace drhi
 		virtual void createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo) = 0;
 		virtual void clearFramebuffer(DynamicFramebuffer* frameBuffer) = 0;
 
+		//semaphore functions
+		virtual void createDynamicSemaphore(DynamicSemaphore* semaphore) = 0;
+
 		//ray tracing functions
 		virtual void initRayTracing() = 0;
 		virtual void createBLAS() = 0;

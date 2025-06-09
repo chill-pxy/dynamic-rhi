@@ -52,7 +52,7 @@ namespace drhi
 		VkPipelineCache              _pipelineCache{ VK_NULL_HANDLE };
 		PlatformInfo                 _platformInfo{};
 
-		Semaphores                   _semaphores{ VK_NULL_HANDLE, VK_NULL_HANDLE };
+		VulkanSemaphores::Semaphores _semaphores{ VK_NULL_HANDLE, VK_NULL_HANDLE };
 		VkSemaphore                  _offscreenSemaphore{ VK_NULL_HANDLE };
 		VkPipelineStageFlags         _submitPipelineStages{ VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT };
 		
@@ -201,6 +201,9 @@ namespace drhi
 		//framebuffer functions
 		virtual void createFramebuffer(DynamicFramebuffer* frameBuffer, DynamicFramebufferCreateInfo* createInfo);
 		virtual void clearFramebuffer(DynamicFramebuffer* frameBuffer);
+
+		//semaphore functions
+		virtual void createDynamicSemaphore(DynamicSemaphore* semaphore);
 
 		//ray tracing functions
 		virtual void initRayTracing();

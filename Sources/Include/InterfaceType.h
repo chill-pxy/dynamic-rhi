@@ -379,6 +379,28 @@ namespace drhi
 		}
 	};
 
+	class DynamicSemaphore
+	{
+	public:
+		std::variant<VkSemaphore> internalID;
+
+		inline VkSemaphore getVulkanFramebuffer() { return std::get<VkSemaphore>(internalID); }
+
+		bool valid()
+		{
+			if (this)
+			{
+				if (std::holds_alternative<VkSemaphore>(internalID))
+				{
+					if (std::get<VkSemaphore>(internalID) == nullptr) return false;
+					else return true;
+				}
+				else return false;
+			}
+			else return false;
+		}
+	};
+
 	class DynamicFilter
 	{
 	public:

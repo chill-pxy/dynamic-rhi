@@ -1139,6 +1139,26 @@ namespace drhi
 
 
 
+
+     //----------------------------------- semaphore functions --------------------------------------
+    void VulkanDRHI::createDynamicSemaphore(DynamicSemaphore* semaphore)
+    {
+        VkSemaphore vksemaphore{};
+
+        VkSemaphoreCreateInfo semaphoreCreateInfo{};
+        semaphoreCreateInfo.sType = VK_STRUCTURE_TYPE_SEMAPHORE_CREATE_INFO;
+
+        if (vkCreateSemaphore(_device, &semaphoreCreateInfo, nullptr, &vksemaphore) != VK_SUCCESS)
+        {
+            throw std::runtime_error("failed to crete Semaphore");
+        }
+
+        semaphore->internalID = vksemaphore;
+    }
+    //-----------------------------------------------------------------------------------------------
+
+
+
     
 
 

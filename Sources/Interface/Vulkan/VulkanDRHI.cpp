@@ -65,7 +65,7 @@ namespace drhi
 
         VulkanPipeline::createPipelineCache(&_pipelineCache, &_device);
 
-        createSemaphore(&_semaphores, &_device);
+        VulkanSemaphores::createSemaphore(&_semaphores, &_device);
 
         createSynchronizationPrimitives(&_waitFences, MAX_FRAMES_IN_FLIGHT, &_device);
 
@@ -109,7 +109,8 @@ namespace drhi
         _submitInfo.commandBufferCount = vkOffsceenCommandBuffers.size();
         _submitInfo.pCommandBuffers = vkOffsceenCommandBuffers.data();
 
-        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentFrame]) != VK_SUCCESS)
+        auto error = vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE);
+        if (error != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit queue");
         }
@@ -125,9 +126,11 @@ namespace drhi
         {
             vkCommandBuffers[i] = (*presentCommandBuffers)[i].getVulkanCommandBuffer();
         }
+
         _submitInfo.commandBufferCount = vkCommandBuffers.size();
         _submitInfo.pCommandBuffers = vkCommandBuffers.data();
-        if (vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentFrame]) != VK_SUCCESS)
+        auto error2 = vkQueueSubmit(_graphicQueue, 1, &_submitInfo, _waitFences[_currentFrame]);
+        if (error2 != VK_SUCCESS)
         {
             throw std::runtime_error("failed to submit queue");
         }
