@@ -95,28 +95,31 @@ namespace drhi
         // prepare frame
         prepareFrame(recreatefuncs);
 
-        std::vector<VkCommandBuffer> vkOffsceenCommandBuffers{};
-        vkOffsceenCommandBuffers.resize(offscreenCommandBuffers->size());
-
-        for (uint32_t i = 0; i < vkOffsceenCommandBuffers.size(); ++i)
+        if (offscreenCommandBuffers->size() > 0)
         {
-            vkOffsceenCommandBuffers[i] = (*offscreenCommandBuffers)[i].getVulkanCommandBuffer();
+            std::vector<VkCommandBuffer> vkOffsceenCommandBuffers{};
+            vkOffsceenCommandBuffers.resize(offscreenCommandBuffers->size());
+
+            for (uint32_t i = 0; i < vkOffsceenCommandBuffers.size(); ++i)
+            {
+                vkOffsceenCommandBuffers[i] = (*offscreenCommandBuffers)[i].getVulkanCommandBuffer();
+            }
+
+            // submit offscreen rendering task
+            _submitInfo.pWaitSemaphores = &_semaphores.presentComplete;
+            _submitInfo.pSignalSemaphores = &_offscreenSemaphore;
+            _submitInfo.commandBufferCount = vkOffsceenCommandBuffers.size();
+            _submitInfo.pCommandBuffers = vkOffsceenCommandBuffers.data();
+
+            auto error = vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE);
+            if (error != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to submit queue");
+            }
+
+            _submitInfo.pWaitSemaphores = &_offscreenSemaphore;
+            _submitInfo.pSignalSemaphores = &_semaphores.renderComplete;
         }
-
-        // submit offscreen rendering task
-        _submitInfo.pWaitSemaphores = &_semaphores.presentComplete;
-        _submitInfo.pSignalSemaphores = &_offscreenSemaphore;
-        _submitInfo.commandBufferCount = vkOffsceenCommandBuffers.size();
-        _submitInfo.pCommandBuffers = vkOffsceenCommandBuffers.data();
-
-        auto error = vkQueueSubmit(_graphicQueue, 1, &_submitInfo, VK_NULL_HANDLE);
-        if (error != VK_SUCCESS)
-        {
-            throw std::runtime_error("failed to submit queue");
-        }
-
-        _submitInfo.pWaitSemaphores = &_offscreenSemaphore;
-        _submitInfo.pSignalSemaphores = &_semaphores.renderComplete;
 
         // submit swapchain rendering task
         std::vector<VkCommandBuffer> vkCommandBuffers{};

@@ -135,7 +135,7 @@ namespace drhi
                 blendAttachmentStates.resize(createInfo.colorAttachmentCount);
                 for (uint32_t i = 0; i < createInfo.colorAttachmentCount; ++i)
                 {
-                    blendAttachmentStates[i].colorWriteMask = VK_COLOR_COMPONENT_R_BIT | VK_COLOR_COMPONENT_G_BIT | VK_COLOR_COMPONENT_B_BIT | VK_COLOR_COMPONENT_A_BIT;
+                    blendAttachmentStates[i].colorWriteMask = 0xf;
                     blendAttachmentStates[i].blendEnable = VK_FALSE;
                 }
                 colorBlending.pAttachments = blendAttachmentStates.data();
