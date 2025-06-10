@@ -129,10 +129,11 @@ namespace drhi
             colorBlending.logicOpEnable = VK_FALSE;
             colorBlending.logicOp = VK_LOGIC_OP_COPY;
             colorBlending.attachmentCount = createInfo.colorAttachmentCount;
+
+            std::vector<VkPipelineColorBlendAttachmentState> blendAttachmentStates{};
+            blendAttachmentStates.resize(createInfo.colorAttachmentCount);
             if (createInfo.colorAttachmentCount > 1)
             {
-                std::vector<VkPipelineColorBlendAttachmentState> blendAttachmentStates{};
-                blendAttachmentStates.resize(createInfo.colorAttachmentCount);
                 for (uint32_t i = 0; i < createInfo.colorAttachmentCount; ++i)
                 {
                     blendAttachmentStates[i].colorWriteMask = 0xf;
@@ -173,7 +174,7 @@ namespace drhi
             VkPipelineRenderingCreateInfoKHR pipelineRenderingCreateInfo{};
             pipelineRenderingCreateInfo.sType = VK_STRUCTURE_TYPE_PIPELINE_RENDERING_CREATE_INFO_KHR;
             pipelineRenderingCreateInfo.colorAttachmentCount = createInfo.colorAttachmentCount;
-            if (createInfo.colorAttachmentCount > 1)
+            if (!createInfo.colorAttachmentFormats.empty())
             {
                 pipelineRenderingCreateInfo.pColorAttachmentFormats = createInfo.colorAttachmentFormats.data();
             }

@@ -201,59 +201,65 @@ namespace drhi
         }
     }
 
-    void VulkanDRHI::beginRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo bri)
+    void VulkanDRHI::beginRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo* bri)
     {
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
-        VkImage vkImage{};
+        std::vector<VkImage> vkImages{};
         std::vector<VkImageView> vkImageViews{};
         VkImage vkDepthImage{};
         VkImageView vkDepthImageView{};
 
         uint32_t width = 0, height = 0;
 
-        for(auto& image : *bri.targetImage)
+        for(uint32_t i = 0; i < bri->targetImage->size(); ++i)
         {
-            vkImage = image.getVulkanImage();
-            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
+            vkImages.push_back(bri->targetImage->at(i).getVulkanImage());
+            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImages[i],
                 0,
                 VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
                 VK_IMAGE_LAYOUT_UNDEFINED,
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
-                VkImageSubresourceRange{ (VkImageAspectFlags)bri.colorAspectFlag, 0, 1, 0, 1 });
+                VkImageSubresourceRange{ (VkImageAspectFlags)bri->colorAspectFlag, 0, 1, 0, 1 });
         }
 
-        for (auto& imageView : *bri.targetImageView)
+        for (auto& imageView : *bri->targetImageView)
         {
             vkImageViews.emplace_back(imageView.getVulkanImageView());
         }
 
-        if (bri.targetDepthImage->valid() && bri.targetDepthImageView->valid())
+        if (bri->targetDepthImage->valid() && bri->targetDepthImageView->valid())
         {
-            vkDepthImage = bri.targetDepthImage->getVulkanImage();
-            vkDepthImageView = bri.targetDepthImageView->getVulkanImageView();
+            vkDepthImage = bri->targetDepthImage->getVulkanImage();
+            vkDepthImageView = bri->targetDepthImageView->getVulkanImageView();
 
             VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkDepthImage,
                 0,
                 VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT,
                 VK_IMAGE_LAYOUT_UNDEFINED,
-                (VkImageLayout)bri.depthImageLayout,
+                (VkImageLayout)bri->depthImageLayout,
                 VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
                 VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT | VK_PIPELINE_STAGE_LATE_FRAGMENT_TESTS_BIT,
-                VkImageSubresourceRange{ (VkImageAspectFlags)bri.depthAspectFlag, 0, 1, 0, 1 });
+                VkImageSubresourceRange{ (VkImageAspectFlags)bri->depthAspectFlag, 0, 1, 0, 1 });
         }
 
-        width = bri.targetImageWidth; 
-        height = bri.targetImageHeight; 
+        width = bri->targetImageWidth;
+        height = bri->targetImageHeight;
         
 
-        VulkanCommand::beginRendering(vkCommandBuffer, vkImageViews, &vkDepthImage, &vkDepthImageView, width, height, bri.isClearEveryFrame, bri.includeStencil, bri.isRenderBySecondaryCommand);
+        VulkanCommand::beginRendering(vkCommandBuffer, vkImageViews, &vkDepthImage, &vkDepthImageView, width, height, bri->isClearEveryFrame, bri->includeStencil, bri->isRenderBySecondaryCommand);
     
-        if (bri.targetDepthImage->valid() && bri.targetDepthImageView->valid())
+        if (bri->targetDepthImage->valid() && bri->targetDepthImageView->valid())
         {
-            bri.targetDepthImage->internalID = vkDepthImage;
-            bri.targetDepthImageView->internalID = vkDepthImageView;
+            bri->targetDepthImage->internalID = vkDepthImage;
+            bri->targetDepthImageView->internalID = vkDepthImageView;
+        }
+
+        for (uint32_t i = 0; i < bri->targetImage->size(); ++i)
+        {
+            bri->targetImage->at(i).internalID = vkImages[i];
+            bri->targetImageView->at(i).internalID = vkImageViews[i];
         }
     }
 
@@ -314,34 +320,33 @@ namespace drhi
         }
     }
 
-    void VulkanDRHI::endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo bri)
+    void VulkanDRHI::endRendering(DynamicCommandBuffer commandBuffer, DynamicRenderingMRTInfo* bri)
     {
         VkCommandBuffer vkCommandBuffer = commandBuffer.getVulkanCommandBuffer();
         vkCmdEndRendering(vkCommandBuffer);
 
-        VkImage vkImage{};
+        std::vector<VkImage> vkImages{};
         VkImage vkdepthImage{};
 
-        for(auto& image : *bri.targetImage)
+        for (uint32_t i = 0; i < bri->targetImage->size(); ++i)
         {
-            vkImage = image.getVulkanImage();
-            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImage,
+            vkImages.push_back(bri->targetImage->at(i).getVulkanImage());
+            VulkanCommand::insertImageMemoryBarrier(&vkCommandBuffer, &vkImages[i],
                 VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT,
                 0,
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
                 VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT,
                 VK_PIPELINE_STAGE_BOTTOM_OF_PIPE_BIT,
-                VkImageSubresourceRange{ (VkImageAspectFlags)bri.colorAspectFlag, 0, 1, 0, 1 });
+                VkImageSubresourceRange{ (VkImageAspectFlags)bri->colorAspectFlag, 0, 1, 0, 1 });
         }
 
         commandBuffer.internalID = vkCommandBuffer;
 
-        //if (*bri.targetImage->valid())
-        //{
-        //    bri.targetImage->internalID = vkImage;
-        //}
-        
+        for (uint32_t i = 0; i < bri->targetImage->size(); ++i)
+        {
+            bri->targetImage->at(i).internalID = vkImages[i];
+        }
     }
 
     void VulkanDRHI::freeCommandBuffers(std::vector<DynamicCommandBuffer>* commandBuffers, DynamicCommandPool* commandPool)

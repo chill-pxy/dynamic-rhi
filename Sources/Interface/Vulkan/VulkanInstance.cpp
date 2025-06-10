@@ -4,10 +4,9 @@ namespace drhi
 {
     void createInstance(VkInstance* instance)
     {
-        //初始化volk
         volkInitialize();
 
-        //初始化vulkan instance
+        //vulkan instance
         if (enableValidationLayers && !checkValidationLayerSupport())
         {
             throw std::runtime_error("validation layers requested, but not available!");
@@ -16,8 +15,10 @@ namespace drhi
         std::vector<const char*> extensions = {
             "VK_KHR_surface",
             "VK_KHR_win32_surface",
+#ifndef NDEBUG
             VK_EXT_DEBUG_UTILS_EXTENSION_NAME,
             VK_EXT_VALIDATION_FEATURES_EXTENSION_NAME
+#endif // NDDEBUG
         };
 
         VkApplicationInfo appInfo{};
@@ -49,11 +50,11 @@ namespace drhi
             createInfo.pNext = nullptr;
         }
 
-        if (vkCreateInstance(&createInfo, nullptr, instance) != VK_SUCCESS) {
+        auto result = vkCreateInstance(&createInfo, nullptr, instance);
+        if (result != VK_SUCCESS) {
             throw std::runtime_error("failed to create instance!");
         }
 
-        //载入volk instance 才可后续加载vulkan函数符号
         volkLoadInstance(*instance);
     }
 }

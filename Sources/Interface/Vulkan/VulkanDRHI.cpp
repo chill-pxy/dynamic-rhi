@@ -95,7 +95,7 @@ namespace drhi
         // prepare frame
         prepareFrame(recreatefuncs);
 
-        if (offscreenCommandBuffers->size() > 0)
+        if (!offscreenCommandBuffers->empty())
         {
             std::vector<VkCommandBuffer> vkOffsceenCommandBuffers{};
             vkOffsceenCommandBuffers.resize(offscreenCommandBuffers->size());
@@ -104,7 +104,7 @@ namespace drhi
             {
                 vkOffsceenCommandBuffers[i] = (*offscreenCommandBuffers)[i].getVulkanCommandBuffer();
             }
-
+            
             // submit offscreen rendering task
             _submitInfo.pWaitSemaphores = &_semaphores.presentComplete;
             _submitInfo.pSignalSemaphores = &_offscreenSemaphore;
@@ -266,7 +266,8 @@ namespace drhi
             }
         }
 
-        if (vkQueueWaitIdle(_graphicQueue) != VK_SUCCESS)
+        auto result2 = vkQueueWaitIdle(_graphicQueue);
+        if (result2 != VK_SUCCESS)
         {
             throw std::runtime_error("failed to wait queue");
         }
