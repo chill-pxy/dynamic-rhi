@@ -10,8 +10,6 @@
 #include<vector>
 #include<string>
 
-#define NDEBUG
-
 #ifdef NDEBUG
 const bool enableValidationLayers = false;
 #else
