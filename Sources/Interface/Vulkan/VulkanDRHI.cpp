@@ -148,6 +148,11 @@ namespace drhi
         commandBuffer->internalID = vkcommandBuffer;
     }
 
+    void VulkanDRHI::draw(DynamicCommandBuffer* commandBuffer, uint32_t vertexCount, uint32_t instanceCount, uint32_t firstVertex, uint32_t firstInstance)
+    {
+        vkCmdDraw(commandBuffer->getVulkanCommandBuffer(), vertexCount, instanceCount, firstVertex, firstInstance);
+    }
+
     void VulkanDRHI::setScissor(DynamicCommandBuffer* commandBuffer, uint32_t firstScissor, uint32_t scissorCount, DynamicRect2D rect)
     {
         auto vkcommandBuffer = commandBuffer->getVulkanCommandBuffer();
